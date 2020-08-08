@@ -86,6 +86,13 @@ app.get('/profile', isLoggedIn, function (req, res) {
         user: req.user // get the user out of session and pass to template
     });
 });
+app.get('/genqrcode', isLoggedIn, function (req, res) {
+    console.log("genqr" + req.user.name)
+    res.render('qrcode', {
+        user: req.user,
+        text: "localhost:5000/qrcode" + req.user.name// get the user out of session and pass to template
+    });
+});
 // route middleware to make sure
 function isLoggedIn(req, res, next) {
 
