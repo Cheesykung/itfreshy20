@@ -3,15 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "s": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@fullhuman/postcss-purgecss": "^2.3.0",
     "core-js": "^3.6.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.28",
+    "passport": "^0.4.1",
+    "postcss": "^7.0.32",
     "register-service-worker": "^1.7.1",
+    "tailwindcss": "^1.6.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"

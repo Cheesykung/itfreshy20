@@ -1,18 +1,15 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div class="flex w-screen h-screen bg-blue-600 text-gray-300 justify-center items-center">
+    <h1 class="text-4xl uppercase">Welcome to IT 18th freshy 2020!</h1>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-
 export default {
-  name: "Home",
-  components: {
-    HelloWorld
+  data() {
+    return {
+      title: "IT FRESHY 2020"
+    };
   }
 };
 </script>
