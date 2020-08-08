@@ -1,6 +1,8 @@
 <template>
-  <div class="flex w-screen h-screen bg-blue-600 text-gray-300 justify-center items-center">
-    <h1 class="text-4xl uppercase">Welcome to IT 18th freshy 2020!</h1>
+  <div
+    class="flex flex-col w-screen space-x-4 space-y-6 h-screen text-gray-300 justify-center items-center"
+  >
+  
   </div>
 </template>
 

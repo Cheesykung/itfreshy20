@@ -1,20 +1,43 @@
 <template>
   <div id="app">
-    <nav></nav>
+    <Nav />
     <transition name="animated">
       <router-view />
     </transition>
+    <!-- <Footer /> -->
   </div>
 </template>
+<script>
+//import Footer from "@/components/util/Footer.vue";
+import Nav from "@/components/util/Nav.vue";
 
+export default {
+  components: {
+  //  Footer,
+    Nav
+  }
+};
+</script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  background-image: url("assets/images/bg.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center top;
+  overflow: hidden;
 }
+
+.lucky-font {
+  font-family: 'Luckiest Guy';
+}
+
 .animated-enter-active {
   transition: all 0.3s ease;
 }

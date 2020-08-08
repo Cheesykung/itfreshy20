@@ -3,7 +3,9 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 //import { urlencoded } from "express";
 
+/* Declare and import routes */
 const Home = () => import("../views/Home.vue");
+const Login = () => import("../views/Login.vue");
 
 Vue.use(VueRouter);
 
@@ -12,12 +14,27 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home,
+    redirect: '/login',
     meta: {
       title: "IT FRESHY 2020",
       metaTags: [
         {
           name: "description",
           content: "For IT KMITL Freshy 17th only",
+        },
+      ],
+    },
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+    meta: {
+      title: "Sign In | IT FRESHY 2020",
+      metaTags: [
+        {
+          name: "description",
+          content: "Sign in page for IT KMITL Freshy 17th only",
         },
       ],
     },
