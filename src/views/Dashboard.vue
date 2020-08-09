@@ -10,7 +10,6 @@
 export default {
   data() {
     return {
-      title: "IT FRESHY 2020"
     };
   }
 };

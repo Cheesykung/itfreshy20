@@ -4,7 +4,7 @@ import VueRouter from "vue-router";
 //import { urlencoded } from "express";
 
 /* Declare and import routes */
-const Home = () => import("../views/Home.vue");
+const Dashboard = () => import("../views/Dashboard.vue");
 const Login = () => import("../views/Login.vue");
 
 Vue.use(VueRouter);
@@ -12,8 +12,8 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    name: "Dashboard",
+    component: Dashboard,
     redirect: '/login',
     meta: {
       title: "IT FRESHY 2020",
