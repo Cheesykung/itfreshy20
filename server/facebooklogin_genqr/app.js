@@ -3,13 +3,14 @@ const app = express()
 const passport = require('passport')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
+const AES = require("crypto-js/aes");
 
 const User = require('./models/User')
 
 const facebookStrategy = require('passport-facebook').Strategy
 
 app.set("view engine", "ejs")
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch' }));
+app.use(session({ secret: 'ilovescotchscotfchyscotchscotch' }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cookieParser());
@@ -49,7 +50,12 @@ passport.use(new facebookStrategy({
                     newUser.uid = profile.id; // set the users facebook id                   
                     newUser.token = token; // we will save the token that facebook provides to the user                    
                     newUser.name = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
-                    newUser.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+                    try {
+                        newUser.email = profile.emails[0].value
+                      }
+                    catch(err) {
+                        console.log("not haVE ")
+                    }
                     newUser.gender = profile.gender
                     newUser.pic = profile.photos[0].value
                     newUser.point = 0
@@ -90,8 +96,12 @@ app.get('/genqrcode', isLoggedIn, function (req, res) {
     console.log("genqr" + req.user.name)
     res.render('qrcode', {
         user: req.user,
-        text: "localhost:5000/qrcode" + req.user.name// get the user out of session and pass to template
+        text: "localhost:5000/qrcode/" + req.user.name// get the user out of session and pass to template
     });
+});
+app.get('/qrcode/:id', isLoggedIn, function (req, res) {
+    console.log("check" + req.params.id)
+    res.send("hi")
 });
 // route middleware to make sure
 function isLoggedIn(req, res, next) {
@@ -114,7 +124,7 @@ app.get('/', (req, res) => {
     res.render("index")
 })
 app.get('/a', (req, res) => {
-    res.send('Hello World!')
+    res.send({profile: req.user })
   })
 app.get('/logout', function(req, res) {
     req.logout();
