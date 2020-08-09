@@ -10,7 +10,10 @@ export default new Vuex.Store({
   base: process.env.NODE_ENV,
   mode: "history",
   state: {
-    profile: {},
+    profile: {
+      user: "name",
+      photoURL: "test.jpg",
+    },
     firstTime: false,
   },
   getters: {
@@ -28,6 +31,9 @@ export default new Vuex.Store({
     },
     getFirstTime: (state) => {
       return state.firstTime;
+    },
+    getMoney: (state) => {
+      return state.profile.money;
     },
     signInCheck: (state) => {
       let loggedin = false;
@@ -56,5 +62,11 @@ export default new Vuex.Store({
       state.profile = null;
     },
   },
-  actions: {},
+  actions: {
+    setEmail({ commit }, email) {
+      setTimeout(() => {
+        commit("setEmail", email);
+      }, 600);
+    },
+  },
 });

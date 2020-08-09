@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Nav />
+    <Nav v-if="signInCheck" />
     <transition name="animated">
       <router-view />
     </transition>
@@ -10,16 +10,20 @@
 <script>
 //import Footer from "@/components/util/Footer.vue";
 import Nav from "@/components/util/Nav.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
-  //  Footer,
+    //  Footer,
     Nav
+  },
+  computed: {
+    ...mapGetters(['signInCheck'])
   }
 };
 </script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -35,7 +39,7 @@ export default {
 }
 
 .lucky-font {
-  font-family: 'Luckiest Guy';
+  font-family: "Luckiest Guy";
 }
 
 .animated-enter-active {
