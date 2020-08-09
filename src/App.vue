@@ -18,15 +18,16 @@ export default {
     Nav
   },
   computed: {
-    ...mapGetters(['signInCheck'])
+    ...mapGetters(["signInCheck"])
   }
 };
 </script>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;300;400&family=Roboto:wght@300;400&display=swap");
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Roboto, Helvetica, Arial, Prompt;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

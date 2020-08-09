@@ -13,6 +13,7 @@ export default new Vuex.Store({
     profile: {
       user: "name",
       photoURL: "test.jpg",
+      email: "asdklajlkdj"
     },
     firstTime: false,
   },
