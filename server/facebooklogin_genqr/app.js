@@ -4,6 +4,7 @@ const passport = require('passport')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const AES = require("crypto-js/aes");
+const CryptoJS = require("crypto-js");
 
 const User = require('./models/User')
 
@@ -52,8 +53,8 @@ passport.use(new facebookStrategy({
                     newUser.name = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
                     try {
                         newUser.email = profile.emails[0].value
-                      }
-                    catch(err) {
+                    }
+                    catch (err) {
                         console.log("not haVE ")
                     }
                     newUser.gender = profile.gender
@@ -94,14 +95,34 @@ app.get('/profile', isLoggedIn, function (req, res) {
 });
 app.get('/genqrcode', isLoggedIn, function (req, res) {
     console.log("genqr" + req.user.name)
+    var textfirst = CryptoJS.AES.encrypt(req.user.uid, 'secret key 123');
+    var ciphertext = encodeURI(textfirst)
+    console.log(ciphertext)
     res.render('qrcode', {
         user: req.user,
-        text: "localhost:5000/qrcode/" + req.user.name// get the user out of session and pass to template
+        text: "localhost:5000/qrcode/" + ciphertext// get the user out of session and pass to template
     });
 });
-app.get('/qrcode/:id', isLoggedIn, function (req, res) {
-    console.log("check" + req.params.id)
-    res.send("hi")
+app.get('/qrcode/:id', function (req, res) {
+    var dec = decodeURI(req.params.id);
+    var bytes = CryptoJS.AES.decrypt(dec.toString(), 'secret key 123');
+    var plaintext = bytes.toString(CryptoJS.enc.Utf8);
+    console.log(typeof plaintext)
+    if (plaintext == "") {
+        res.send("ไม่ผ่าน")
+    }
+    else { 
+    User.findOne({ 'uid': plaintext }, function (err, obj) {
+        if (err) {
+            res.send("ไม่ผ่าน")
+        }
+        if (obj.uid != null) {
+            res.send("point + 1")
+        }
+
+    })
+}
+
 });
 // route middleware to make sure
 function isLoggedIn(req, res, next) {
@@ -124,9 +145,10 @@ app.get('/', (req, res) => {
     res.render("index")
 })
 app.get('/a', (req, res) => {
-    res.send({profile: req.user })
-  })
-app.get('/logout', function(req, res) {
+    console.log(plaintext);
+    res.send("fortest")
+})
+app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
 });
