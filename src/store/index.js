@@ -32,9 +32,6 @@ export default new Vuex.Store({
     getFirstTime: (state) => {
       return state.firstTime;
     },
-    getMoney: (state) => {
-      return state.profile.money;
-    },
     signInCheck: (state) => {
       let loggedin = false;
       if (state.profile !== null)

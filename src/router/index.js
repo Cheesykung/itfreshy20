@@ -5,7 +5,8 @@ import VueRouter from "vue-router";
 
 /* Declare and import routes */
 const Dashboard = () => import("../views/Dashboard.vue");
-const Login = () => import("../views/Login.vue");
+const Signin = () => import("../views/Login.vue");
+const Profile = () => import("../views/Profile.vue");
 
 Vue.use(VueRouter);
 
@@ -14,9 +15,9 @@ const routes = [
     path: "/",
     name: "Dashboard",
     component: Dashboard,
-    redirect: '/login',
+    redirect: '/signin',
     meta: {
-      title: "IT FRESHY 2020",
+      title: "IT@KMITL FRESHY 2020",
       metaTags: [
         {
           name: "description",
@@ -26,11 +27,19 @@ const routes = [
     },
   },
   {
-    path: "/login",
-    name: "Login",
-    component: Login,
+    path: "/profile",
+    name: "Profile",
+    component: Profile,
     meta: {
-      title: "Sign In | IT FRESHY 2020",
+      title: "Your profile | IT@KMITL FRESHY 2020"
+    }
+  },
+  {
+    path: "/signin",
+    name: "Signin",
+    component: Signin,
+    meta: {
+      title: "Sign in | IT@KMITL FRESHY 2020",
       metaTags: [
         {
           name: "description",
@@ -63,7 +72,7 @@ router.beforeEach((to, from, next) => {
   //   .reverse()
   //   .find((r) => r.meta && r.meta.metaTags);
 
-  if (nearestTitle) document.title = nearestTitle.meta.title;
+  (nearestTitle) ? document.title = nearestTitle.meta.title : document.title = "IT@KMITL FRESHY 2020" ;
 
   Array.from(
     document.querySelectorAll("[data-vue-router-controlled]")
