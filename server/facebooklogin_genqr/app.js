@@ -89,9 +89,10 @@ passport.deserializeUser(function (id, done) {
 
 app.get('/profile', isLoggedIn, function (req, res) {
     console.log(req.user)
-    res.render('profile', {
-        user: req.user // get the user out of session and pass to template
-    });
+    res.send(text = "logout")
+    // res.render('profile', {
+    //     user: req.user // get the user out of session and pass to template
+    // });
 });
 app.get('/genqrcode', isLoggedIn, function (req, res) {
     console.log("genqr" + req.user.name)
