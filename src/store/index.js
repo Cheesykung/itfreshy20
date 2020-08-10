@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
-// import axios from "axios";
-// import mongoose from "mongoose";
+import axios from "axios";
 // import Cookies from "js-cookie";
+// import { reject } from "core-js/fn/promise";
 
 Vue.use(Vuex);
 
@@ -61,6 +61,20 @@ export default new Vuex.Store({
       setTimeout(() => {
         commit("setEmail", email);
       }, 600);
+    },
+    getFacebookAuth({ commit }) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get("/facebook/callback")
+          .then((res) => {
+            commit("setProfile", res);
+            resolve(res);
+          })
+          .catch((e) => {
+            console.log(e);
+            reject(e);
+          });
+      });
     },
   },
 });

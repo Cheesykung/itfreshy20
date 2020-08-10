@@ -33,9 +33,8 @@
           </div>
         </div>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-10 gap-1 self-center container my-12">
-        <div class="card"></div>
-        <div class="card"></div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-10 gap-1 self-center container my-12">
+        <div class="card col-start-1 col-end-2">{{ getProfile }}</div>
         <div class="card"></div>
         <div class="card"></div>
       </div>
@@ -43,7 +42,24 @@
   </section>
 </template>
 <script>
-export default {};
+import { mapGetters, mapActions } from "vuex";
+
+export default {
+  data() {
+    return {
+      profile: this.getProfile
+    };
+  },
+  created() {
+    this.getFacebookAuth();
+  },
+  methods: {
+    ...mapActions(["getFacebookAuth"])
+  },
+  computed: {
+    ...mapGetters(["getProfile"])
+  }
+};
 </script>
 <style scoped>
 .profile {
