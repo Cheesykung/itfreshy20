@@ -31,12 +31,14 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  word-spacing: 1px;
   color: #2c3e50;
   background-image: url("assets/images/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center top;
   overflow: hidden;
+  @apply h-full;
 }
 
 .lucky-font {

@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="grid lg:grid-flow-col grid-flow-row-dense grid-cols-4 gap-12 container"
-  >
+  <div class="grid lg:grid-flow-col grid-flow-row-dense grid-cols-4 gap-12 container">
     <div
       class="flex content-center justify-center flex-col md:rounded-sm md:col-start-2 md:col-end-4 col-start-1 col-end-5 bg-gray-900 opacity-75 xl:mx-16 py-16"
     >
@@ -19,7 +17,8 @@
 export default {
   methods: {
     loginSubmit() {
-      return this.$router.push("/profile");
+      // return this.$router.push("/profile");
+      return window.open("http://localhost:5000/auth/facebook", "_self");
     }
   }
 };

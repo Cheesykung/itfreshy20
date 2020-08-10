@@ -10,11 +10,7 @@ export default new Vuex.Store({
   base: process.env.NODE_ENV,
   mode: "history",
   state: {
-    profile: {
-      user: "name",
-      photoURL: "test.jpg",
-      email: "asdklajlkdj"
-    },
+    profile: {},
     firstTime: false,
   },
   getters: {

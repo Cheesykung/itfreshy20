@@ -1,6 +1,6 @@
 <template>
-  <section class="w-screen h-screen profile-wrap">
-    <div class="flex flex-wrap content-start justify-center items-center h-full py-12">
+  <section class="w-screen h-full profile-wrap">
+    <div class="flex flex-wrap flex-col content-center justify-center items-center h-full py-12">
       <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
         <div class="img-wrap space-y-4">
           <img
@@ -32,6 +32,12 @@
             <span class="text-sm font-medium text-gray-500">รุ่นพี่ที่ยังไม่ได้ล่า</span>
           </div>
         </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-10 gap-1 self-center container my-12">
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
       </div>
     </div>
   </section>
@@ -73,8 +79,17 @@ export default {};
   flex: 0 1 15%;
 }
 
+.stats .chased {
+  border-right: solid 1px;
+  @apply border-gray-800;
+}
+
 .faculty {
   @apply text-sm text-gray-500 flex justify-center content-center;
+}
+
+.card {
+  @apply bg-gray-800 py-12 px-8 mx-4 my-3 rounded-md bg-opacity-50 text-gray-300;
 }
 
 @media screen and (max-width: 676.8px) {
@@ -90,4 +105,4 @@ export default {};
     flex: 0 1 20%;
   }
 }
-</style>  
+</style>
