@@ -70,13 +70,7 @@ passport.use(new facebookStrategy({
                     });
                 }
 
-            });
-          }
-        });
-      });
-    }
-  )
-);
+            }) })
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
