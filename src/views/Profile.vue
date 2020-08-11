@@ -22,21 +22,23 @@
         <div class="stats">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
             <span class="text-2xl font-semibold text-gray-200">268</span>
-            <span class="text-sm font-medium text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
+            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
             <span class="text-2xl font-semibold text-gray-200">2K</span>
-            <span class="text-sm font-medium text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
+            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
           </div>
         </div>
         <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8">
           <button
-            class="px-4 py-3 bg-blue-600 text-blue-100 rounded text-sm animate-pulse"
+            class="px-2 py-3 bg-blue-600 text-blue-100 rounded text-sm animate-pulse"
           >ล่ารายชื่อเลย!</button>
-          <button class="px-4 py-3 bg-blue-900 text-blue-100 rounded text-sm">รายชื่อที่ล่าไปแล้ว</button>
+          <button class="px-2 py-3 bg-blue-900 text-blue-100 rounded text-sm">รายชื่อที่ล่าไปแล้ว</button>
         </div>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-4 lg:gap-10 gap-1 self-center container my-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-6 lg:gap-10 gap-5 self-center container px-4 my-12 md:my-16 lg:my-20">
+        <div class="card"></div>
+        <div class="card"></div>
         <div class="card"></div>
         <div class="card"></div>
         <div class="card"></div>
@@ -120,7 +122,7 @@ export default {
 }
 
 .card {
-  @apply bg-gray-800 py-12 px-8 mx-4 my-3 rounded-md bg-opacity-50 text-gray-300;
+  @apply bg-gray-800 py-12 px-8 rounded-md bg-opacity-50 text-gray-300;
 }
 
 @media screen and (max-width: 676.8px) {
