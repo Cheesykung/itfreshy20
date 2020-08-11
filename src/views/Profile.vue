@@ -1,15 +1,15 @@
 <template>
-  <section class="w-screen h-full profile-wrap">
-    <div class="flex flex-wrap flex-col content-center justify-center items-center h-full py-12">
+  <section class="w-screen min-h-screen profile-wrap">
+    <div class="flex flex-col content-center justify-center items-center h-full py-12">
       <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
         <div class="img-wrap space-y-4">
           <img
-            src="https://thethaiger.com/wp-content/uploads/2019/03/49949680_519372558558364_2070976338994397184_n.jpg"
+            :src="getProfile.pic"
             class="object-cover w-32 md:w-40 rounded-full self-center"
           />
           <div class="details space-y-2 items-center">
             <!-- <span class="text-gray-500 font-normal text-sm">#6207002</span> -->
-            <h1 class="text-3xl text-gray-100 font-thin">Mr, Kitti Singhapad</h1>
+            <h1 class="text-3xl text-gray-100 font-thin">{{ getProfile.name }}</h1>
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
             <i class="fas fa-map-marked-alt text-gray-500"></i>
@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-10 gap-1 self-center container my-12">
-        <div class="card col-start-1 col-end-2">{{ getProfile }}</div>
+        <div class="card col-start-1 col-end-2"></div>
         <div class="card"></div>
         <div class="card"></div>
       </div>
@@ -47,7 +47,6 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
-      profile: this.getProfile
     };
   },
   created() {

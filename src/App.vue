@@ -36,13 +36,14 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   word-spacing: 1px;
+  letter-spacing: .85px;
   color: #2c3e50;
   background-image: url("assets/images/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center top;
   overflow: hidden;
-  @apply h-full;
+  @apply min-h-full;
 }
 
 .lucky-font {

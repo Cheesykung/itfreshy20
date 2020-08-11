@@ -7,7 +7,7 @@ const AES = require("crypto-js/aes");
 const CryptoJS = require("crypto-js");
 
 const User = require("./models/User");
-const { default: Axios } = require("axios");
+const axios = require("axios");
 
 const facebookStrategy = require("passport-facebook").Strategy;
 
@@ -36,7 +36,7 @@ passport.use(
           if (err) return done(err);
 
           // if the user is found, then log them in
-          if (user) {
+          if (!user) {
             console.log("user found");
             console.log(user);
             return done(null, user); // user found, return that user
@@ -55,7 +55,13 @@ passport.use(
               console.log("not haVE ");
             }
             newUser.gender = profile.gender;
-            newUser.pic = profile.photos[0].value;
+            newUser.pic =
+              "https://graph.facebook.com/" +
+              profile.id +
+              "/picture" +
+              "?type=large" +
+              "&access_token=" +
+              token;
             newUser.point = 0;
             // save our user to the database
             newUser.save(function(err) {
@@ -129,16 +135,17 @@ app.get(
   "/auth/facebook",
   passport.authenticate("facebook", { scope: "email" })
 );
-app.get(
-  "/facebook/callback",
-  passport.authenticate("facebook", {
-    failureRedirect: "/",
-  }),
 
-  function(req, res) {
-    return res.send(req.user).json();
-  }
+app.route("/facebook/callback").get(
+  passport.authenticate("facebook", {
+    successRedirect: "/profile",
+    failureRedirect: "/",
+  })
 );
+
+app.get("/api/user", isLoggedIn, (req, res) => {
+  if (isLoggedIn) res.json(req.user);
+});
 
 app.get("/", (req, res) => {
   res.render("index");

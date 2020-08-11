@@ -18,7 +18,7 @@ export default {
   methods: {
     loginSubmit() {
       // return this.$router.push("/profile");
-      return window.open("http://localhost:8080/auth/facebook", "_self");
+      return window.open("/auth/facebook", "_self");
     }
   }
 };

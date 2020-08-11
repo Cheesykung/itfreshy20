@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
-// import Cookies from "js-cookie";
 // import { reject } from "core-js/fn/promise";
 
 Vue.use(Vuex);
@@ -62,16 +61,16 @@ export default new Vuex.Store({
         commit("setEmail", email);
       }, 600);
     },
-    getFacebookAuth({ commit }) {
+    async getFacebookAuth({ commit }) {
       return new Promise((resolve, reject) => {
+        //let headers = { header: {"Content-Type": "application/json"} };
         axios
-          .get("/facebook/callback")
+          .get("/api/user")
           .then((res) => {
-            commit("setProfile", res);
+            commit("setProfile", res.data);
             resolve(res);
           })
           .catch((e) => {
-            console.log(e);
             reject(e);
           });
       });
