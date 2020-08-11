@@ -46,6 +46,10 @@ html, body {
   @apply min-h-full;
 }
 
+button:focus {
+  outline: 0 !important;
+}
+
 .lucky-font {
   font-family: "Luckiest Guy";
 }

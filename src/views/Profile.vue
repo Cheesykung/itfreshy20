@@ -9,7 +9,7 @@
             <h1 class="text-3xl text-gray-100 font-thin">{{ getProfile.name }}</h1>
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
-            <i class="fas fa-map-marked-alt text-gray-500"></i>
+            <i class="fas fa-map-marked-alt"></i>
             <span>IT KMITL, รุ่น 18</span>
           </div>
           <div class="like space-x-4">
@@ -21,12 +21,12 @@
         </div>
         <div class="stats">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-300">268</span>
-            <span class="text-sm font-medium text-gray-500">รุ่นพี่ที่ล่าไปแล้ว</span>
+            <span class="text-2xl font-semibold text-gray-200">268</span>
+            <span class="text-sm font-medium text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-300">2K</span>
-            <span class="text-sm font-medium text-gray-500">รุ่นพี่ที่ยังไม่ได้ล่า</span>
+            <span class="text-2xl font-semibold text-gray-200">2K</span>
+            <span class="text-sm font-medium text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
           </div>
         </div>
         <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8">
@@ -94,7 +94,7 @@ export default {
 
 .stats .un-chased,
 .stats .chased {
-  flex: 0 1 15%;
+  flex: 0 1 20%;
 }
 
 .stats .chased {
@@ -108,10 +108,15 @@ export default {
 
 .button-gp button {
   flex: 1 1 20%;
+  @apply transition-all ease-in-out duration-300;
+}
+
+.button-gp button:hover {
+  @apply bg-opacity-75;
 }
 
 .faculty {
-  @apply text-sm text-gray-500 flex justify-center content-center;
+  @apply text-sm text-gray-300 flex justify-center content-center;
 }
 
 .card {
@@ -121,14 +126,14 @@ export default {
 @media screen and (max-width: 676.8px) {
   .stats .un-chased,
   .stats .chased {
-    flex: 0 1 38%;
+    flex: 0 1 50%;
   }
 }
 
 @media (min-width: 678px) and (max-width: 1023.8px) {
   .stats .un-chased,
   .stats .chased {
-    flex: 0 1 20%;
+    flex: 0 1 30%;
   }
 
   .button-gp button {
