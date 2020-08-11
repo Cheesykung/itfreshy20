@@ -3,10 +3,7 @@
     <div class="flex flex-col content-center justify-center items-center h-full py-12">
       <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
         <div class="img-wrap space-y-4">
-          <img
-            :src="getProfile.pic"
-            class="object-cover w-32 md:w-40 rounded-full self-center"
-          />
+          <img :src="getProfile.pic" class="object-cover w-32 md:w-40 rounded-full self-center" />
           <div class="details space-y-2 items-center">
             <!-- <span class="text-gray-500 font-normal text-sm">#6207002</span> -->
             <h1 class="text-3xl text-gray-100 font-thin">{{ getProfile.name }}</h1>
@@ -32,9 +29,16 @@
             <span class="text-sm font-medium text-gray-500">รุ่นพี่ที่ยังไม่ได้ล่า</span>
           </div>
         </div>
+        <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8">
+          <button
+            class="px-4 py-3 bg-blue-600 text-blue-100 rounded text-sm animate-pulse"
+          >ล่ารายชื่อเลย!</button>
+          <button class="px-4 py-3 bg-blue-900 text-blue-100 rounded text-sm">รายชื่อที่ล่าไปแล้ว</button>
+        </div>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-10 gap-1 self-center container my-12">
-        <div class="card col-start-1 col-end-2"></div>
+      <div class="grid grid-cols-1 lg:grid-cols-4 lg:gap-10 gap-1 self-center container my-12">
+        <div class="card"></div>
+        <div class="card"></div>
         <div class="card"></div>
         <div class="card"></div>
       </div>
@@ -46,8 +50,7 @@ import { mapGetters, mapActions } from "vuex";
 
 export default {
   data() {
-    return {
-    };
+    return {};
   },
   created() {
     this.getFacebookAuth();
@@ -99,6 +102,14 @@ export default {
   @apply border-gray-800;
 }
 
+.button-gp {
+  @apply flex flex-row justify-center content-center flex-wrap px-4;
+}
+
+.button-gp button {
+  flex: 1 1 20%;
+}
+
 .faculty {
   @apply text-sm text-gray-500 flex justify-center content-center;
 }
@@ -117,6 +128,16 @@ export default {
 @media (min-width: 678px) and (max-width: 1023.8px) {
   .stats .un-chased,
   .stats .chased {
+    flex: 0 1 20%;
+  }
+
+  .button-gp button {
+    flex: 0 1 30%;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .button-gp button {
     flex: 0 1 20%;
   }
 }
