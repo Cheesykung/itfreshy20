@@ -43,11 +43,11 @@
         </div>
       </div>
       <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 self-center container px-4 my-12 md:my-16 lg:my-20"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-5 xl:gap-10 self-center container px-4 my-20 md:my-24"
       >
         <div class="col-start-1 md:col-end-3 lg:col-end-4">
           <div class="flex flex-row justify-center md:justify-between items-center content-center">
-            <h2 class="text-2xl lg:text-3xl font-normal text-gray-200 lg:text-left">
+            <h2 class="text-2xl lg:text-3xl font-normal text-gray-200 lg:text-left py-2 md:py-0">
               รุ่นพี่ที่ล่าไปแล้ว
               <span class="text-blue-600 font-semibold">30</span> คนล่าสุด
             </h2>
@@ -213,7 +213,7 @@ export default {
 }
 
 .card {
-  @apply bg-gray-800 py-12  rounded-md bg-opacity-50 text-gray-300 flex content-center items-stretch;
+  @apply bg-gray-800 py-10 rounded-md bg-opacity-50 text-gray-300 flex content-center items-stretch;
 }
 
 .card .img-place {
@@ -222,7 +222,7 @@ export default {
 
 .card .profile-col {
   flex: 1 1 50%;
-  @apply flex flex-col content-start py-3 px-2;
+  @apply flex flex-col content-start py-3 px-4;
 }
 
 .card .bro-name {
