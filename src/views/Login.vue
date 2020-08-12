@@ -1,5 +1,5 @@
 <template>
-  <section class="w-screen h-screen" v-if="!signInCheck">
+  <section class="w-screen h-screen">
     <div class="flex justify-center content-center h-full lg:px-40">
       <LoginBox />
     </div>

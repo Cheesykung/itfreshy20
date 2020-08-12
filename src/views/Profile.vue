@@ -1,9 +1,15 @@
 <template>
   <section class="w-screen min-h-screen profile-wrap">
-    <div class="flex flex-col content-center justify-center items-center h-full py-12">
+    <div
+      class="flex flex-col content-center justify-center items-center h-full py-12"
+      v-if="!this.$route.params.id"
+    >
       <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
         <div class="img-wrap space-y-4">
-          <img :src="getProfile.pic" class="object-cover w-32 md:w-40 rounded-full self-center" />
+          <img
+            :src="getProfile.pic"
+            class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
+          />
           <div class="details space-y-2 items-center">
             <!-- <span class="text-gray-500 font-normal text-sm">#6207002</span> -->
             <h1 class="text-3xl text-gray-100 font-thin">{{ getProfile.name }}</h1>
@@ -33,16 +39,88 @@
           <button
             class="px-2 py-3 bg-blue-600 text-blue-100 rounded text-sm animate-pulse"
           >ล่ารายชื่อเลย!</button>
-          <button class="px-2 py-3 bg-blue-900 text-blue-100 rounded text-sm">รายชื่อที่ล่าไปแล้ว</button>
+          <button class="px-2 py-3 bg-blue-900 text-blue-100 rounded text-sm">สร้างลิงค์ใหม่</button>
         </div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-6 lg:gap-10 gap-5 self-center container px-4 my-12 md:my-16 lg:my-20">
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 self-center container px-4 my-12 md:my-16 lg:my-20"
+      >
+        <div class="col-start-1 md:col-end-3 lg:col-end-4">
+          <div class="flex flex-row justify-center md:justify-between items-center content-center">
+            <h2 class="text-2xl lg:text-3xl font-normal text-gray-200 lg:text-left">
+              รุ่นพี่ที่ล่าไปแล้ว
+              <span class="text-blue-600 font-semibold">30</span> คนล่าสุด
+            </h2>
+            <button
+              class="hidden md:block btn btn-block bg-transparent border-blue-600 border-4 hover:bg-blue-600 text-blue-100 text-sm py-2 px-6"
+            >
+              ดูทั้งหมด
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        <div
+          class="card px-8 xl:px-10 justify-center flex-col md:justify-between md:flex-row cursor-pointer hover:shadow-outline"
+          v-for="item in getBro"
+          @click="goProfile(item.id)"
+          :key="item.id"
+        >
+          <div class="img-place self-center md:py-0 py-3">
+            <img :src="item.img" alt="profile picture" class="object-cover rounded-full w-24 h-24" />
+          </div>
+          <div class="profile-col justify-center md:justify-start md:text-left">
+            <div class="bro-name">
+              <h2 class="text-gray-400 font-semibold">{{ item.name }}</h2>
+              <span class="flex-1 text-gray-500 font-medium text-sm">{{ item.nickName }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--- SEE ANOTHER PROFILE --->
+    <div class="flex flex-col content-center justify-center items-center h-full py-12" v-else>
+      <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
+        <div class="img-wrap space-y-4">
+          <img
+            :src="showProfile.img"
+            class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
+          />
+          <div class="details space-y-2 items-center">
+            <!-- <span class="text-gray-500 font-normal text-sm">#6207002</span> -->
+            <h1
+              class="text-3xl text-gray-100 font-thin"
+            >{{ showProfile.name }} ({{ showProfile.nickName }})</h1>
+          </div>
+          <div class="faculty space-x-2 font-normal uppercase">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>{{ showProfile.branch }} KMITL, ปี {{ showProfile.year }}</span>
+          </div>
+          <div class="like space-x-4">
+            <i class="fas fa-pizza-slice text-gray-400"></i>
+            <i class="fas fa-football-ball text-gray-400"></i>
+            <i class="fab fa-spotify text-gray-400"></i>
+            <i class="fas fa-film text-gray-400"></i>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="chased flex flex-col space-y-2 justify-center content-center">
+            <span class="text-2xl font-semibold text-gray-200">268</span>
+            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
+          </div>
+          <div class="un-chased flex flex-col space-y-2 justify-center content-center">
+            <span class="text-2xl font-semibold text-gray-200">2K</span>
+            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
+          </div>
+        </div>
+        <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8">
+          <button
+            class="px-2 py-3 border-blue-600 border-4 text-blue-100 rounded text-sm"
+          >ข้อมูลส่วนตัว</button>
+          <button
+            class="px-2 py-3 bg-blue-900 text-blue-100 rounded text-sm"
+            @click="goBack()"
+          >ย้อนกลับ</button>
+        </div>
       </div>
     </div>
   </section>
@@ -58,10 +136,23 @@ export default {
     this.getFacebookAuth();
   },
   methods: {
-    ...mapActions(["getFacebookAuth"])
+    ...mapActions(["getFacebookAuth"]),
+    goProfile(id) {
+      this.$router.push({ path: "/profile/" + id });
+    },
+    goBack() {
+      return this.$router.go(-1);
+    }
   },
   computed: {
-    ...mapGetters(["getProfile"])
+    ...mapGetters(["getProfile", "getBro", "getProfileById"]),
+    routeId() {
+      return parseInt(this.$route.params.id);
+    },
+    showProfile() {
+      //let route = this.$route.params.id;
+      return this.getProfileById(this.routeId);
+    }
   }
 };
 </script>
@@ -122,7 +213,28 @@ export default {
 }
 
 .card {
-  @apply bg-gray-800 py-12 px-8 rounded-md bg-opacity-50 text-gray-300;
+  @apply bg-gray-800 py-12  rounded-md bg-opacity-50 text-gray-300 flex content-center items-stretch;
+}
+
+.card .img-place {
+  flex: 1 0 25%;
+}
+
+.card .profile-col {
+  flex: 1 1 50%;
+  @apply flex flex-col content-start py-3 px-2;
+}
+
+.card .bro-name {
+  @apply flex flex-col;
+}
+
+.card .bro-name h2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-all;
 }
 
 @media screen and (max-width: 676.8px) {

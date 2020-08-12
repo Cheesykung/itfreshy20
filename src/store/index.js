@@ -11,8 +11,82 @@ export default new Vuex.Store({
   state: {
     profile: {},
     firstTime: false,
+    broMock: [
+      {
+        id: 1,
+        name: "Ratchapol Thaworn",
+        nickName: "Peet",
+        year: 2,
+        age: 20,
+        branch: "IT",
+        gender: "Male",
+        img:
+          "https://inuktech.it/wp-content/uploads/2019/01/staff-placeholder-male.jpg",
+      },
+      {
+        id: 2,
+        name: "โซระ ยาโยอิ",
+        nickName: "นาโตมิ",
+        year: 2,
+        age: 20,
+        branch: "IT",
+        gender: "Female",
+        img:
+          "https://www.bracestoday.com/wp-content/uploads/2018/04/member-placeholder-female.jpg",
+      },
+      {
+        id: 3,
+        name: "Urara Natomi",
+        nickName: "Ohayo",
+        year: 2,
+        age: 20,
+        branch: "IT",
+        gender: "Female",
+        img:
+          "https://www.bracestoday.com/wp-content/uploads/2018/04/member-placeholder-female.jpg",
+      },
+      {
+        id: 4,
+        name: "ฟรังซ์ ซี่",
+        nickName: "ใครฟะ",
+        year: 2,
+        age: 19,
+        branch: "IT",
+        gender: "Female",
+        img:
+          "https://www.bracestoday.com/wp-content/uploads/2018/04/member-placeholder-female.jpg",
+      },
+      {
+        id: 5,
+        name: "Bunny Pokemon",
+        nickName: "Oil",
+        year: 3,
+        age: 19,
+        branch: "DSBA",
+        gender: "Female",
+        img:
+          "https://www.bracestoday.com/wp-content/uploads/2018/04/member-placeholder-female.jpg",
+      },
+      {
+        id: 6,
+        name: "Jennis Uhara",
+        nickName: "Jane",
+        year: 4,
+        age: 24,
+        branch: "IT",
+        gender: "Female",
+        img:
+          "https://www.bracestoday.com/wp-content/uploads/2018/04/member-placeholder-female.jpg",
+      },
+    ],
   },
   getters: {
+    getBro: (state) => {
+      return state.broMock;
+    },
+    getProfileById: (state) => (proId) => {
+      return state.broMock.find(({ id }) => id === proId);
+    },
     getProfile: (state) => {
       return state.profile;
     },
