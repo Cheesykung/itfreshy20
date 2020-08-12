@@ -21,18 +21,18 @@ export default new Vuex.Store({
         branch: "IT",
         gender: "Male",
         img:
-          "https://inuktech.it/wp-content/uploads/2019/01/staff-placeholder-male.jpg",
+          "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
       },
       {
         id: 2,
-        name: "โซระ ยาโยอิ",
-        nickName: "นาโตมิ",
+        name: "Jennie Kim",
+        nickName: "เกี๊ยว",
         year: 2,
         age: 20,
         branch: "IT",
         gender: "Female",
         img:
-          "https://www.bracestoday.com/wp-content/uploads/2018/04/member-placeholder-female.jpg",
+          "https://image.kpopmap.com/2019/09/jenniekim.jpg",
       },
       {
         id: 3,
@@ -43,7 +43,7 @@ export default new Vuex.Store({
         branch: "IT",
         gender: "Female",
         img:
-          "https://www.bracestoday.com/wp-content/uploads/2018/04/member-placeholder-female.jpg",
+          "https://secure.gravatar.com/avatar/7104e34ac61866fc2d45b652f82a03bd?s=400&d=mm&r=g",
       },
       {
         id: 4,
@@ -54,7 +54,7 @@ export default new Vuex.Store({
         branch: "IT",
         gender: "Female",
         img:
-          "https://www.bracestoday.com/wp-content/uploads/2018/04/member-placeholder-female.jpg",
+          "https://netstorage-kami.akamaized.net/images/e40e37e590cbed31.jpg?&imwidth=1200",
       },
       {
         id: 5,
@@ -65,18 +65,18 @@ export default new Vuex.Store({
         branch: "DSBA",
         gender: "Female",
         img:
-          "https://www.bracestoday.com/wp-content/uploads/2018/04/member-placeholder-female.jpg",
+          "https://www.filmfare.com/awards/filmfare-awards-2020/images/nominations/best_debut_female_ananya_panday.jpg",
       },
       {
         id: 6,
-        name: "Jennis Uhara",
-        nickName: "Jane",
+        name: "Uvuvwevwevwe onyetenyevwe ugwebvenwen osas",
+        nickName: "Osas",
         year: 4,
         age: 24,
         branch: "IT",
-        gender: "Female",
+        gender: "Male",
         img:
-          "https://www.bracestoday.com/wp-content/uploads/2018/04/member-placeholder-female.jpg",
+          "https://i.pinimg.com/originals/db/28/b8/db28b8b825931035869f103d99c98ee6.jpg",
       },
     ],
   },

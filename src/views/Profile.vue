@@ -69,9 +69,15 @@
             <img :src="item.img" alt="profile picture" class="object-cover rounded-full w-24 h-24" />
           </div>
           <div class="profile-col justify-center md:justify-start md:text-left">
-            <div class="bro-name">
-              <h2 class="text-gray-400 font-semibold">{{ item.name }}</h2>
-              <span class="flex-1 text-gray-500 font-medium text-sm">{{ item.nickName }}</span>
+            <div class="bro-name space-y-1">
+              <h2 class="text-gray-300 font-semibold">{{ item.name }}</h2>
+              <span class="flex-1 text-gray-400 font-medium text-sm">{{ item.nickName }}</span>
+              <div class="flex-1 md:self-start space-x-2">
+                <i class="fas fa-pizza-slice text-gray-500 text-sm"></i>
+                <i class="fas fa-football-ball text-gray-500 text-sm"></i>
+                <i class="fab fa-spotify text-gray-500 text-sm"></i>
+                <i class="fas fa-film text-gray-500 text-sm"></i>
+              </div>
             </div>
           </div>
         </div>
@@ -213,7 +219,7 @@ export default {
 }
 
 .card {
-  @apply bg-gray-800 py-10 rounded-md bg-opacity-50 text-gray-300 flex content-center items-stretch;
+  @apply bg-gray-800 py-8 rounded-md bg-opacity-50 text-gray-300 flex content-center items-stretch;
 }
 
 .card .img-place {
