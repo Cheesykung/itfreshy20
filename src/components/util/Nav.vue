@@ -7,7 +7,7 @@
       {{ this.$route.name }}
     </div>
     <div class="flex flex-row justify-center items-center space-x-8 text-2xl">
-      <i class="fas fa-user-alt text-gray-300"></i>
+      <i class="fas fa-user-alt text-gray-300 hidden md:block"></i>
       <i class="fas fa-cog text-gray-300"></i>
     </div>
   </nav>
