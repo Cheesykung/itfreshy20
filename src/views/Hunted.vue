@@ -43,19 +43,19 @@
         </div>
       </div>
       <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-6 lg:gap-5 xl:gap-10 self-center container px-10 my-20 md:my-24"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-6 lg:gap-5 xl:gap-10 self-center container px-8 my-20 md:my-24"
       >
         <div class="col-start-1 md:col-end-3 lg:col-end-4">
           <div class="flex flex-row justify-center md:justify-between items-center content-center">
             <h2 class="text-2xl lg:text-3xl font-normal text-gray-200 lg:text-left py-1 md:py-0">
-              <span class="text-blue-600 font-semibold">{{ getBro.length }}</span> คนล่าสุดที่ถูกคุณล่า
+              ล่าไปแล้วทั้งหมด
+              <span class="text-blue-600 font-semibold">{{ getBro.length }}</span> คน
             </h2>
             <button
               class="hidden md:block btn btn-block bg-transparent border-blue-600 border-4 hover:bg-blue-600 text-blue-100 text-sm py-2 px-6"
-              @click="seeAll()"
+              @click="goBack()"
             >
-              ดูทั้งหมด
-              <i class="fas fa-chevron-right"></i>
+              <i class="fas fa-chevron-left"></i> ย้อนกลับ
             </button>
           </div>
         </div>
@@ -92,52 +92,6 @@
         </div>
       </div>
     </div>
-    <!--- SEE ANOTHER PROFILE --->
-    <div class="flex flex-col content-center justify-center items-center h-full py-12" v-else>
-      <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
-        <div class="img-wrap space-y-4">
-          <img
-            :src="showProfile.img"
-            class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
-          />
-          <div class="details space-y-2 items-center">
-            <!-- <span class="text-gray-500 font-normal text-sm">#6207002</span> -->
-            <h1
-              class="text-3xl text-gray-100 font-thin"
-            >{{ showProfile.name }} ({{ showProfile.nickName }})</h1>
-          </div>
-          <div class="faculty space-x-2 font-normal uppercase">
-            <i class="fas fa-map-marked-alt"></i>
-            <span>{{ showProfile.branch }} KMITL, ปี {{ showProfile.year }}</span>
-          </div>
-          <div class="like space-x-4">
-            <i class="fas fa-pizza-slice text-gray-400"></i>
-            <i class="fas fa-football-ball text-gray-400"></i>
-            <i class="fab fa-spotify text-gray-400"></i>
-            <i class="fas fa-film text-gray-400"></i>
-          </div>
-        </div>
-        <div class="stats">
-          <div class="chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">268</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
-          </div>
-          <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">2K</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
-          </div>
-        </div>
-        <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8">
-          <button
-            class="px-2 py-3 border-blue-600 border-4 text-blue-100 rounded text-sm"
-          >ข้อมูลส่วนตัว</button>
-          <button
-            class="px-2 py-3 bg-blue-900 text-blue-100 rounded text-sm"
-            @click="goBack()"
-          >ย้อนกลับ</button>
-        </div>
-      </div>
-    </div>
   </section>
 </template>
 <script>
@@ -157,9 +111,6 @@ export default {
     },
     goBack() {
       return this.$router.go(-1);
-    },
-    seeAll() {
-      return this.$router.push("/hunted")
     }
   },
   computed: {

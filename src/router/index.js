@@ -7,6 +7,7 @@ import VueRouter from "vue-router";
 const Dashboard = () => import("../views/Dashboard.vue");
 const Signin = () => import("../views/Login.vue");
 const Profile = () => import("../views/Profile.vue");
+const Hunted = () => import("../views/Hunted.vue");
 
 Vue.use(VueRouter);
 
@@ -34,7 +35,15 @@ const routes = [
     meta: {
       title: "Your profile | IT@KMITL FRESHY 2020",
     },
-    children: [{ path: ":id", component: Profile }],
+    children: [{ path: ":id", component: Profile, name: "Profile" }],
+  },
+  {
+    path: "/hunted",
+    name: "hunted",
+    component: Hunted,
+    meta: {
+      title: "Hunted | IT@KMITL FRESHY 2020",
+    }
   },
   {
     path: "/signin",
