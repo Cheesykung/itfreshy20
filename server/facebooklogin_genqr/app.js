@@ -90,11 +90,15 @@ passport.deserializeUser(function(id, done) {
 
 app.get("/account", isLoggedIn, function(req, res) {
   console.log(req.user);
-
   // res.render('profile', {
   //     user: req.user // get the user out of session and pass to template
   // });
 });
+
+app.get("/control", isLoggedIn, function(req, res) {
+  console.log(req.user.role);
+});
+
 app.get("/genqrcode", isLoggedIn, function(req, res) {
   console.log("genqr" + req.user.name);
   var textfirst = CryptoJS.AES.encrypt(req.user.uid, "secret key 123");
