@@ -7,6 +7,7 @@ import VueRouter from "vue-router";
 const Dashboard = () => import("../views/Dashboard.vue");
 const Signin = () => import("../views/Login.vue");
 const Profile = () => import("../views/Profile.vue");
+const Hunted = () => import("../views/Hunted.vue");
 
 Vue.use(VueRouter);
 
@@ -15,7 +16,8 @@ const routes = [
     path: "/",
     name: "Dashboard",
     component: Dashboard,
-    redirect: '/signin',
+    redirect: "/signin",
+
     meta: {
       title: "IT@KMITL FRESHY 2020",
       metaTags: [
@@ -31,7 +33,16 @@ const routes = [
     name: "Profile",
     component: Profile,
     meta: {
-      title: "Your profile | IT@KMITL FRESHY 2020"
+      title: "Your profile | IT@KMITL FRESHY 2020",
+    },
+    children: [{ path: ":id", component: Profile, name: "Profile" }],
+  },
+  {
+    path: "/hunted",
+    name: "hunted",
+    component: Hunted,
+    meta: {
+      title: "Hunted | IT@KMITL FRESHY 2020",
     }
   },
   {
@@ -72,7 +83,9 @@ router.beforeEach((to, from, next) => {
   //   .reverse()
   //   .find((r) => r.meta && r.meta.metaTags);
 
-  (nearestTitle) ? document.title = nearestTitle.meta.title : document.title = "IT@KMITL FRESHY 2020" ;
+  nearestTitle
+    ? (document.title = nearestTitle.meta.title)
+    : (document.title = "IT@KMITL FRESHY 2020");
 
   Array.from(
     document.querySelectorAll("[data-vue-router-controlled]")

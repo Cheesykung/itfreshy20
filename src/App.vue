@@ -24,7 +24,7 @@ export default {
 </script>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;300;400&family=Roboto:wght@300;400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;300;400&family=Roboto:wght@300;400;600&display=swap");
 
 html, body {
   @apply h-full;
@@ -36,14 +36,19 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   word-spacing: 1px;
-  letter-spacing: .85px;
+  letter-spacing: .8px;
   color: #2c3e50;
   background-image: url("assets/images/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center top;
+  background-color: rgba(23, 35, 59, 0.9);
   overflow: hidden;
   @apply min-h-full;
+}
+
+button:focus {
+  outline: 0 !important;
 }
 
 .lucky-font {

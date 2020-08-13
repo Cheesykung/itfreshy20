@@ -1,7 +1,7 @@
 <template>
   <div class="grid lg:grid-flow-col grid-flow-row-dense grid-cols-4 gap-12 container">
     <div
-      class="flex content-center justify-center flex-col md:rounded-sm md:col-start-2 md:col-end-4 col-start-1 col-end-5 bg-gray-900 opacity-75 xl:mx-16 py-16"
+      class="flex content-center justify-center flex-col col-start-1 col-end-5 bg-gray-900 opacity-75 xl:mx-16 py-16"
     >
       <h1 class="lucky-font text-green_blue-300 text-6xl">SIGN IN</h1>
       <span class="flex justify-center space-x-6 px-2 md:px-4 lg:px-6 md:py-16 py-12">
