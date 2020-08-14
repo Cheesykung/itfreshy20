@@ -151,7 +151,7 @@ export default {
     this.getFacebookAuth();
   },
   methods: {
-    ...mapActions("user", ["getFacebookAuth"]),
+    ...mapActions("user", { getFacebookAuth: "getFacebookAuth"}),
    // ...mapActions("register", ["setGender"]),
     goProfile(id) {
       this.$router.push({ path: "/profile/" + id });

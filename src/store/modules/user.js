@@ -126,7 +126,6 @@ const mutations = {
 const actions = {
   async getFacebookAuth({ commit }) {
     return new Promise((resolve, reject) => {
-      //let headers = { header: {"Content-Type": "application/json"} };
       axios
         .get("/api/user")
         .then((res) => {
