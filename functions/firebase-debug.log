@@ -1,0 +1,26 @@
+[debug] [2020-08-14T10:09:50.660Z] ----------------------------------------------------------------------
+[debug] [2020-08-14T10:09:50.665Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ASUS\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start --only functions
+[debug] [2020-08-14T10:09:50.667Z] CLI Version:   8.7.0
+[debug] [2020-08-14T10:09:50.667Z] Platform:      win32
+[debug] [2020-08-14T10:09:50.667Z] Node Version:  v10.22.0
+[debug] [2020-08-14T10:09:50.669Z] Time:          Fri Aug 14 2020 17:09:50 GMT+0700 (Indochina Time)
+[debug] [2020-08-14T10:09:50.669Z] ----------------------------------------------------------------------
+[debug] [2020-08-14T10:09:50.669Z] 
+[debug] [2020-08-14T10:09:50.797Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-08-14T10:09:50.798Z] > authorizing via signed-in user
+[info] i  emulators: Starting emulators: functions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions"}}
+[debug] [2020-08-14T10:09:52.870Z] [hub] writing locator at C:\Users\ASUS\AppData\Local\Temp\hub-itfreshy2020.json
+[debug] [2020-08-14T10:09:54.937Z] defaultcredentials: writing to file C:\Users\ASUS\AppData\Roaming\firebase\konlawatit_gmail_com_application_default_credentials.json
+[debug] [2020-08-14T10:09:54.947Z] Setting GAC to C:\Users\ASUS\AppData\Roaming\firebase\konlawatit_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\ASUS\\AppData\\Roaming\\firebase\\konlawatit_gmail_com_application_default_credentials.json"}}
+[warn] !  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: firestore, database, hosting, pubsub {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mfirestore, database, hosting, pubsub\u001b[22m"}}
+[info] +  functions: Using node@10 from host. {"metadata":{"emulator":{"name":"functions"},"message":"Using node@10 from host."}}
+[info] i  ui: downloading ui-v1.1.1.zip... {"metadata":{"emulator":{"name":"ui"},"message":"downloading ui-v1.1.1.zip..."}}
+[info] i  emulators: Shutting down emulators. {"metadata":{"emulator":{"name":"hub"},"message":"Shutting down emulators."}}
+[info] i  hub: Stopping emulator hub {"metadata":{"emulator":{"name":"hub"},"message":"Stopping emulator hub"}}
+[info] i  ui: Stopping Emulator UI {"metadata":{"emulator":{"name":"ui"},"message":"Stopping Emulator UI"}}
+[info] i  logging: Stopping Logging Emulator {"metadata":{"emulator":{"name":"logging"},"message":"Stopping Logging Emulator"}}
+[info] i  functions: Stopping Functions Emulator {"metadata":{"emulator":{"name":"functions"},"message":"Stopping Functions Emulator"}}
+[debug] [2020-08-14T10:09:59.091Z] Error: getaddrinfo ENOTFOUND storage.googleapis.com storage.googleapis.com:443
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:56:26)
+[error] 
+[error] Error: An unexpected error has occurred.
