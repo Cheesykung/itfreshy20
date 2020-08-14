@@ -105,7 +105,7 @@ export default {
     this.getFacebookAuth();
   },
   methods: {
-    ...mapActions(["getFacebookAuth"]),
+    ...mapActions("user", { getFacebookAuth: "getFacebookAuth" }),
     goProfile(id) {
       this.$router.push({ path: "/profile/" + id });
     },
@@ -114,7 +114,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getProfile", "getBro", "getProfileById"]),
+    ...mapGetters("user", {
+      getProfile: "getProfile",
+      getBro: "getBro",
+      getProfileById: "getProfileById"
+    }),
     routeId() {
       return parseInt(this.$route.params.id);
     },

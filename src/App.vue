@@ -18,7 +18,7 @@ export default {
     Nav
   },
   computed: {
-    ...mapGetters(["signInCheck"])
+    ...mapGetters('user', ["signInCheck"])
   }
 };
 </script>
