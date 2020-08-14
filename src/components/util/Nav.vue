@@ -3,7 +3,7 @@
     <div class="flex flex-row justify-center items-center text-2xl">
     <i class="fas fa-bars text-gray-300"></i>
     </div>
-    <div class="self-center flex-1 -mr-16 text-3xl font-normal uppercase text-gray-300 lucky-font">
+    <div class="self-center flex-1 -mr-16 text-4xl font-normal uppercase text-gray-300 lucky-font">
       {{ this.$route.name }}
     </div>
     <div class="flex flex-row justify-center items-center space-x-8 text-2xl">

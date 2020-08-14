@@ -14,7 +14,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters(["getProfile", "getUser", "signInCheck"])
+    ...mapGetters(["user/getProfile", "user/getUser", "user/signInCheck"])
   },
   components: {
     LoginBox

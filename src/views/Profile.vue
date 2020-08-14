@@ -151,19 +151,28 @@ export default {
     this.getFacebookAuth();
   },
   methods: {
-    ...mapActions(["getFacebookAuth"]),
+    ...mapActions("user", { getFacebookAuth: "getFacebookAuth"}),
+   // ...mapActions("register", ["setGender"]),
     goProfile(id) {
       this.$router.push({ path: "/profile/" + id });
+    },
+    submitGen(gen) {
+      return this.setGender(gen)
     },
     goBack() {
       return this.$router.go(-1);
     },
     seeAll() {
-      return this.$router.push("/hunted")
+      return this.$router.push("/hunted");
     }
   },
   computed: {
-    ...mapGetters(["getProfile", "getBro", "getProfileById"]),
+    ...mapGetters("user", {
+      getProfile: "getProfile",
+      getBro: "getBro",
+      getProfileById: "getProfileById"
+    }),
+   // ...mapGetters("register", ["getGender"]),
     routeId() {
       return parseInt(this.$route.params.id);
     },

@@ -36,7 +36,7 @@ passport.use(
           if (err) return done(err);
 
           // if the user is found, then log them in
-          if (!user) {
+          if (user) {
             console.log("user found");
             console.log(user);
             return done(null, user); // user found, return that user
