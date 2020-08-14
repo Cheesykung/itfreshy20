@@ -151,9 +151,13 @@ export default {
     this.getFacebookAuth();
   },
   methods: {
-    ...mapActions("user", { getFacebookAuth: "getFacebookAuth" }),
+    ...mapActions("user", ["getFacebookAuth"]),
+   // ...mapActions("register", ["setGender"]),
     goProfile(id) {
       this.$router.push({ path: "/profile/" + id });
+    },
+    submitGen(gen) {
+      return this.setGender(gen)
     },
     goBack() {
       return this.$router.go(-1);
@@ -168,6 +172,7 @@ export default {
       getBro: "getBro",
       getProfileById: "getProfileById"
     }),
+   // ...mapGetters("register", ["getGender"]),
     routeId() {
       return parseInt(this.$route.params.id);
     },

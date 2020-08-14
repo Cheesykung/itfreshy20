@@ -72,49 +72,6 @@ const state = () => ({
   ],
 });
 
-const mutations = {
-  setProfile: (state, profile) => {
-    state.profile = profile;
-  },
-  setUser: (state, user) => {
-    state.profile.user = user;
-  },
-  setPhotoURL: (state, url) => {
-    state.profile.photoURL = url;
-  },
-  setEmail: (state, email) => {
-    state.profile.email = email;
-  },
-  setFirstTime: (state, bool) => {
-    state.firstTime = bool;
-  },
-  clearProfile: (state) => {
-    state.profile = null;
-  },
-};
-
-const actions = {
-  setEmail({ commit }, email) {
-    setTimeout(() => {
-      commit("setEmail", email);
-    }, 600);
-  },
-  async getFacebookAuth({ commit }) {
-    return new Promise((resolve, reject) => {
-      //let headers = { header: {"Content-Type": "application/json"} };
-      axios
-        .get("/api/user")
-        .then((res) => {
-          commit("setProfile", res.data);
-          resolve(res);
-        })
-        .catch((e) => {
-          reject(e);
-        });
-    });
-  },
-};
-
 const getters = {
   getBro: (state) => {
     return state.broMock;
@@ -145,10 +102,48 @@ const getters = {
   },
 };
 
+const mutations = {
+  setProfile: (state, profile) => {
+    state.profile = profile;
+  },
+  setUser: (state, user) => {
+    state.profile.user = user;
+  },
+  setPhotoURL: (state, url) => {
+    state.profile.photoURL = url;
+  },
+  setEmail: (state, email) => {
+    state.profile.email = email;
+  },
+  setFirstTime: (state, bool) => {
+    state.firstTime = bool;
+  },
+  clearProfile: (state) => {
+    state.profile = null;
+  },
+};
+
+const actions = {
+  async getFacebookAuth({ commit }) {
+    return new Promise((resolve, reject) => {
+      //let headers = { header: {"Content-Type": "application/json"} };
+      axios
+        .get("/api/user")
+        .then((res) => {
+          commit("setProfile", res.data);
+          resolve(res);
+        })
+        .catch((e) => {
+          reject(e);
+        });
+    });
+  },
+};
+
 export default {
   namespaced: true,
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };
