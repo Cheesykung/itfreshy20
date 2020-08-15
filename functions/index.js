@@ -5,4 +5,3 @@ const testController = require('./api/controller/testController');
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 
 exports.test = functions.https.onRequest(testController);
-
