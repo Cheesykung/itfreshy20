@@ -8,11 +8,11 @@ const AES = require("crypto-js/aes");
 const CryptoJS = require("crypto-js");
 const db = admin.firestore();
 const User = require("./models/User");
-const axios = require("axios");
 const facebookStrategy = require("passport-facebook").Strategy;
 const firestore = admin.firestore();
 const { v4: uuidv4 } = require('uuid');
 const testController = express();
+const USERSRef = db.collection('users');
 
 testController.use(session({ secret: "ilovescotchscotfchyscotchscotch" }));
 testController.use(passport.initialize());
@@ -50,81 +50,43 @@ passport.use(
         function (token, refreshToken, profile, done) {
             // asynchronous
             process.nextTick(async function () {
-                const citiesRef = db.collection('users');
-                const snapshot = await citiesRef.where('uid', '==', profile.id).get();
-                if (snapshot.empty) {
-                    console.log("new")
-                    const res = await db.collection('users').add({
-                        id: uuidv4(),
-                        name: profile.name.givenName + " " + profile.name.familyName,
-                        token: token,
-                        pic: "https://graph.facebook.com/" +
-                            profile.id +
-                            "/picture" +
-                            "?type=large" +
-                            "&access_token=" +
-                            token,
-                        point: 0,
-                        uid: profile.id
-                    })
-                    const snapshot = await citiesRef.where('uid', '==', profile.id).get();
-                    snapshot.forEach(doc => {
-                        console.log("old")
-                        console.log(doc.data())
-                        return done(null, doc.data());
-                    });
+                try {
+                    const snapshot = await USERSRef.where('uid', '==', profile.id).get();
+                    if (snapshot.empty) {
+                        console.log("new")
+                        const res = await db.collection('users').add({
+                            id: uuidv4(),
+                            name: profile.name.givenName + " " + profile.name.familyName,
+                            token: token,
+                            // email: profile.emails[0].value,
+                            // gender: profile.gender,
+                            pic: "https://graph.facebook.com/" +
+                                profile.id +
+                                "/picture" +
+                                "?type=large" +
+                                "&access_token=" +
+                                token,
+                            point: 0,
+                            uid: profile.id
+                        })
+                        const snapshot = await USERSRef.where('uid', '==', profile.id).get();
+                        snapshot.forEach(doc => {
+                            console.log("old")
+                            console.log(doc.data())
+                            return done(null, doc.data());
+                        });
+                    }
+                    else {
+                        snapshot.forEach(doc => {
+                            console.log("user found");
+                            console.log(doc.data())
+                            return done(null, doc.data());
+                        });
+                    }
                 }
-                else {
-                    snapshot.forEach(doc => {
-                        console.log("old")
-                        console.log(doc.data())
-                        return done(null, doc.data());
-                    });
+                catch (err) {
+                    if (err) return done(err);
                 }
-
-                // find the user in the database based on their facebook id
-                // User.findOne({ uid: profile.id }, function (err, user) {
-                //     // if there is an error, stop everything and return that
-                //     // ie an error connecting to the database
-                //     if (err) return done(err);
-
-                //     // if the user is found, then log them in
-                //     if (user) {
-                //         console.log("user found");
-                //         console.log(user);
-                //         return done(null, user); // user found, return that user
-                //     } else {
-                //         // if there is no user found with that facebook id, create them
-                //         var newUser = new User();
-
-                //         // set all of the facebook information in our user model
-                //         newUser.uid = profile.id; // set the users facebook id
-                //         newUser.token = token; // we will save the token that facebook provides to the user
-                //         newUser.name =
-                //             profile.name.givenName + " " + profile.name.familyName; // look at the passport user profile to see how names are returned
-                //         try {
-                //             newUser.email = profile.emails[0].value;
-                //         } catch (err) {
-                //             console.log("not haVE ");
-                //         }
-                //         newUser.gender = profile.gender;
-                //         newUser.pic =
-                //             "https://graph.facebook.com/" +
-                //             profile.id +
-                //             "/picture" +
-                //             "?type=large" +
-                //             "&access_token=" +
-                //             token;
-                //         newUser.point = 0;
-                //         // save our user to the database
-                //         newUser.save(function (err) {
-                //             if (err) throw err;
-
-                //             // if successful, return the new user
-                //             return done(null, newUser);
-                //         });
-                //     }
-                // });
             });
         }
     )
@@ -136,8 +98,7 @@ passport.serializeUser(function (user, done) {
 
 // used to deserialize the user
 passport.deserializeUser(async function (id, done) {
-    const citiesRef = db.collection('users');
-    const snapshot = await citiesRef.where('id', '==', id).get();
+    const snapshot = await USERSRef.where('id', '==', id).get();
     snapshot.forEach(doc => {
         console.log(doc.id, '=>', doc.data());
         done(null, doc.data())
@@ -145,6 +106,7 @@ passport.deserializeUser(async function (id, done) {
 });
 
 testController.get("/account", isLoggedIn, function (req, res) {
+    console.log("account")
     console.log(req.user);
     // res.render('profile', {
     //     user: req.user // get the user out of session and pass to template
