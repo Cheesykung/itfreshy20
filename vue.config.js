@@ -23,6 +23,10 @@ module.exports = {
         target: "http://localhost:5001/itfreshy2020/us-central1/test",
         secure: false,
         ws: false,
+      },"/genqrcode": {
+        target: "http://localhost:5001/itfreshy2020/us-central1/test",
+        secure: false,
+        ws: false,
       }
     },
   },

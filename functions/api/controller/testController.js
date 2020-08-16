@@ -13,8 +13,12 @@ const firestore = admin.firestore();
 const { v4: uuidv4 } = require('uuid');
 const testController = express();
 const USERSRef = db.collection('users');
+const LINKRef = db.collection('links');
 
-testController.use(session({ secret: "ilovescotchscotfchyscotchscotch" }));
+testController.use(session({
+    secret: "ilovescotchscotfchyscotchscotch", resave: false,
+    saveUninitialized: false
+}));
 testController.use(passport.initialize());
 testController.use(passport.session());
 testController.use(cookieParser());
@@ -117,14 +121,45 @@ testController.get("/control", isLoggedIn, function (req, res) {
     console.log(req.user.role);
 });
 
-testController.get("/genqrcode", isLoggedIn, function (req, res) {
-    console.log("genqr" + req.user.name);
-    var textfirst = CryptoJS.AES.encrypt(req.user.uid, "secret key 123");
-    var ciphertext = encodeURI(textfirst);
-    console.log(ciphertext);
-    res.render("qrcode", {
-        user: req.user,
-        text: "localhost:5000/qrcode/" + ciphertext, // get the user out of session and pass to template
+testController.get("/genqrcode", isLoggedIn, async function (req, res) {
+    console.log("genqr" + req.user.uid);
+    const snapshot = await LINKRef.where('uid', '==', req.user.uid).get();
+    if (snapshot.empty) {
+        var name = uuidv4()
+        var textfirst = CryptoJS.AES.encrypt(name, "secret key 123");
+        var ciphertext = encodeURI(textfirst);
+        const data = {
+            link: ciphertext,
+            uid: req.user.uid,
+            point: 10
+        };
+        console.log(ciphertext);
+        const test = await db.collection('links').add(data);
+        console.log(test.id)
+        res.send("http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" + ciphertext);
+        return;
+    }
+    snapshot.forEach(async doc => {
+        if (doc.data().point <= 10) {
+            const testdel = await db.collection('links').doc(doc.id).delete();
+            var name = uuidv4()
+            var textfirst = CryptoJS.AES.encrypt(name, "secret key 123");
+            var ciphertext = encodeURI(textfirst);
+            const data = {
+                link: ciphertext,
+                uid: req.user.uid,
+                point: 10
+            };
+            console.log(ciphertext);
+            const test = await db.collection('links').add(data);
+            console.log(test.id)
+            console.log(testdel.id)
+            res.send("http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" + ciphertext);
+            return;
+        }
+        else {
+            res.send("http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" + doc.data().link);
+        }
     });
 });
 testController.get("/qrcode/:id", function (req, res) {
