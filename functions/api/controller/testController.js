@@ -7,7 +7,7 @@ const session = require("express-session");
 const AES = require("crypto-js/aes");
 const CryptoJS = require("crypto-js");
 const db = admin.firestore();
-const User = require("./models/User");
+///const User = require("./models/User"); 
 const facebookStrategy = require("passport-facebook").Strategy;
 const firestore = admin.firestore();
 const { v4: uuidv4 } = require('uuid');
@@ -24,6 +24,7 @@ testController.use(passport.session());
 testController.use(cookieParser());
 testController.use(cors({ origin: true }));
 
+/*
 testController.get('/shiba', async (req, res) => {
     try {
         res.status(200).send({
@@ -100,6 +101,7 @@ testController.get('/iam/:name', async (req, res) => {
         return ;
     }
 })
+*/
 
 passport.use(
     new facebookStrategy(
