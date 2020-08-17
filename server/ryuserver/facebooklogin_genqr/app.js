@@ -5,11 +5,10 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const AES = require("crypto-js/aes");
 const CryptoJS = require("crypto-js");
-
 const User = require("./models/User");
 const axios = require("axios");
-
 const facebookStrategy = require("passport-facebook").Strategy;
+
 
 app.set("view engine", "ejs");
 app.use(session({ secret: "ilovescotchscotfchyscotchscotch" }));
