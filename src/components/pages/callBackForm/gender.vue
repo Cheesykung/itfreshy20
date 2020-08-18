@@ -22,6 +22,13 @@
           <ion-icon name="female-outline" class="text-4xl md:text-6xl"></ion-icon>
           <span class="text-xl md:text-2xl">หญิง</span>
         </div>
+        <div
+          class="gender md:p-16 flex flex-col space-y-12 md:space-y-20 justify-center items-center cursor-pointer"
+          @click="setGender('อื่นๆ'); redirect(2)"
+        >
+          <ion-icon name="male-female" class="text-4xl md:text-6xl"></ion-icon>
+          <span class="text-xl md:text-2xl">อื่นๆ</span>
+        </div>
       </div>
     </template>
   </pageHFull>
@@ -42,7 +49,7 @@ export default {
       el[num].classList.toggle("selected");
 
       return setTimeout(() => {
-        //this.$router.push({ name: "Step 1" });
+        this.$router.push({ name: "Step 1" });
       }, 4000);
     }
   }
