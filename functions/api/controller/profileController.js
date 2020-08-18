@@ -1,6 +1,7 @@
 const cors = require('cors');
 const express = require('express');
 const admin = require('../config/admin');
+const { doc } = require('prettier');
 const firestore = admin.firestore();
 
 const profileController = express();
@@ -9,6 +10,7 @@ profileController.use(cors({ origin: true }));
 
 profileController.post('/create', async (req, res) => {
     try {
+        let uid = req.body.uid;
         let {id, name, surname, nickname, age, sex, religion, branch, year, contact} = req.body;
 
         let payload = {
@@ -24,13 +26,19 @@ profileController.post('/create', async (req, res) => {
             'contact' : contact
         };
 
-        let userRef = firestore.collection('temp_user').doc(id);
-        await userRef.set(payload);
+        let userRef = await firestore.collection("users").where("uid", "==", uid).get();
+        let ref = '';   // ประกาศตัวแปรมารับค่าที่อยู่ id เพื่อให้สามารถนำตัวแปรนี้ไปใช้นอกฟังชั่น querySnapshot ได้
+                        //ไม่รู้ทำไมมันใช้ return ไม่ได้เหมือนกัน
+                        // ตอน re-faq code เดะมาดูละกันนะ ^-^
+        let userDoc = userRef.forEach(function (querySnapshot) {
+            ref = querySnapshot.id;
+        });
+        let userUpdate = await firestore.collection("users").doc(ref).update(payload);
 
         res.status(200).send({
             'status' : '200',
             'error' : false,
-            'message' : 'PROFILE CREATED',
+            'message' : 'PROFILE UPDATED',
             'data' : payload
         });
         return ;
@@ -45,4 +53,15 @@ profileController.post('/create', async (req, res) => {
     } return ;
 });
 
+/*profileController.post('/edit', async (req, res) => {
+    try {
+        let userRef = firestore.collection('temp_user').doc(req.body.uid);
+        let userDoc = (await userRef.get()).data();
+        console.log(userDoc);
+    }
+     catch (e) {
+        
+    } return ;
+});
+*/
 module.exports = profileController;
