@@ -30,10 +30,10 @@ profileController.post('/create', async (req, res) => {
         let ref = '';   // ประกาศตัวแปรมารับค่าที่อยู่ id เพื่อให้สามารถนำตัวแปรนี้ไปใช้นอกฟังชั่น querySnapshot ได้
                         //ไม่รู้ทำไมมันใช้ return ไม่ได้เหมือนกัน
                         // ตอน re-faq code เดะมาดูละกันนะ ^-^
-        let userDoc = userRef.forEach(function (querySnapshot) {
+        userRef.forEach(function (querySnapshot) {
             ref = querySnapshot.id;
         });
-        let userUpdate = await firestore.collection("users").doc(ref).update(payload);
+        await firestore.collection("users").doc(ref).update(payload);
 
         res.status(200).send({
             'status' : '200',
