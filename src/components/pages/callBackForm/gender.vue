@@ -29,6 +29,7 @@
           <ion-icon name="male-female" class="text-4xl md:text-6xl"></ion-icon>
           <span class="text-xl md:text-2xl">อื่นๆ</span>
         </div>
+
       </div>
     </template>
   </pageHFull>
@@ -50,7 +51,7 @@ export default {
 
       return setTimeout(() => {
         this.$router.push({ name: "Step 1" });
-      }, 4000);
+      }, 2000);
     }
   }
 };

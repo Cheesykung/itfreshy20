@@ -1,0 +1,20 @@
+<template>
+  <div class="bg-gray-900 flex flex-col justify-center py-16 space-y-6 px-8 md:px-16 md:mx-8">
+    <slot name="content"></slot>
+  </div>
+</template>
+<script>
+export default {
+  name: "formContain"
+};
+</script>
+<style scoped>
+/*** Form base styles ***/
+.base-input {
+  @apply bg-gray-700;
+}
+
+.base-input:focus {
+  outline: 0;
+}
+</style>
