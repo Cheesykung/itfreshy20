@@ -8,7 +8,9 @@
       <!--- Form area --->
       <formContain>
         <template #content>
-          <input type="text" class="base-input" />
+          <input type="text" class="base-input" v-model="name" />
+          <input type="text" class="base-input" v-model="nickname" />
+          <input type="text" class="base-input" v-model="age" />
         </template>
       </formContain>
       <!--- End of form area --->
@@ -24,6 +26,16 @@ export default {
   components: {
     pageHFull,
     formContain
+  },
+  data() {
+      return {
+          name: "",
+          nickname: "",
+          age: null
+      }
+  },
+  methods: {
+
   }
 };
 </script>
