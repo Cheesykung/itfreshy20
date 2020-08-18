@@ -4,10 +4,18 @@ import VueRouter from "vue-router";
 //import { urlencoded } from "express";
 
 /* Declare and import routes */
-const Dashboard = () => import("../views/Dashboard.vue");
-const Signin = () => import("../views/Login.vue");
-const Profile = () => import("../views/Profile.vue");
-const Hunted = () => import("../views/Hunted.vue");
+const Dashboard = () => import("../views/Dashboard.vue")
+const Signin = () => import("../views/Login.vue")
+const Profile = () => import("../views/Profile.vue")
+const Hunted = () => import("../views/Hunted.vue")
+
+const callback = () => import("../views/Callback.vue")
+const gender = () => import("../components/pages/callBackForm/gender.vue")
+const step1 = () => import("../components/pages/callBackForm/firstStep.vue")
+const step2 = () => import("../components/pages/callBackForm/secondStep.vue")
+const step3 = () => import("../components/pages/callBackForm/thStep.vue")
+const step4 = () => import("../components/pages/callBackForm/likesStep.vue")
+const step5 = () => import("../components/pages/callBackForm/lastStep.vue")
 
 Vue.use(VueRouter);
 
@@ -24,9 +32,28 @@ const routes = [
         {
           name: "description",
           content: "For IT KMITL Freshy 17th only",
+          requiresAuth: true
         },
       ],
     },
+  },
+  {
+    path: "/continue",
+    name: "Start",
+    component: callback,
+    meta: {
+      title: "To be a freshy | IT@KMITL FRESHY 2020",
+      requiresAuth: true
+    },
+    redirect: "continue/gender",
+    children: [
+      { path: "gender", component: gender, name: "Your Gender" },
+      { path: "step1", component: step1, name: "Step 1" },
+      { path: "step2", component: step2, name: "Step 2" },
+      { path: "step3", component: step3, name: "Step 3" },
+      { path: "step4", component: step4, name: "What you likes?" },
+      { path: "step5", component: step5, name: "Your Gate" },
+    ]
   },
   {
     path: "/profile",
@@ -34,6 +61,7 @@ const routes = [
     component: Profile,
     meta: {
       title: "Your profile | IT@KMITL FRESHY 2020",
+      requiresAuth: true
     },
     children: [{ path: ":id", component: Profile, name: "Profile" }],
   },
@@ -43,6 +71,7 @@ const routes = [
     component: Hunted,
     meta: {
       title: "Hunted | IT@KMITL FRESHY 2020",
+      requiresAuth: true
     }
   },
   {
@@ -51,6 +80,7 @@ const routes = [
     component: Signin,
     meta: {
       title: "Sign in | IT@KMITL FRESHY 2020",
+      requiresAuth: false,
       metaTags: [
         {
           name: "description",

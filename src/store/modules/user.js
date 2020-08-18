@@ -121,7 +121,7 @@ const mutations = {
   clearProfile: (state) => {
     state.profile = null;
   },
-};
+}; 
 
 const actions = {
   async getFacebookAuth({ commit }) {

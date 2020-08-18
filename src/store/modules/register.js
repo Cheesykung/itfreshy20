@@ -1,10 +1,10 @@
 const state = () => ({
   profileField: {
-    name: String,
-    nickname: String,
-    age: Number,
+    name: null,
+    nickname: null,
+    age: null,
     gender: null,
-    branch: String,
+    branch: null,
   },
 });
 
@@ -18,18 +18,24 @@ const mutations = {
   setGender: (state, gender) => {
     state.profileField.gender = gender;
   },
+  setProfile: (state, profile) => {
+    state.profileField = profile;
+  },
 };
 
 const actions = {
   setGender({ commit }, gender) {
     commit("setGender", gender);
   },
+  sendForm(context) {
+    context.commit("setProfile");
+  },
 };
 
 export default {
   namespaced: true,
-  getters,
   state,
-  mutations,
+  getters,
   actions,
+  mutations,
 };
