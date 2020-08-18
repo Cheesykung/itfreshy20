@@ -126,7 +126,7 @@ const mutations = {
 const actions = {
   async getFacebookAuth({ commit }) {
     return new Promise((resolve, reject) => {
-      axios
+      axios 
         .get("/api/user")
         .then((res) => {
           commit("setProfile", res.data);
