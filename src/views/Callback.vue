@@ -1,6 +1,6 @@
 <template>
   <transition name="animated-form">
-    <router-view></router-view>
+    <router-view></router-view> 
   </transition>
 </template>
 <style scoped>
@@ -15,4 +15,13 @@
   transform: translateX(10px);
   opacity: 0;
 }
+
+.bg-wrap {
+  background-image: linear-gradient(
+    to top,
+    rgba(23, 35, 59, 0.9) 45%,
+    transparent 70%
+  );
+}
+
 </style>

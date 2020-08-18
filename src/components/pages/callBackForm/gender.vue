@@ -1,35 +1,77 @@
 <template>
   <pageHFull>
     <template #headline>
-      เลือก
-      <span class="text-blue-500 font-semibold">เพศ</span>
+      your
+      <br />
+      <span class="text-blue-500 font-semibold text-5xl">gender</span>
     </template>
     <template #body>
-      <div
-        class="flex flex-row flex-wrap justify-evenly content-center items-center text-gray-400 py-6"
-      >
-        <div
-          class="gender md:p-16 flex flex-col space-y-12 md:space-y-20 justify-center items-center cursor-pointer"
-          @click="setGender('ชาย'); redirect(0)"
-        >
-          <ion-icon name="male-outline" class="text-4xl md:text-6xl"></ion-icon>
-          <span class="text-xl md:text-2xl">ชาย</span>
+      <div class="grid-container px-4 md:px-24">
+        <!--- First grid row --->
+        <!--- LGBT --->
+        <div class="row-start-1 col-start-2 col-end-3">
+          <span id="gen-child-1" class="flex flex-col space-y-10 items-center cursor-pointer">
+            <div
+              class="w-24 h-24 md:w-40 md:h-40 icon-prefix"
+              :class="active === 'LGBT' ? 'active' : ''"
+            >
+              <ion-icon name="male-female-outline" class="text-4xl md:text-6xl"></ion-icon>
+            </div>
+            <span
+              class="text-lg md:text-xl text-gray-500 text-prefix"
+              :class="active === 'LGBT' ? 'text-active' : ''"
+            >LGBT</span>
+          </span>
         </div>
+        <!---- Second grid row --->
         <div
-          class="gender md:p-16 flex flex-col space-y-12 md:space-y-20 justify-center items-center cursor-pointer"
-          @click="setGender('หญิง'); redirect(1)"
+          class="row-start-2 col-start-1 col-end-4 lg:col-start-2 lg:col-end-3 flex flex-row justify-center space-x-24 md:space-x-64"
         >
-          <ion-icon name="female-outline" class="text-4xl md:text-6xl"></ion-icon>
-          <span class="text-xl md:text-2xl">หญิง</span>
+          <!--- Male --->
+          <span id="gen-child-2" class="flex flex-col items-center space-y-10 cursor-pointer">
+            <div
+              class="w-24 h-24 md:w-40 md:h-40 icon-prefix"
+              :class="active === 'male' ? 'active' : ''"
+            >
+              <ion-icon name="male-outline" class="text-4xl md:text-6xl"></ion-icon>
+            </div>
+            <span
+              class="text-lg md:text-xl text-gray-500 text-prefix"
+              :class="active === 'male' ? 'text-active' : ''"
+            >Male</span>
+          </span>
+          <!--- Female --->
+          <span id="gen-child-3" class="flex flex-col items-center space-y-10 cursor-pointer">
+            <div
+              class="w-24 h-24 md:w-40 md:h-40 icon-prefix"
+              :class="active === 'female' ? 'active' : ''"
+            >
+              <ion-icon name="female-outline" class="text-4xl md:text-6xl"></ion-icon>
+            </div>
+            <span
+              class="text-lg md:text-xl text-gray-500 text-prefix"
+              :class="active === 'female' ? 'text-active' : ''"
+            >Female</span>
+          </span>
         </div>
-        <div
-          class="gender md:p-16 flex flex-col space-y-12 md:space-y-20 justify-center items-center cursor-pointer"
-          @click="setGender('อื่นๆ'); redirect(2)"
+      </div>
+      <!--- End gender grid --->
+      <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
+        <button
+          type="submit"
+          class="btn bg-blue-600 text-blue-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+          @click="submitGen()"
+          id="sub_button"
         >
-          <ion-icon name="male-female" class="text-4xl md:text-6xl"></ion-icon>
-          <span class="text-xl md:text-2xl">อื่นๆ</span>
-        </div>
-
+          next step
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </button>
+        <span class="flex flex-row flex-no-wrap space-x-3">
+          <span class="bullet active"></span>
+          <span class="bullet"></span>
+          <span class="bullet"></span>
+          <span class="bullet"></span>
+        </span>
       </div>
     </template>
   </pageHFull>
@@ -39,31 +81,132 @@ import pageHFull from "../../util/pageHFull";
 import { mapActions } from "vuex";
 
 export default {
+  data() {
+    return {
+      gender: ["male", "female", "other"],
+      active: "LGBT"
+    };
+  },
   components: {
     pageHFull
   },
+  mounted() {
+    this.chkClick();
+  },
   methods: {
     ...mapActions("register", ["setGender"]),
-    redirect(num) {
-      let el = document.getElementsByClassName("gender");
+    chkClick() {
+      let child1 = document.getElementById("gen-child-1");
+      let child2 = document.getElementById("gen-child-2");
+      let child3 = document.getElementById("gen-child-3");
 
-      el[num].classList.toggle("selected");
+      child1.addEventListener("click", () => {
+        if (
+          !child2.firstElementChild.classList.contains("active") &&
+          !child3.firstElementChild.classList.contains("active") &&
+          !child3.lastElementChild.classList.contains("text-active") &&
+          !child2.lastElementChild.classList.contains("text-active")
+        ) {
+          child1.firstElementChild.classList.toggle("active");
+          child1.lastElementChild.classList.toggle("text-active");
 
-      return setTimeout(() => {
+          return (this.active = "LGBT");
+        }
+      });
+
+      child2.addEventListener("click", () => {
+        if (
+          !child1.firstElementChild.classList.contains("active") &&
+          !child3.firstElementChild.classList.contains("active") &&
+          !child3.lastElementChild.classList.contains("text-active") &&
+          !child1.lastElementChild.classList.contains("text-active")
+        ) {
+          child2.firstElementChild.classList.toggle("active");
+          child2.lastElementChild.classList.toggle("text-active");
+
+          return (this.active = "male");
+        }
+      });
+
+      child3.addEventListener("click", () => {
+        if (
+          !child2.firstElementChild.classList.contains("active") &&
+          !child1.firstElementChild.classList.contains("active") &&
+          !child1.lastElementChild.classList.contains("text-active") &&
+          !child2.lastElementChild.classList.contains("text-active")
+        ) {
+          child3.firstElementChild.classList.toggle("active");
+          child3.lastElementChild.classList.toggle("text-active");
+
+          return (this.active = "female");
+        }
+      });
+    },
+    submitGen() {
+      this.setGender(this.active);
+      setInterval(() => {
         this.$router.push({ name: "Step 1" });
-      }, 2000);
+      }, 2600);
     }
   }
 };
 </script>
 <style scoped>
 .gender {
-  @apply rounded-md m-4 text-gray-400 font-light;
   flex: 0 1 25%;
+  @apply rounded-md m-4 text-gray-400 font-light;
 }
 
 .selected {
-  @apply border-4 border-solid border-blue-500;
   border-radius: 100%;
+  @apply border-4 border-solid border-blue-500;
+}
+
+.grid-container {
+  @apply grid grid-cols-3 gap-10 text-gray-400 content-center;
+}
+
+.icon-prefix {
+  border-radius: 100%;
+  border: 0.1rem #718096 solid;
+  @apply rounded-full flex justify-center items-center flex-col text-gray-500;
+}
+
+.icon-prefix.active {
+  border: 0.2rem #4299e1 solid;
+  @apply text-blue-500 relative;
+}
+
+.icon-prefix.active::before {
+  content: "✓";
+  position: absolute;
+  right: 2%;
+  top: 2%;
+  transform: translate(-2%, -2%);
+  @apply text-gray-300 bg-blue-500 rounded-full w-6 h-6 flex items-center justify-center;
+}
+
+.text-prefix {
+  @apply font-normal text-gray-500;
+}
+
+.text-prefix.text-active {
+  @apply text-blue-500 font-semibold;
+}
+
+.bullet {
+  @apply w-2 h-2 bg-blue-900 block rounded-full;
+}
+
+.bullet.active {
+  @apply bg-blue-500;
+}
+
+@media (min-width: 768px) {
+  .icon-prefix.active::before {
+    top: 7%;
+    right: 7%;
+    transform: translate(-7%);
+  }
 }
 </style>
