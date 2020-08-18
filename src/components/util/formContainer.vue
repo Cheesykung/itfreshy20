@@ -11,7 +11,8 @@ export default {
 <style scoped>
 /*** Form base styles ***/
 .base-input {
-  @apply bg-gray-700 py-1 px-3 text-gray-400; 
+  @apply bg-gray-700 py-1 px-3 text-gray-400;
+  caret-color: #D66C44; 
 }
 
 .base-input:focus {
