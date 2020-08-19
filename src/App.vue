@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Nav v-if="signInCheck" />
+    <Nav v-if="!signInCheck && !$route.matched.some(({ path }) => path === '/continue')"/>
     <transition name="animated">
       <router-view />
     </transition>
