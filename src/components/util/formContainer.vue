@@ -1,6 +1,7 @@
 <template>
-  <div class="bg-gray-900 flex flex-col justify-center py-16 space-y-10 px-8 md:px-16 md:mx-8">
-    <slot name="content"></slot>
+  <div class="bg-gray-900 flex flex-col justify-center py-16 space-y-10 px-8 md:px-16 md:mx-8" id="star">
+    <slot name="content">
+    </slot>
   </div>
 </template>
 <script>
@@ -18,4 +19,5 @@ export default {
 .base-input:focus {
   outline: 0;
 }
+
 </style>
