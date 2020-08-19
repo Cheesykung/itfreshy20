@@ -37,8 +37,8 @@
           </span>
           <span class="flex flex-row flex-no-wrap space-x-3 justify-center">
             <span class="bullet"></span>
-            <span class="bullet"></span>
             <span class="bullet active"></span>
+            <span class="bullet"></span>
             <span class="bullet"></span>
           </span>
         </template>
@@ -56,6 +56,9 @@ export default {
   components: {
     pageHFull,
     formContain
+  },
+  mounted() {
+    this.chkClick();
   },
   data() {
       return {
