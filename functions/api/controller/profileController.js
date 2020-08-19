@@ -39,6 +39,7 @@ profileController.post('/create', async (req, res) => {
 
         res.status(200).send({
             'status' : '200',
+            'status code' : 'OK',
             'error' : false,
             'message' : 'PROFILE UPDATED',
             'data' : payload
@@ -103,6 +104,7 @@ profileController.put('/edit/:id', async (req, res) => {
             res.status(200).send({
                 'status' : '200',
                 'status code' : 'OK',
+                'error' : false,
                 'message' : 'update completed',
                 'data updated' : payload
             });
@@ -111,6 +113,7 @@ profileController.put('/edit/:id', async (req, res) => {
             res.status(404).send({
                 'status' : '404',
                 'status code' : '404 NOT FOUND',
+                'error' : true,
                 'message' : 'id not found'
             });
         }
@@ -121,8 +124,42 @@ profileController.put('/edit/:id', async (req, res) => {
         res.status(500).send({
             'status' : '500',
             'status code' : 'Internal Server Error',
+            'error' : true
         });
     } return ;
+});
+
+profileController.get('', async (req, res) => {
+    try{
+    let uid = req.headers.uid;
+    let userRef = await firestore.collection("users").where("uid", "==", uid).get();
+        let ref = '';   // ประกาศตัวแปรมารับค่าที่อยู่ id เพื่อให้สามารถนำตัวแปรนี้ไปใช้นอกฟังชั่น querySnapshot ได้
+                        // ไม่รู้ทำไมมันใช้ return ไม่ได้เหมือนกัน
+                        // ตอน re-faq code เดะมาดูละกันนะ ^-^
+        userRef.forEach(function (querySnapshot) {
+            ref = querySnapshot.id;
+        });
+
+    let userDoc = await firestore.collection('users').doc(ref).get();
+    let userData = userDoc.data();
+
+    res.status(200).send({
+        'status' : '200',
+        'status code' : 'OK',
+        'error' : false,
+        'message' : 'Data found',
+        'data' : userData
+    });
+    return ;
+    } catch (e){
+        console.log(e);
+        res.status(500).send({
+            'status' : '500',
+            'status code' : 'Internal Server Error',
+            'error' : true
+        });
+    } return ;
+        
 });
 
 module.exports = profileController;
