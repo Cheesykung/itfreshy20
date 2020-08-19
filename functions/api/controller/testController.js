@@ -1,3 +1,4 @@
+//require zone
 const path = require('path');
 const cors = require('cors');
 const express = require('express');
@@ -5,7 +6,6 @@ const admin = require('../config/admin');
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const CryptoJS = require("crypto-js");
 const db = admin.firestore();
 const facebookStrategy = require("passport-facebook").Strategy;
 const firestore = admin.firestore();
@@ -18,9 +18,10 @@ const SCANSRef = db.collection('scans');
 const USERSRef = db.collection('users');
 const LINKRef = db.collection('links');
 
+// server setup
 testController.use(session({
-    secret: "ilovescotchscotfchyscotchscotch", resave: true,
-    saveUninitialized: true//production เปลี่ยนเป็นfalse
+    secret: "ilovescotchscotfchyscotchscotch", resave: false,
+    saveUninitialized: false
 }));
 testController.use(passport.initialize());
 testController.use(passport.session());
@@ -28,28 +29,25 @@ testController.use(cookieParser());
 testController.use(cors({ origin: true }));
 testController.set('views', path.join(__dirname, 'views'));
 testController.set('view engine', 'ejs');
+//authen use
 passport.use(
     new facebookStrategy(
-        {
-            // pull in our app id and secret from our auth.js file
+        {// pull in our app id and secret from our auth.js file
             clientID: "306264320456438",
             clientSecret: "f076de5e27c1ea459950049ccad236a1",
             callbackURL: "http://localhost:8080/facebook/callback",
             profileFields: ["id", "displayName", "name", "gender", "photos", "email"],
         }, // facebook will send back the token and profile
         function (token, refreshToken, profile, done) {
-            // asynchronous
-            process.nextTick(async function () {
+            process.nextTick(async function () {// asynchronous
                 try {
-                    const snapshot = await USERSRef.where('uid', '==', profile.id).get();
-                    if (snapshot.empty) {
-                        console.log("news")
-                        const res = await db.collection('users').add({
+                    const usersnapshot = await USERSRef.where('uid', '==', profile.id).get();
+                    if (usersnapshot.empty) {//user สมัครครั้งแรก
+                        console.log("new User")
+                        const res = await USERSRef.add({
                             id: uuidv4(),
                             name: profile.name.givenName + " " + profile.name.familyName,
                             token: token,
-                            // email: profile.emails[0].value,
-                            // gender: profile.gender,
                             pic: "https://graph.facebook.com/" +
                                 profile.id +
                                 "/picture" +
@@ -59,22 +57,17 @@ passport.use(
                             point: 0,
                             uid: profile.id,
                             role: "User",
-                            newuser: 1
+                            newuser: 1,
+                            count: 0,
+                            //createdate:รอถามบาสเพิ่ม
                         })
-                        //const snapshot = await USERSRef.where('uid', '==', profile.id).get(); ซ้ำกับ 119
-                        snapshot.forEach(doc => {
-                            console.log("old users")
-                            console.log(doc.data())
-                            return done(null, doc.data());
-                        });
                     }
-                    else {
-                        snapshot.forEach(doc => {
-                            console.log("user found");
-                            console.log(doc.data())
-                            return done(null, doc.data());
-                        });
-                    }
+                    const usersnapshots = await USERSRef.where('uid', '==', profile.id).get();
+                    usersnapshots.forEach(doc => {
+                        console.log("user found");
+                        console.log(doc.data())
+                        return done(null, doc.data());
+                    });
                 }
                 catch (err) {
                     if (err) return done(err);
@@ -83,63 +76,22 @@ passport.use(
         }
     )
 );
-
-//เก็บ id ไว้ใน session
-passport.serializeUser(function (user, done) {
-    done(null, user.id);
-});
-
+passport.serializeUser(function (user, done) { done(null, user.id) }); //เก็บ id ไว้ใน session
 // used to deserialize the user //นำ id ที่เก็บไว้ใน session เรียกกลับมาใช้
 passport.deserializeUser(async function (id, done) {
-    const snapshot = await USERSRef.where('id', '==', id).get();
-    snapshot.forEach(doc => {
-        //console.log(doc.id, '=>', doc.data());
-        done(null, doc.data())
-    });
+    const userdeserialize = await USERSRef.where('id', '==', id).get();
+    userdeserialize.forEach(doc => { done(null, doc.data()) });
 });
 
-testController.get("/account", isLoggedIn, function (req, res) {
-    try {
-        console.log("----------->account");
-        console.log(req.user);
-        // res.render('profile', {
-        //     user: req.user // get the user out of session and pass to template
-        // });
-    } catch (err) {
-        res.status(500).send({
-            statusCode: '500',
-            statusText: 'Internal Server Error',
-            error: true,
-            message: 'Internal Server Error'
-        });
-    }
-});
-
-testController.get("/control", isLoggedIn, function (req, res) {
-    try {
-        console.log(req.user.role);
-    } catch (err) {
-        res.status(500).send({
-            statusCode: '500',
-            statusText: 'Internal Server Error',
-            error: true,
-            message: 'Internal Server Error'
-        });
-    }
-});
-//qrcode เสร็จรอตรวจ
+//generate qrcode รอเทส
 testController.get("/genqrcode", isLoggedIn, async function (req, res) {
     try {
-        const UID = req.user.uid;
         console.log("genQR: " + req.user.uid);
-        const snapshot = await LINKRef.where('uid', '==', UID).get();
+        const genqrsnapshot = await LINKRef.where('uid', '==', req.user.uid).get();
+        const name = uuidv4();
+        const data = { link: name, uid: req.user.uid, time: 10 };
         if (snapshot.empty) {
-            const name = uuidv4();
-            const data = {
-                link: name,
-                uid: UID,
-                time: 10
-            };
+            console.log("create qr " + req.user.uid)
             const newDoc = await db.collection('links').add(data)
                 .then(() => {
                     res.status(200).send({
@@ -158,49 +110,43 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
                     })
                 })
         }
-        snapshot.forEach(doc => {
-            if (doc.data().time <= 0) {
-                console.log('Delete qr')
-                const qrDel = db.collection('links').doc(doc.id).delete()
-                    .then(() => {
-                        let name = uuidv4()
-                        const data = {
-                            link: name,
-                            uid: req.user.uid,
-                            time: 10
-                        };
-                        console.log(name + req.user.uid);
-                        const newDoc = db.collection('links').add(data).then(() => {
-                            res.status(200).send({
-                                'statusCode': '201',
-                                'statusText': 'Created',
-                                'error': false,
-                                'message': 'Successfully generated new qr code',
-                                'qrcode': 'http://localhost:5001/itfreshy2020/us-central1/test/qrcode/' + name
-                            });
-                            //res.send("http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" + ciphertext);
-                        }).catch((err) => {
-                            res.status(400).send({
-                                'statusCode': '400',
-                                'statusText': 'Bad Request',
-                                'error': true,
-                                'message': 'QR code generate fail.'
+        else {
+            genqrsnapshot.forEach(doc => {
+                if (doc.data().time <= 0) {
+                    console.log('Delete qr ' + req.user.uid)
+                    const qrDel = db.collection('links').doc(doc.id).delete()
+                        .then(() => {
+                            console.log(name + req.user.uid);
+                            const newDoc = db.collection('links').add(data).then(() => {
+                                res.status(200).send({
+                                    'statusCode': '201',
+                                    'statusText': 'Created',
+                                    'error': false,
+                                    'message': 'Successfully generated new qr code',
+                                    'qrcode': 'http://localhost:5001/itfreshy2020/us-central1/test/qrcode/' + name
+                                });
+                            }).catch((err) => {
+                                res.status(400).send({
+                                    'statusCode': '400',
+                                    'statusText': 'Bad Request',
+                                    'error': true,
+                                    'message': 'QR code generate fail.'
+                                });
                             });
                         });
+                }
+                else {
+                    console.log('normal qR' + req.user.uid);
+                    res.status(200).send({
+                        'statusCode': '200',
+                        'statusText': 'Request Success',
+                        'error': false,
+                        'message': 'Successfully request qr',
+                        'qrcode': 'http://localhost:5001/itfreshy2020/us-central1/test/qrcode/' + doc.data().link
                     });
-            }
-            else {
-                console.log('point > 0');
-                res.status(200).send({
-                    'statusCode': '200',
-                    'statusText': 'Request Success',
-                    'error': false,
-                    'message': 'Successfully request qr',
-                    'qrcode': 'http://localhost:5001/itfreshy2020/us-central1/test/qrcode/' + doc.data().link
-                });
-                //res.send("http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" + doc.data().link);
-            }
-        });
+                }
+            })
+        };
     } catch (err) {
         res.status(500).send({
             statusCode: '500',
@@ -210,7 +156,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
         });
     }
 });
-
+//เสร็จ
 testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
     const snapshot = await LINKRef.where('link', '==', req.params.id).get();
     async function getqrcode(req, res) {
@@ -225,15 +171,14 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
         }
         else {
             snapshot.forEach(doc => {
+                const idlink = doc.id
+                const uidlink = doc.data().uid
+                const timelink = doc.data().time
                 if (doc.data().time <= 0) {
                     res.send("code เสียแล้ว").then(() => { })
                     return " scan fail code ของ " + doc.data().name
                 }
                 else {
-                    const idlink = doc.id
-                    const uidlink = doc.data().uid
-                    const timelink = doc.data().time
-
                     scan.forEach(doc => {
                         for (var i = 0; i < doc.data().scan.length; i++) {
                             if (doc.data().scan[i] == uidlink) {
@@ -278,7 +223,27 @@ function isLoggedIn(req, res, next) {
             message: 'Internal Server Error'
         });
     }
+}
 
+function isAdmin(req, res, next) {
+    try {
+        // if user is authenticated in the session, carry on
+        if (req.isAuthenticated()) {
+            console.log('---------->isOn');
+            return next();
+        }
+        else {    // if they aren't redirect them to the home page
+            console.log('----------->isOut');
+            res.redirect("/");
+        }
+    } catch (err) {
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            message: 'Internal Server Error'
+        });
+    }
 }
 
 testController.get(
@@ -339,7 +304,7 @@ testController.get("/ryutools/:collection/:docname", async (req, res) => {
         res.send("cannot find")
         return "หาไม่เจอ"
     }
-    else{
+    else {
         res.send(all.data())
     }
     // try {
@@ -363,7 +328,7 @@ testController.get("/ryutools/:collection/:docname", async (req, res) => {
 
 testController.get("/roletest", async (req, res) => {
     res.send(req.user)
-    
+
 });
 
 testController.get("/logout", (req, res) => {

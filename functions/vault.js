@@ -77,3 +77,31 @@ testController.get('/iam/:name', async (req, res) => {
     }
 })
 */
+
+
+// testController.get("/account", isLoggedIn, function (req, res) {
+//     try {
+//         console.log("----------->account");
+//         console.log(req.user);
+//     } catch (err) {
+//         res.status(500).send({
+//             statusCode: '500',
+//             statusText: 'Internal Server Error',
+//             error: true,
+//             message: 'Internal Server Error'
+//         });
+//     }
+// });
+
+testController.get("/control", isLoggedIn, function (req, res) {
+    try {
+        console.log(req.user.role);
+    } catch (err) {
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            message: 'Internal Server Error'
+        });
+    }
+});
