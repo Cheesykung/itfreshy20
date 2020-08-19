@@ -15,6 +15,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "express": "^4.17.1",
+    "ionicons": "^5.1.2",
     "js-cookie": "^2.2.1",
     "mongoose": "^5.9.28",
     "passport": "^0.4.1",
