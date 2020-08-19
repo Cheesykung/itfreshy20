@@ -59,7 +59,7 @@
       <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
         <button
           type="submit"
-          class="btn bg-blue-600 text-blue-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+          class="btn bg-blue-600 hover:bg-blue-800 text-blue-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
           @click="submitGen()"
           id="sub_button"
         >

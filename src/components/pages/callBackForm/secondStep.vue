@@ -31,9 +31,15 @@
           <input type="text" class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline" v-model="contact" />
           </span>
           <span class="content-center flex-wrap">
-            <button class="w-1/6 h-8 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 border-1 text-white rounded" type="button">
+            <button class="font-medium w-1/6 h-8 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 border-1 text-white rounded" type="button">
               next
             </button>
+          </span>
+          <span class="flex flex-row flex-no-wrap space-x-3 justify-center">
+            <span class="bullet"></span>
+            <span class="bullet"></span>
+            <span class="bullet active"></span>
+            <span class="bullet"></span>
           </span>
         </template>
       </formContain>
@@ -63,3 +69,13 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.bullet {
+  @apply w-2 h-2 bg-blue-900 block rounded-full;
+}
+
+.bullet.active {
+  @apply bg-blue-500;
+}
+</style>
