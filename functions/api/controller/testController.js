@@ -10,6 +10,7 @@ const db = admin.firestore();
 const facebookStrategy = require("passport-facebook").Strategy;
 const firestore = admin.firestore();
 const { v4: uuidv4 } = require('uuid');
+const { S_IFBLK } = require('constants');
 const testController = express();
 const SECRef = db.collection('secertfromuser');
 const BOUNTYRef = db.collection('bountys');
@@ -17,7 +18,6 @@ const SBOUNTYRef = db.collection('bountyscan');
 const SCANSRef = db.collection('scans');
 const USERSRef = db.collection('users');
 const LINKRef = db.collection('links');
-
 // server setup
 testController.use(session({
     secret: "ilovescotchscotfchyscotchscotch", resave: false,
@@ -41,10 +41,10 @@ passport.use(
         function (token, refreshToken, profile, done) {
             process.nextTick(async function () {// asynchronous
                 try {
-                    const usersnapshot = await USERSRef.where('uid', '==', profile.id).get();
-                    if (usersnapshot.empty) {//user สมัครครั้งแรก
+                    const usersnapshot = await USERSRef.doc(profile.id).get();
+                    if (!usersnapshot.exists) {//user สมัครครั้งแรก
                         console.log("new User")
-                        const res = await USERSRef.add({
+                        const res = await USERSRef.doc(profile.id).set({
                             id: uuidv4(),
                             name: profile.name.givenName + " " + profile.name.familyName,
                             token: token,
@@ -59,15 +59,13 @@ passport.use(
                             role: "User",
                             newuser: 1,
                             count: 0,
-                            //createdate:รอถามบาสเพิ่ม
                         })
                     }
-                    const usersnapshots = await USERSRef.where('uid', '==', profile.id).get();
-                    usersnapshots.forEach(doc => {
+                    const usersnapshots = await USERSRef.doc(profile.id).get().then((doc) => {
                         console.log("user found");
                         console.log(doc.data())
                         return done(null, doc.data());
-                    });
+                    })
                 }
                 catch (err) {
                     if (err) return done(err);
@@ -90,9 +88,9 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
         const genqrsnapshot = await LINKRef.where('uid', '==', req.user.uid).get();
         const name = uuidv4();
         const data = { link: name, uid: req.user.uid, time: 10 };
-        if (snapshot.empty) {
+        if (genqrsnapshot.empty) {
             console.log("create qr " + req.user.uid)
-            const newDoc = await db.collection('links').add(data)
+            const newDoc = await db.collection('links').doc(req.user.uid).set(data)
                 .then(() => {
                     res.status(200).send({
                         'statusCode': '201',
@@ -159,92 +157,46 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
 //เสร็จ
 testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
     const snapshot = await LINKRef.where('link', '==', req.params.id).get();
-    async function getqrcode(req, res) {
-        const userupdate = await USERSRef.where('uid', '==', req.user.uid).get();
-        const snapshot = await LINKRef.where('link', '==', req.params.id).get();
-        const scan = await SCANSRef.where('uid', '==', req.user.uid).get();
-        const bounty = await db.collection('bountys').doc('bounty').get();
-        // const bountylink = await USERSRef.where('uid', '==', req.user.uid).get();
-        if (snapshot.empty) {
-            res.send("cannot find")
-            return req.user.name + " cannotfindlink"
-        }
-        else {
-            snapshot.forEach(doc => {
-                const idlink = doc.id
-                const uidlink = doc.data().uid
-                const timelink = doc.data().time
-                if (doc.data().time <= 0) {
-                    res.send("code เสียแล้ว").then(() => { })
-                    return " scan fail code ของ " + doc.data().name
-                }
-                else {
-                    scan.forEach(doc => {
-                        for (var i = 0; i < doc.data().scan.length; i++) {
-                            if (doc.data().scan[i] == uidlink) {
-                                res.send("เคยscan แล้ว")
-                                return;
-                            }
+    const userupdate = await USERSRef.where('uid', '==', req.user.uid).get();
+    const scan = await SCANSRef.where('uid', '==', req.user.uid).get();
+    const bounty = await BOUNTYRef.doc('bounty').get();
+    const bountylink = await SBOUNTYRef.where('uid', '==', req.user.uid).get();
+    if (snapshot.empty) {
+        res.send("cannot find link")
+        console.log(req.user.name + " cannotfindlink")
+        return ;
+    }
+    else {
+        snapshot.forEach(doc => {
+            const idlink = doc.id
+            const uidlink = doc.data().uid
+            const timelink = doc.data().time
+            if (doc.data().time <= 0) {
+                res.send("code เสียแล้ว")
+                console.log(req.user.name + " scan fail code ของ " + doc.data().name)
+                return ;
+            }
+            else {
+                scan.forEach(doc => {
+                    for (var i = 0; i < doc.data().scan.length; i++) {
+                        if (doc.data().scan[i] == uidlink) {
+                            res.send("เคยscan แล้ว")
+                            return;
                         }
-                        const timeupdate = db.collection('links').doc(idlink).update({ time: timelink - 1 });
-                        userupdate.forEach(doc => {
-                            const useruptaeres = USERSRef.doc(doc.id).update({ point: doc.data().point + 1 });
-                        });
-                        const scanres = SCANSRef.doc(doc.id).update({
-                            scan: admin.firestore.FieldValue.arrayUnion(uidlink)
-                        })
-                        res.send(uidlink)
+                    }
+                    const timeupdate = db.collection('links').doc(idlink).update({ time: timelink - 1 });
+                    userupdate.forEach(doc => {
+                        const useruptaeres = USERSRef.doc(doc.id).update({ point: doc.data().point + 1 });
                     });
-                }
-            })
-        }
+                    const scanres = SCANSRef.doc(doc.id).update({
+                        scan: admin.firestore.FieldValue.arrayUnion(uidlink)
+                    })
+                    res.send(uidlink)
+                });
+            }
+        })
     }
-    console.log(await getqrcode(req, res))
 });
-
-
-// route middleware to make sure
-function isLoggedIn(req, res, next) {
-    try {
-        // if user is authenticated in the session, carry on
-        if (req.isAuthenticated()) {
-            console.log('---------->isOn');
-            return next();
-        }
-        else {    // if they aren't redirect them to the home page
-            console.log('----------->isOut');
-            res.redirect("/");
-        }
-    } catch (err) {
-        res.status(500).send({
-            statusCode: '500',
-            statusText: 'Internal Server Error',
-            error: true,
-            message: 'Internal Server Error'
-        });
-    }
-}
-
-function isAdmin(req, res, next) {
-    try {
-        // if user is authenticated in the session, carry on
-        if (req.isAuthenticated()) {
-            console.log('---------->isOn');
-            return next();
-        }
-        else {    // if they aren't redirect them to the home page
-            console.log('----------->isOut');
-            res.redirect("/");
-        }
-    } catch (err) {
-        res.status(500).send({
-            statusCode: '500',
-            statusText: 'Internal Server Error',
-            error: true,
-            message: 'Internal Server Error'
-        });
-    }
-}
 
 testController.get(
     "/auth/facebook",
@@ -297,7 +249,8 @@ testController.get("/", (req, res) => {
     }
 });
 //admin query tools
-testController.get("/ryutools/:collection/:docname", async (req, res) => {
+testController.get("/ryutools/:collection/:docname", isAdmin, async (req, res) => {
+    console.log("king querty doc " +  req.params.collection + " doc name " + req.params.docname)
     const all = await db.collection(req.params.collection).doc(req.params.docname).get();
     // const all = await db.collection('bountys').doc('bounty').get();
     if (!all.exists) {
@@ -349,4 +302,56 @@ testController.use(function (req, res, next) {
     res.status(404);
     res.render("gimmick")
 })
+
+// route middleware to make sure
+function isLoggedIn(req, res, next) {
+    try {
+        // if user is authenticated in the session, carry on
+        if (req.isAuthenticated()) {
+            console.log('---------->isOn');
+            return next();
+        }
+        else {    // if they aren't redirect them to the home page
+            console.log('----------->isOut');
+            res.redirect("/");
+        }
+    } catch (err) {
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            message: 'Internal Server Error'
+        });
+    }
+}
+
+function isAdmin(req, res, next) {
+    try {
+        // if user is authenticated in the session, carry on
+        if (req.isAuthenticated()) {
+            if (req.user.role == 'king') {
+                console.log('king use')
+                return next();
+            }
+            else{
+                console.log("user request admin tool")
+                res.send("you shall not pass");
+                return;
+            }
+        }
+        else {// if they aren't redirect them to the home page
+            console.log('----------->isOut');
+            res.send("you shall not pass");
+            return;
+        }
+    } catch (err) {
+        res.status(500).send({
+            statusCode: '500',
+            statusText: 'Internal Server Error',
+            error: true,
+            message: 'Internal Server Error'
+        });
+    }
+}
+
 module.exports = testController;
