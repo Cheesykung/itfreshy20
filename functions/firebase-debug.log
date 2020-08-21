@@ -155,3 +155,314 @@
 [info] i  functions: Finished "test" in ~1s {"metadata":{"emulator":{"name":"functions"},"function":{"name":"test"},"message":"Finished \"test\" in ~1s"}}
 [debug] [2020-08-21T10:24:15.032Z] [worker-test-99b5f342-c8e5-4771-8433-1df73eaef84d]: IDLE {"metadata":{"emulator":{"name":"functions"},"message":"[worker-test-99b5f342-c8e5-4771-8433-1df73eaef84d]: IDLE"}}
 [debug] [2020-08-21T10:24:15.033Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2020-08-21T10:36:41.371Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T10:36:41.375Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js functions:shell
+[debug] [2020-08-21T10:36:41.375Z] CLI Version:   8.0.2
+[debug] [2020-08-21T10:36:41.375Z] Platform:      win32
+[debug] [2020-08-21T10:36:41.375Z] Node Version:  v12.18.3
+[debug] [2020-08-21T10:36:41.377Z] Time:          Fri Aug 21 2020 17:36:41 GMT+0700 (GMT+07:00)
+[debug] [2020-08-21T10:36:41.378Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T10:36:41.378Z] 
+[debug] [2020-08-21T10:36:41.392Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-08-21T10:36:41.392Z] > authorizing via signed-in user
+[debug] [2020-08-21T10:36:41.393Z] [iam] checking project itfreshy2020 for permissions ["firebase.projects.get"]
+[debug] [2020-08-21T10:36:41.396Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/itfreshy2020:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2020-08-21T10:36:42.571Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 10:36:43 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=994","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[warn] !  Your requested "node" version "14" doesn't match your global version "12"
+[info] +  functions: functions emulator started at http://localhost:5000
+[debug] [2020-08-21T10:36:43.602Z] [functions] Watching "C:\Users\asus\Documents\peet\IT\new_freshy\functions" for Cloud Functions...
+[debug] [2020-08-21T10:36:43.624Z] DEBUG: [worker-pool] addWorker(~diagnostic~)
+[debug] [2020-08-21T10:36:43.625Z] DEBUG: [worker-pool] Adding worker with key ~diagnostic~, total=1
+[debug] [2020-08-21T10:36:43.625Z] DEBUG: [worker-pool] submitWork(triggerId=)
+[debug] [2020-08-21T10:36:43.626Z] DEBUG: [worker-~diagnostic~-0a979d68-e579-4e0b-8e16-ad52fa5d40c0]: Assigning socketPath: \\?\pipe\C:\Users\asus\Documents\peet\IT\new_freshy\functions\40872
+[debug] [2020-08-21T10:36:43.626Z] DEBUG: [worker-~diagnostic~-0a979d68-e579-4e0b-8e16-ad52fa5d40c0]: BUSY
+[debug] [2020-08-21T10:36:44.289Z] DEBUG: [runtime-status] [40872] Functions runtime initialized. {"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","node_version":"12.18.3"}
+[debug] [2020-08-21T10:36:44.291Z] DEBUG: [runtime-status] [40872] Disabled runtime features: undefined
+[warn] !  The Cloud Functions emulator requires the module "firebase-admin" to be installed. This package is in your package.json, but it's not available. You probably need to run "npm install" in your functions directory.
+[debug] [2020-08-21T10:36:44.298Z] [functions] Your functions could not be parsed due to an issue with your node_modules (see above)
+[debug] [2020-08-21T10:36:44.320Z] DEBUG: [worker-~diagnostic~-0a979d68-e579-4e0b-8e16-ad52fa5d40c0]: exited
+[debug] [2020-08-21T10:36:44.321Z] DEBUG: [worker-~diagnostic~-0a979d68-e579-4e0b-8e16-ad52fa5d40c0]: FINISHED
+[debug] [2020-08-21T11:58:07.130Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T11:58:07.131Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js functions:shell
+[debug] [2020-08-21T11:58:07.133Z] CLI Version:   8.0.2
+[debug] [2020-08-21T11:58:07.133Z] Platform:      win32
+[debug] [2020-08-21T11:58:07.133Z] Node Version:  v12.18.3
+[debug] [2020-08-21T11:58:07.134Z] Time:          Fri Aug 21 2020 18:58:07 GMT+0700 (GMT+07:00)
+[debug] [2020-08-21T11:58:07.134Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T11:58:07.134Z] 
+[debug] [2020-08-21T11:58:07.149Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-08-21T11:58:07.151Z] > authorizing via signed-in user
+[debug] [2020-08-21T11:58:07.152Z] [iam] checking project itfreshy2020 for permissions ["firebase.projects.get"]
+[debug] [2020-08-21T11:58:07.155Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2020-08-21T11:58:07.156Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2020-08-21T11:58:07.401Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 11:58:07 GMT","server":"scaffolding on HTTPServer2","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-08-21T11:58:07.407Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/itfreshy2020:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2020-08-21T11:58:08.613Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 11:58:09 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=1057","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[warn] !  Your requested "node" version "14" doesn't match your global version "12"
+[info] +  functions: functions emulator started at http://localhost:5000
+[debug] [2020-08-21T11:58:09.660Z] [functions] Watching "C:\Users\asus\Documents\peet\IT\new_freshy\functions" for Cloud Functions...
+[debug] [2020-08-21T11:58:09.679Z] DEBUG: [worker-pool] addWorker(~diagnostic~)
+[debug] [2020-08-21T11:58:09.679Z] DEBUG: [worker-pool] Adding worker with key ~diagnostic~, total=1
+[debug] [2020-08-21T11:58:09.679Z] DEBUG: [worker-pool] submitWork(triggerId=)
+[debug] [2020-08-21T11:58:09.680Z] DEBUG: [worker-~diagnostic~-2ec240dd-4eb5-4092-a185-f1daaa1ec87b]: Assigning socketPath: \\?\pipe\C:\Users\asus\Documents\peet\IT\new_freshy\functions\56684
+[debug] [2020-08-21T11:58:09.680Z] DEBUG: [worker-~diagnostic~-2ec240dd-4eb5-4092-a185-f1daaa1ec87b]: BUSY
+[debug] [2020-08-21T11:58:10.329Z] DEBUG: [runtime-status] [56684] Functions runtime initialized. {"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","node_version":"12.18.3"}
+[debug] [2020-08-21T11:58:10.334Z] DEBUG: [runtime-status] [56684] Disabled runtime features: undefined
+[warn] !  The Cloud Functions emulator requires the module "firebase-admin" to be installed. This package is in your package.json, but it's not available. You probably need to run "npm install" in your functions directory.
+[debug] [2020-08-21T11:58:10.338Z] [functions] Your functions could not be parsed due to an issue with your node_modules (see above)
+[debug] [2020-08-21T11:58:10.359Z] DEBUG: [worker-~diagnostic~-2ec240dd-4eb5-4092-a185-f1daaa1ec87b]: exited
+[debug] [2020-08-21T11:58:10.359Z] DEBUG: [worker-~diagnostic~-2ec240dd-4eb5-4092-a185-f1daaa1ec87b]: FINISHED
+[debug] [2020-08-21T11:59:41.743Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T11:59:41.748Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js functions:shell
+[debug] [2020-08-21T11:59:41.748Z] CLI Version:   8.0.2
+[debug] [2020-08-21T11:59:41.748Z] Platform:      win32
+[debug] [2020-08-21T11:59:41.748Z] Node Version:  v12.18.3
+[debug] [2020-08-21T11:59:41.750Z] Time:          Fri Aug 21 2020 18:59:41 GMT+0700 (GMT+07:00)
+[debug] [2020-08-21T11:59:41.750Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T11:59:41.750Z] 
+[debug] [2020-08-21T11:59:41.764Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-08-21T11:59:41.765Z] > authorizing via signed-in user
+[debug] [2020-08-21T11:59:41.765Z] [iam] checking project itfreshy2020 for permissions ["firebase.projects.get"]
+[debug] [2020-08-21T11:59:41.768Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/itfreshy2020:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2020-08-21T11:59:42.988Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 11:59:43 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=1058","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[warn] !  Your requested "node" version "14" doesn't match your global version "12"
+[info] +  functions: functions emulator started at http://localhost:5000
+[debug] [2020-08-21T11:59:44.043Z] [functions] Watching "C:\Users\asus\Documents\peet\IT\new_freshy\functions" for Cloud Functions...
+[debug] [2020-08-21T11:59:44.059Z] DEBUG: [worker-pool] addWorker(~diagnostic~)
+[debug] [2020-08-21T11:59:44.059Z] DEBUG: [worker-pool] Adding worker with key ~diagnostic~, total=1
+[debug] [2020-08-21T11:59:44.059Z] DEBUG: [worker-pool] submitWork(triggerId=)
+[debug] [2020-08-21T11:59:44.060Z] DEBUG: [worker-~diagnostic~-7fb20eeb-e336-452d-8f93-5df836a7a17d]: Assigning socketPath: \\?\pipe\C:\Users\asus\Documents\peet\IT\new_freshy\functions\55420
+[debug] [2020-08-21T11:59:44.061Z] DEBUG: [worker-~diagnostic~-7fb20eeb-e336-452d-8f93-5df836a7a17d]: BUSY
+[debug] [2020-08-21T11:59:44.652Z] DEBUG: [runtime-status] [55420] Functions runtime initialized. {"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","node_version":"12.18.3"}
+[debug] [2020-08-21T11:59:44.655Z] DEBUG: [runtime-status] [55420] Disabled runtime features: undefined
+[debug] [2020-08-21T11:59:44.664Z] DEBUG: [runtime-status] [55420] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.13.0","resolution":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2020-08-21T11:59:44.667Z] DEBUG: [runtime-status] [55420] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.9.1","resolution":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-08-21T11:59:44.669Z] DEBUG: [runtime-status] [55420] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}]
+[debug] [2020-08-21T11:59:44.738Z] DEBUG: [runtime-status] [55420] Checked functions.config() {"config":{}}
+[debug] [2020-08-21T11:59:44.739Z] DEBUG: [runtime-status] [55420] Error in handleMessage: {"frb":{"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","projectId":"itfreshy2020","triggerId":"","emulators":{},"socketPath":"\\\\?\\pipe\\C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\55420"},"opts":{"nodeBinary":"C:\\Program Files\\nodejs\\node.exe"}} => TypeError: Cannot set property config of #<Object> which has only a getter: TypeError: Cannot set property config of #<Object> which has only a getter
+    at C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:457:19
+    at Generator.next (<anonymous>)
+    at fulfilled (C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:5:58)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+[warn] !  functions: Cannot set property config of #<Object> which has only a getter
+[warn] !  Your function was killed because it raised an unhandled error.
+[debug] [2020-08-21T11:59:44.753Z] DEBUG: [worker-~diagnostic~-7fb20eeb-e336-452d-8f93-5df836a7a17d]: exited
+[debug] [2020-08-21T11:59:44.754Z] DEBUG: [worker-~diagnostic~-7fb20eeb-e336-452d-8f93-5df836a7a17d]: FINISHED
+[debug] [2020-08-21T12:00:35.622Z] DEBUG: File C:\Users\asus\Documents\peet\IT\new_freshy\functions\package.json changed, reloading triggers
+[debug] [2020-08-21T12:00:36.622Z] DEBUG: [worker-pool] Cleaned up workers for ~diagnostic~: 1 --> 0
+[debug] [2020-08-21T12:00:36.633Z] DEBUG: [worker-pool] addWorker(~diagnostic~)
+[debug] [2020-08-21T12:00:36.633Z] DEBUG: [worker-pool] Adding worker with key ~diagnostic~, total=1
+[debug] [2020-08-21T12:00:36.633Z] DEBUG: [worker-pool] submitWork(triggerId=)
+[debug] [2020-08-21T12:00:36.634Z] DEBUG: [worker-~diagnostic~-6f8a5035-add3-4f1c-95db-4cdb17af0290]: Assigning socketPath: \\?\pipe\C:\Users\asus\Documents\peet\IT\new_freshy\functions\56608
+[debug] [2020-08-21T12:00:36.634Z] DEBUG: [worker-~diagnostic~-6f8a5035-add3-4f1c-95db-4cdb17af0290]: BUSY
+[debug] [2020-08-21T12:00:37.430Z] DEBUG: [runtime-status] [56608] Functions runtime initialized. {"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","node_version":"12.18.3"}
+[debug] [2020-08-21T12:00:37.436Z] DEBUG: [runtime-status] [56608] Disabled runtime features: undefined
+[debug] [2020-08-21T12:00:37.442Z] DEBUG: [runtime-status] [56608] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.13.0","resolution":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2020-08-21T12:00:37.448Z] DEBUG: [runtime-status] [56608] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.9.1","resolution":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-08-21T12:00:37.451Z] DEBUG: [runtime-status] [56608] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}]
+[debug] [2020-08-21T12:00:37.533Z] DEBUG: [runtime-status] [56608] Checked functions.config() {"config":{}}
+[debug] [2020-08-21T12:00:37.533Z] DEBUG: [runtime-status] [56608] Error in handleMessage: {"frb":{"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","projectId":"itfreshy2020","triggerId":"","emulators":{},"socketPath":"\\\\?\\pipe\\C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\56608"},"opts":{"nodeBinary":"C:\\Program Files\\nodejs\\node.exe"}} => TypeError: Cannot set property config of #<Object> which has only a getter: TypeError: Cannot set property config of #<Object> which has only a getter
+    at C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:457:19
+    at Generator.next (<anonymous>)
+    at fulfilled (C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:5:58)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+[warn] !  functions: Cannot set property config of #<Object> which has only a getter
+[warn] !  Your function was killed because it raised an unhandled error.
+[debug] [2020-08-21T12:00:41.835Z] DEBUG: [worker-~diagnostic~-6f8a5035-add3-4f1c-95db-4cdb17af0290]: exited
+[debug] [2020-08-21T12:00:41.835Z] DEBUG: [worker-~diagnostic~-6f8a5035-add3-4f1c-95db-4cdb17af0290]: FINISHED
+[debug] [2020-08-21T12:02:17.580Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T12:02:17.584Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2020-08-21T12:02:17.584Z] CLI Version:   8.0.2
+[debug] [2020-08-21T12:02:17.584Z] Platform:      win32
+[debug] [2020-08-21T12:02:17.584Z] Node Version:  v12.18.3
+[debug] [2020-08-21T12:02:17.585Z] Time:          Fri Aug 21 2020 19:02:17 GMT+0700 (GMT+07:00)
+[debug] [2020-08-21T12:02:17.585Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T12:02:17.585Z] 
+[debug] [2020-08-21T12:02:17.597Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-08-21T12:02:17.598Z] > authorizing via signed-in user
+[debug] [2020-08-21T12:02:17.598Z] [iam] checking project itfreshy2020 for permissions ["firebase.projects.get"]
+[debug] [2020-08-21T12:02:17.602Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/itfreshy2020:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2020-08-21T12:02:18.791Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 12:02:19 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=1053","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-08-21T12:02:18.793Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/itfreshy2020  
+ 
+[debug] [2020-08-21T12:02:19.221Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 12:02:19 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Serving from 'C:\Users\asus\Documents\peet\IT\new_freshy'...
+[info] 
+[debug] [2020-08-21T12:02:19.249Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/itfreshy2020/webApps/-/config  
+ 
+[info] +  functions: Using node@12 from host.
+[info] +  functions: functions emulator started at http://localhost:5001
+[debug] [2020-08-21T12:02:20.314Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 12:02:20 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] i  functions: Watching "C:\Users\asus\Documents\peet\IT\new_freshy\functions" for Cloud Functions...
+[debug] [2020-08-21T12:02:20.355Z] [worker-pool] addWorker(~diagnostic~) 
+[debug] [2020-08-21T12:02:20.356Z] [worker-pool] Adding worker with key ~diagnostic~, total=1 
+[debug] [2020-08-21T12:02:20.356Z] [worker-pool] submitWork(triggerId=) 
+[debug] [2020-08-21T12:02:20.356Z] [worker-~diagnostic~-880cdb66-71aa-4659-a126-fd09c8a803f1]: Assigning socketPath: \\?\pipe\C:\Users\asus\Documents\peet\IT\new_freshy\functions\56508 
+[debug] [2020-08-21T12:02:20.357Z] [worker-~diagnostic~-880cdb66-71aa-4659-a126-fd09c8a803f1]: BUSY 
+[info] i  hosting: Serving hosting files from: public
+[info] +  hosting: Local server: http://localhost:5000
+[debug] [2020-08-21T12:02:20.893Z] [runtime-status] [56508] Functions runtime initialized. {"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","node_version":"12.18.3"} 
+[debug] [2020-08-21T12:02:20.895Z] [runtime-status] [56508] Disabled runtime features: undefined 
+[debug] [2020-08-21T12:02:20.905Z] [runtime-status] [56508] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.13.0","resolution":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\node_modules\\firebase-admin\\lib\\index.js"} 
+[debug] [2020-08-21T12:02:20.908Z] [runtime-status] [56508] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.9.1","resolution":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\node_modules\\firebase-functions\\lib\\index.js"} 
+[debug] [2020-08-21T12:02:20.910Z] [runtime-status] [56508] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] 
+[debug] [2020-08-21T12:02:20.977Z] [runtime-status] [56508] Checked functions.config() {"config":{}} 
+[debug] [2020-08-21T12:02:20.978Z] [runtime-status] [56508] Error in handleMessage: {"frb":{"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","projectId":"itfreshy2020","triggerId":"","emulators":{},"socketPath":"\\\\?\\pipe\\C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\56508"},"opts":{"nodeBinary":"C:\\Program Files\\nodejs\\node.exe"}} => TypeError: Cannot set property config of #<Object> which has only a getter: TypeError: Cannot set property config of #<Object> which has only a getter
+    at C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:457:19
+    at Generator.next (<anonymous>)
+    at fulfilled (C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:5:58)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) 
+[warn] !  functions: Cannot set property config of #<Object> which has only a getter
+[warn] !  Your function was killed because it raised an unhandled error.
+[debug] [2020-08-21T12:02:20.994Z] [worker-~diagnostic~-880cdb66-71aa-4659-a126-fd09c8a803f1]: exited 
+[debug] [2020-08-21T12:02:20.995Z] [worker-~diagnostic~-880cdb66-71aa-4659-a126-fd09c8a803f1]: FINISHED 
+[debug] [2020-08-21T12:02:28.847Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-08-21T12:02:28.848Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-08-21T12:02:28.849Z] FirebaseError: No trigger with name test 
+[debug] [2020-08-21T12:02:28.849Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2020-08-21T12:03:39.376Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T12:03:39.381Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2020-08-21T12:03:39.382Z] CLI Version:   8.0.2
+[debug] [2020-08-21T12:03:39.382Z] Platform:      win32
+[debug] [2020-08-21T12:03:39.382Z] Node Version:  v12.18.3
+[debug] [2020-08-21T12:03:39.385Z] Time:          Fri Aug 21 2020 19:03:39 GMT+0700 (GMT+07:00)
+[debug] [2020-08-21T12:03:39.385Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T12:03:39.385Z] 
+[debug] [2020-08-21T12:03:39.403Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-08-21T12:03:39.404Z] > authorizing via signed-in user
+[debug] [2020-08-21T12:03:39.405Z] [iam] checking project itfreshy2020 for permissions ["firebase.projects.get"]
+[debug] [2020-08-21T12:03:39.411Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/itfreshy2020:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2020-08-21T12:03:40.636Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 12:03:41 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=1045","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-08-21T12:03:40.638Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/itfreshy2020  
+ 
+[debug] [2020-08-21T12:03:41.020Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 12:03:41 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Serving from 'C:\Users\asus\Documents\peet\IT\new_freshy'...
+[info] 
+[debug] [2020-08-21T12:03:41.031Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/itfreshy2020/webApps/-/config  
+ 
+[info] +  functions: Using node@12 from host.
+[info] +  functions: functions emulator started at http://localhost:5001
+[debug] [2020-08-21T12:03:42.094Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 12:03:42 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] i  functions: Watching "C:\Users\asus\Documents\peet\IT\new_freshy\functions" for Cloud Functions...
+[debug] [2020-08-21T12:03:42.131Z] [worker-pool] addWorker(~diagnostic~) 
+[debug] [2020-08-21T12:03:42.131Z] [worker-pool] Adding worker with key ~diagnostic~, total=1 
+[debug] [2020-08-21T12:03:42.131Z] [worker-pool] submitWork(triggerId=) 
+[debug] [2020-08-21T12:03:42.132Z] [worker-~diagnostic~-23b6e621-d617-49d7-bcb2-bda512b25206]: Assigning socketPath: \\?\pipe\C:\Users\asus\Documents\peet\IT\new_freshy\functions\53880 
+[debug] [2020-08-21T12:03:42.132Z] [worker-~diagnostic~-23b6e621-d617-49d7-bcb2-bda512b25206]: BUSY 
+[info] i  hosting: Serving hosting files from: public
+[info] +  hosting: Local server: http://localhost:5000
+[debug] [2020-08-21T12:03:42.747Z] [runtime-status] [53880] Functions runtime initialized. {"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","node_version":"12.18.3"} 
+[debug] [2020-08-21T12:03:42.750Z] [runtime-status] [53880] Disabled runtime features: undefined 
+[debug] [2020-08-21T12:03:42.758Z] [runtime-status] [53880] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.13.0","resolution":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\node_modules\\firebase-admin\\lib\\index.js"} 
+[debug] [2020-08-21T12:03:42.762Z] [runtime-status] [53880] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.9.1","resolution":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\node_modules\\firebase-functions\\lib\\index.js"} 
+[debug] [2020-08-21T12:03:42.765Z] [runtime-status] [53880] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] 
+[debug] [2020-08-21T12:03:42.832Z] [runtime-status] [53880] Checked functions.config() {"config":{}} 
+[debug] [2020-08-21T12:03:42.833Z] [runtime-status] [53880] Error in handleMessage: {"frb":{"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","projectId":"itfreshy2020","triggerId":"","emulators":{},"socketPath":"\\\\?\\pipe\\C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\53880"},"opts":{"nodeBinary":"C:\\Program Files\\nodejs\\node.exe"}} => TypeError: Cannot set property config of #<Object> which has only a getter: TypeError: Cannot set property config of #<Object> which has only a getter
+    at C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:457:19
+    at Generator.next (<anonymous>)
+    at fulfilled (C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:5:58)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) 
+[warn] !  functions: Cannot set property config of #<Object> which has only a getter
+[warn] !  Your function was killed because it raised an unhandled error.
+[debug] [2020-08-21T12:03:42.847Z] [worker-~diagnostic~-23b6e621-d617-49d7-bcb2-bda512b25206]: exited 
+[debug] [2020-08-21T12:03:42.847Z] [worker-~diagnostic~-23b6e621-d617-49d7-bcb2-bda512b25206]: FINISHED 
+[debug] [2020-08-21T12:03:47.640Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-08-21T12:03:47.641Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-08-21T12:03:47.642Z] FirebaseError: No trigger with name test 
+[debug] [2020-08-21T12:03:47.643Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2020-08-21T12:05:47.639Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-08-21T12:05:47.640Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-08-21T12:05:47.640Z] FirebaseError: No trigger with name test 
+[debug] [2020-08-21T12:05:47.641Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2020-08-21T12:05:58.817Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-08-21T12:05:58.817Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-08-21T12:05:58.817Z] FirebaseError: No trigger with name test 
+[debug] [2020-08-21T12:05:58.817Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2020-08-21T12:05:59.110Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-08-21T12:05:59.110Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-08-21T12:05:59.111Z] FirebaseError: No trigger with name test 
+[debug] [2020-08-21T12:05:59.111Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2020-08-21T12:06:23.986Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T12:06:23.990Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2020-08-21T12:06:23.991Z] CLI Version:   8.0.2
+[debug] [2020-08-21T12:06:23.991Z] Platform:      win32
+[debug] [2020-08-21T12:06:23.991Z] Node Version:  v12.18.3
+[debug] [2020-08-21T12:06:23.992Z] Time:          Fri Aug 21 2020 19:06:23 GMT+0700 (GMT+07:00)
+[debug] [2020-08-21T12:06:23.993Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T12:06:23.993Z] 
+[debug] [2020-08-21T12:06:24.006Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-08-21T12:06:24.007Z] > authorizing via signed-in user
+[debug] [2020-08-21T12:06:24.007Z] [iam] checking project itfreshy2020 for permissions ["firebase.projects.get"]
+[debug] [2020-08-21T12:06:24.017Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/itfreshy2020:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2020-08-21T12:06:34.201Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 12:06:34 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=1036","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-08-21T12:06:34.203Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/itfreshy2020  
+ 
+[debug] [2020-08-21T12:06:39.395Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T12:06:39.399Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2020-08-21T12:06:39.399Z] CLI Version:   8.0.2
+[debug] [2020-08-21T12:06:39.399Z] Platform:      win32
+[debug] [2020-08-21T12:06:39.399Z] Node Version:  v12.18.3
+[debug] [2020-08-21T12:06:39.399Z] Time:          Fri Aug 21 2020 19:06:39 GMT+0700 (GMT+07:00)
+[debug] [2020-08-21T12:06:39.399Z] ----------------------------------------------------------------------
+[debug] [2020-08-21T12:06:39.399Z] 
+[debug] [2020-08-21T12:06:39.411Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-08-21T12:06:39.412Z] > authorizing via signed-in user
+[debug] [2020-08-21T12:06:39.413Z] [iam] checking project itfreshy2020 for permissions ["firebase.projects.get"]
+[debug] [2020-08-21T12:06:39.416Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/itfreshy2020:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2020-08-21T12:06:40.628Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 12:06:41 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=1049","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-08-21T12:06:40.630Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/itfreshy2020  
+ 
+[debug] [2020-08-21T12:06:41.029Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 12:06:41 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Serving from 'C:\Users\asus\Documents\peet\IT\new_freshy'...
+[info] 
+[debug] [2020-08-21T12:06:41.036Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/itfreshy2020/webApps/-/config  
+ 
+[info] +  functions: Using node@12 from host.
+[debug] [2020-08-21T12:06:42.056Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 21 Aug 2020 12:06:42 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] i  hosting: Serving hosting files from: public
+[info] +  hosting: Local server: http://localhost:5000
+[info] +  functions: functions emulator started at http://localhost:5001
+[info] i  functions: Watching "C:\Users\asus\Documents\peet\IT\new_freshy\functions" for Cloud Functions...
+[debug] [2020-08-21T12:06:42.117Z] [worker-pool] addWorker(~diagnostic~) 
+[debug] [2020-08-21T12:06:42.118Z] [worker-pool] Adding worker with key ~diagnostic~, total=1 
+[debug] [2020-08-21T12:06:42.118Z] [worker-pool] submitWork(triggerId=) 
+[debug] [2020-08-21T12:06:42.119Z] [worker-~diagnostic~-8c5b1876-e1ab-4e5b-8b87-ada5322fcc3b]: Assigning socketPath: \\?\pipe\C:\Users\asus\Documents\peet\IT\new_freshy\functions\57604 
+[debug] [2020-08-21T12:06:42.119Z] [worker-~diagnostic~-8c5b1876-e1ab-4e5b-8b87-ada5322fcc3b]: BUSY 
+[debug] [2020-08-21T12:06:42.693Z] [runtime-status] [57604] Functions runtime initialized. {"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","node_version":"12.18.3"} 
+[debug] [2020-08-21T12:06:42.695Z] [runtime-status] [57604] Disabled runtime features: undefined 
+[debug] [2020-08-21T12:06:42.704Z] [runtime-status] [57604] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.13.0","resolution":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\node_modules\\firebase-admin\\lib\\index.js"} 
+[debug] [2020-08-21T12:06:42.707Z] [runtime-status] [57604] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.9.1","resolution":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\node_modules\\firebase-functions\\lib\\index.js"} 
+[debug] [2020-08-21T12:06:42.710Z] [runtime-status] [57604] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] 
+[debug] [2020-08-21T12:06:42.778Z] [runtime-status] [57604] Checked functions.config() {"config":{}} 
+[debug] [2020-08-21T12:06:42.778Z] [runtime-status] [57604] Error in handleMessage: {"frb":{"cwd":"C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions","projectId":"itfreshy2020","triggerId":"","emulators":{},"socketPath":"\\\\?\\pipe\\C:\\Users\\asus\\Documents\\peet\\IT\\new_freshy\\functions\\57604"},"opts":{"nodeBinary":"C:\\Program Files\\nodejs\\node.exe"}} => TypeError: Cannot set property config of #<Object> which has only a getter: TypeError: Cannot set property config of #<Object> which has only a getter
+    at C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:457:19
+    at Generator.next (<anonymous>)
+    at fulfilled (C:\Users\asus\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:5:58)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) 
+[warn] !  functions: Cannot set property config of #<Object> which has only a getter
+[warn] !  Your function was killed because it raised an unhandled error.
+[debug] [2020-08-21T12:06:42.790Z] [worker-~diagnostic~-8c5b1876-e1ab-4e5b-8b87-ada5322fcc3b]: exited 
+[debug] [2020-08-21T12:06:42.791Z] [worker-~diagnostic~-8c5b1876-e1ab-4e5b-8b87-ada5322fcc3b]: FINISHED 
+[debug] [2020-08-21T12:06:46.037Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-08-21T12:06:46.039Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-08-21T12:06:46.039Z] FirebaseError: No trigger with name test 
+[debug] [2020-08-21T12:06:46.039Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2020-08-21T12:07:30.503Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-08-21T12:07:30.504Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-08-21T12:07:30.504Z] FirebaseError: No trigger with name test 
+[debug] [2020-08-21T12:07:30.505Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2020-08-21T12:07:42.407Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-08-21T12:07:42.407Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-08-21T12:07:42.407Z] FirebaseError: No trigger with name test 
+[debug] [2020-08-21T12:07:42.408Z] [work-queue] {"queueLength":0,"workRunningCount":0}

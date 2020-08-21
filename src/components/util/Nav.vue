@@ -1,5 +1,5 @@
 <template>
-  <nav class="flex flex-row justify-between content-center items-center w-screen py-8 px-6 md:px-12 bg-dark text-gray-200">
+  <nav class="flex flex-row justify-between content-center items-center w-screen py-8 px-6 md:px-12 bg-dark text-gray-200" v-if="this.$route.name !== 'Signin'">
     <div class="flex flex-row justify-center items-center text-2xl">
     <i class="fas fa-bars text-gray-300"></i>
     </div>

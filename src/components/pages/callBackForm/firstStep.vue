@@ -1,9 +1,8 @@
 <template>
   <pageHFull>
     <template #headline>
-      STEP
-      <span class="text-orange-500 font-semibold">1</span>
-      <p class="text-sm">About you</p>
+      <span class="text-secondary_a font-semibold">STEP 1</span>
+      <p class="text-sm text-gray-500">About you</p>
     </template>
     <template #body>
       <!--- Form area --->
