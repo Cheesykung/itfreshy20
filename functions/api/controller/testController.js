@@ -18,6 +18,8 @@ const SBOUNTYRef = db.collection('bountyscan');
 const SCANSRef = db.collection('scans');
 const USERSRef = db.collection('users');
 const LINKRef = db.collection('links');
+const ALLRef = db.collection('allstats');
+
 // server setup
 testController.use(session({
     secret: "ilovescotchscotfchyscotchscotch", resave: false,
@@ -159,40 +161,84 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
     const snapshot = await LINKRef.where('link', '==', req.params.id).get();
     const userupdate = await USERSRef.where('uid', '==', req.user.uid).get();
     const scan = await SCANSRef.where('uid', '==', req.user.uid).get();
-    const bounty = await BOUNTYRef.doc('bounty').get();
     const bountylink = await SBOUNTYRef.where('uid', '==', req.user.uid).get();
     if (snapshot.empty) {
         res.send("cannot find link")
-        console.log(req.user.name + " cannotfindlink")
-        return ;
+        console.log(req.user.name + " cannot find link")
+        return;
     }
     else {
         snapshot.forEach(doc => {
             const idlink = doc.id
             const uidlink = doc.data().uid
             const timelink = doc.data().time
+            const bounty = BOUNTYRef.doc(uidlink).get()
+            let check = false
             if (doc.data().time <= 0) {
                 res.send("code เสียแล้ว")
                 console.log(req.user.name + " scan fail code ของ " + doc.data().name)
-                return ;
+                return;
             }
             else {
-                scan.forEach(doc => {
-                    for (var i = 0; i < doc.data().scan.length; i++) {
-                        if (doc.data().scan[i] == uidlink) {
-                            res.send("เคยscan แล้ว")
-                            return;
+                if (bounty.exists) {
+                    const scanbounty = SCANSRef.where('uid', '==', req.user.uid).get();
+                    bountylink.forEach(doc => {
+                        for (var k = 0; k < doc.data().scan.length; i++) {
+                            if (doc.data().scan[i] == uidlink) {
+                                console.log("bounty นี้ เคย scan แล้ว")
+                                res.send("เคยscan bounty นี้แล้ว")
+                                return;
+                            }
                         }
-                    }
-                    const timeupdate = db.collection('links').doc(idlink).update({ time: timelink - 1 });
-                    userupdate.forEach(doc => {
-                        const useruptaeres = USERSRef.doc(doc.id).update({ point: doc.data().point + 1 });
-                    });
-                    const scanres = SCANSRef.doc(doc.id).update({
-                        scan: admin.firestore.FieldValue.arrayUnion(uidlink)
+                        scanbounty.forEach(doc => {
+                            for (var i = 0; i < doc.data().scan.length; i++) {
+                                if (doc.data().scan[i] == uidlink) {
+                                    letcheck = true
+                                    return;
+                                }
+                            }
+                            if (letcheck) {
+                                userupdate.forEach(doc => {
+                                    console.log("scan just bounty")
+                                    const useruptaeres = USERSRef.doc(doc.id).update({ point: doc.data().point + 2 });
+                                });
+                            }
+                            else {
+                                userupdate.forEach(doc => {
+                                    console.log("scan all")
+                                    const useruptaeres = USERSRef.doc(doc.id).update({ point: doc.data().point + 5 });
+                                });
+                            }
+                            const timeupdate = db.collection('links').doc(idlink).update({ time: timelink - 1 });
+                            const scanres = SCANSRef.doc(doc.id).update({
+                                scan: admin.firestore.FieldValue.arrayUnion(uidlink)
+                            })
+                            const bounryscanres = SBOUNTYRef.doc(doc.id).update({
+                                scan: admin.firestore.FieldValue.arrayUnion(uidlink)
+                            })
+                            res.send(uidlink)
+                        })
                     })
-                    res.send(uidlink)
-                });
+                }
+                else {
+                    console.log("not bounty")
+                    scan.forEach(doc => {
+                        for (var i = 0; i < doc.data().scan.length; i++) {
+                            if (doc.data().scan[i] == uidlink) {
+                                res.send("เคยscan แล้ว")
+                                return;
+                            }
+                        }
+                        const timeupdate = db.collection('links').doc(idlink).update({ time: timelink - 1 });
+                        userupdate.forEach(doc => {
+                            const useruptaeres = USERSRef.doc(doc.id).update({ point: doc.data().point + 3 });
+                        });
+                        const scanres = SCANSRef.doc(doc.id).update({
+                            scan: admin.firestore.FieldValue.arrayUnion(uidlink)
+                        })
+                        res.send(uidlink)
+                    })
+                };
             }
         })
     }
@@ -250,7 +296,7 @@ testController.get("/", (req, res) => {
 });
 //admin query tools
 testController.get("/ryutools/:collection/:docname", isAdmin, async (req, res) => {
-    console.log("king querty doc " +  req.params.collection + " doc name " + req.params.docname)
+    console.log("king querty doc " + req.params.collection + " doc name " + req.params.docname)
     const all = await db.collection(req.params.collection).doc(req.params.docname).get();
     // const all = await db.collection('bountys').doc('bounty').get();
     if (!all.exists) {
@@ -333,7 +379,7 @@ function isAdmin(req, res, next) {
                 console.log('king use')
                 return next();
             }
-            else{
+            else {
                 console.log("user request admin tool")
                 res.send("you shall not pass");
                 return;
