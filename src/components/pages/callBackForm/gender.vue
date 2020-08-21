@@ -6,21 +6,24 @@
       <span class="text-blue-500 font-semibold text-5xl">gender</span>
     </template>
     <template #body>
-      <div class="grid-container px-4 md:px-24">
+      <div class="grid-container gap-2 px-4 md:px-24">
         <!--- First grid row --->
-        <!--- LGBT --->
+        <!--- Other --->
         <div class="row-start-1 col-start-2 col-end-3">
-          <span id="gen-child-1" class="flex flex-col space-y-10 items-center cursor-pointer">
+          <span
+            id="gen-child-1"
+            class="flex flex-col space-y-8 md:space-y-10 items-center cursor-pointer"
+          >
             <div
               class="w-24 h-24 md:w-40 md:h-40 icon-prefix"
-              :class="active === 'LGBT' ? 'active' : ''"
+              :class="active === 'Other' ? 'active' : ''"
             >
               <ion-icon name="male-female-outline" class="text-4xl md:text-6xl"></ion-icon>
             </div>
             <span
               class="text-lg md:text-xl text-gray-500 text-prefix"
-              :class="active === 'LGBT' ? 'text-active' : ''"
-            >LGBT</span>
+              :class="active === 'Other' ? 'text-active' : ''"
+            >Other</span>
           </span>
         </div>
         <!---- Second grid row --->
@@ -28,7 +31,10 @@
           class="row-start-2 col-start-1 col-end-4 lg:col-start-2 lg:col-end-3 flex flex-row justify-center space-x-24 md:space-x-64"
         >
           <!--- Male --->
-          <span id="gen-child-2" class="flex flex-col items-center space-y-10 cursor-pointer">
+          <span
+            id="gen-child-2"
+            class="flex flex-col items-center space-y-8 md:space-y-10 cursor-pointer"
+          >
             <div
               class="w-24 h-24 md:w-40 md:h-40 icon-prefix"
               :class="active === 'male' ? 'active' : ''"
@@ -41,7 +47,10 @@
             >Male</span>
           </span>
           <!--- Female --->
-          <span id="gen-child-3" class="flex flex-col items-center space-y-10 cursor-pointer">
+          <span
+            id="gen-child-3"
+            class="flex flex-col items-center space-y-8 md:space-y-10 cursor-pointer"
+          >
             <div
               class="w-24 h-24 md:w-40 md:h-40 icon-prefix"
               :class="active === 'female' ? 'active' : ''"
@@ -56,23 +65,26 @@
         </div>
       </div>
       <!--- End gender grid --->
+      <!--- Start step zone --->
       <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
         <button
           type="submit"
-          class="btn bg-blue-600 hover:bg-blue-800 text-blue-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+          class="btn bg-blue-600 hover:bg-opacity-75 text-blue-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+          :class="active ? 'animate-pulse' : ''"
           @click="submitGen()"
           id="sub_button"
         >
-          next step
+          first step
           <ion-icon name="chevron-forward-outline"></ion-icon>
         </button>
         <span class="flex flex-row flex-no-wrap space-x-3">
-          <span class="bullet active"></span>
+          <span class="bullet"></span>
           <span class="bullet"></span>
           <span class="bullet"></span>
           <span class="bullet"></span>
         </span>
       </div>
+      <!--- End step zone --->
     </template>
   </pageHFull>
 </template>
@@ -84,7 +96,7 @@ export default {
   data() {
     return {
       gender: ["male", "female", "other"],
-      active: "LGBT"
+      active: "Other"
     };
   },
   components: {
@@ -110,7 +122,7 @@ export default {
           child1.firstElementChild.classList.toggle("active");
           child1.lastElementChild.classList.toggle("text-active");
 
-          return (this.active = "LGBT");
+          return (this.active = "Other");
         }
       });
 
@@ -146,7 +158,7 @@ export default {
       this.setGender(this.active);
       setInterval(() => {
         this.$router.push({ name: "Step 1" });
-      }, 2600);
+      }, 1000);
     }
   }
 };
@@ -163,7 +175,7 @@ export default {
 }
 
 .grid-container {
-  @apply grid grid-cols-3 gap-10 text-gray-400 content-center;
+  @apply grid grid-cols-3 text-gray-400 content-center;
 }
 
 .icon-prefix {
