@@ -1,4 +1,5 @@
 //require zone
+const compression = require('compression')
 const path = require('path');
 const cors = require('cors');
 const express = require('express');
@@ -19,7 +20,9 @@ const SCANSRef = db.collection('scans');
 const USERSRef = db.collection('users');
 const LINKRef = db.collection('links');
 const ALLRef = db.collection('allstats');
-
+var bunyan = require('bunyan');
+var log = bunyan.createLogger({name: "myapp"});
+log.info("hi");
 // server setup
 testController.use(session({
     secret: "ilovescotchscotfchyscotchscotch", resave: false,
@@ -28,6 +31,7 @@ testController.use(session({
 testController.use(passport.initialize());
 testController.use(passport.session());
 testController.use(cookieParser());
+testController.use(compression());
 testController.use(cors({ origin: true }));
 testController.set('views', path.join(__dirname, 'views'));
 testController.set('view engine', 'ejs');
@@ -45,7 +49,8 @@ passport.use(
                 try {
                     const usersnapshot = await USERSRef.doc(profile.id).get();
                     if (!usersnapshot.exists) {//user สมัครครั้งแรก
-                        console.log("new User")
+                        
+                        log.info("new User")
                         const res = await USERSRef.doc(profile.id).set({
                             id: uuidv4(),
                             name: profile.name.givenName + " " + profile.name.familyName,
@@ -64,8 +69,8 @@ passport.use(
                         })
                     }
                     const usersnapshots = await USERSRef.doc(profile.id).get().then((doc) => {
-                        console.log("user found");
-                        console.log(doc.data())
+                        log.info("user found");
+                        log.info(doc.data())
                         return done(null, doc.data());
                     })
                 }
@@ -86,12 +91,12 @@ passport.deserializeUser(async function (id, done) {
 //generate qrcode รอเทส
 testController.get("/genqrcode", isLoggedIn, async function (req, res) {
     try {
-        console.log("genQR: " + req.user.uid);
+        log.info("genQR: " + req.user.uid);
         const genqrsnapshot = await LINKRef.where('uid', '==', req.user.uid).get();
         const name = uuidv4();
         const data = { link: name, uid: req.user.uid, time: 10 };
         if (genqrsnapshot.empty) {
-            console.log("create qr " + req.user.uid)
+            log.info("create qr " + req.user.uid)
             const newDoc = await db.collection('links').doc(req.user.uid).set(data)
                 .then(() => {
                     res.status(200).send({
@@ -113,10 +118,10 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
         else {
             genqrsnapshot.forEach(doc => {
                 if (doc.data().time <= 0) {
-                    console.log('Delete qr ' + req.user.uid)
+                    log.info('Delete qr ' + req.user.uid)
                     const qrDel = db.collection('links').doc(doc.id).delete()
                         .then(() => {
-                            console.log(name + req.user.uid);
+                            log.info(name + req.user.uid);
                             const newDoc = db.collection('links').doc(req.user.uid).set(data).then(() => {
                                 res.status(200).send({
                                     'statusCode': '201',
@@ -136,7 +141,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
                         });
                 }
                 else {
-                    console.log('normal qR' + req.user.uid);
+                    log.info('normal qR' + req.user.uid);
                     res.status(200).send({
                         'statusCode': '200',
                         'statusText': 'Request Success',
@@ -163,7 +168,7 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
     const useruid = req.user.uid
     const linkRef = LINKRef.where('link', '==', req.params.id).get().then((linkRef, req) => {
         if (linkRef.empty) {
-            console.log(req.user.uid + " หา " + req.params.id + " ไม่เจอ ");
+            log.info(req.user.uid + " หา " + req.params.id + " ไม่เจอ ");
             res.send("ลิ้งคเสีย")
             return;
         }
@@ -193,7 +198,7 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
                     const bountychek = await BOUNTYRef.doc(doc.data().uid).get().then((bountychek) => {
                         if (!bountychek.exists) {
                             if (usersa) {
-                                console.log("kuy" + scanchecks1)
+                                log.info("kuy" + scanchecks1)
                                 const userupdatepoint = USERSRef.doc(useruid).get().then((userupdatepoint) => {
                                     const update = USERSRef.doc(useruid).set({ point: userupdatepoint.data().point + 3 }, { merge: true })
                                 })
@@ -210,7 +215,7 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
                             }
                         } else {
                             if (usersa && boun) {
-                                console.log("kuy" + scanchecks1)
+                                log.info("kuy" + scanchecks1)
                                 const userupdatepoint = USERSRef.doc(useruid).get().then((userupdatepoint) => {
                                     const update = USERSRef.doc(useruid).set({ point: userupdatepoint.data().point + 5 }, { merge: true })
                                 })
@@ -225,7 +230,7 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
                                 return;
                             }
                             else if (usersa || boun) {
-                                console.log("kuy" + scanchecks1)
+                                log.info("kuy" + scanchecks1)
                                 const userupdatepoint = USERSRef.doc(useruid).get().then((userupdatepoint) => {
                                     const update = USERSRef.doc(useruid).set({ point: userupdatepoint.data().point + 2 }, { merge: true })
                                 })
@@ -268,7 +273,7 @@ testController.route("/facebook/callback").get(
 
 testController.get("/api/user", isLoggedIn, (req, res) => {
     try {
-        console.log('---------->api/user');
+        log.info('---------->api/user');
         if (isLoggedIn) {
             res.status(200).json(req.user);
         } else {
@@ -291,7 +296,7 @@ testController.get("/api/user", isLoggedIn, (req, res) => {
 
 testController.get("/", (req, res) => {
     try {
-        console.log('----------->Index')
+        log.info('----------->Index')
         res.status(200).render("index");
     } catch (err) {
         res.status(500).send({
@@ -304,7 +309,7 @@ testController.get("/", (req, res) => {
 });
 //admin query tools
 testController.get("/ryutools/:collection/:docname", isAdmin, async (req, res) => {
-    console.log("king querty doc " + req.params.collection + " doc name " + req.params.docname)
+    log.info("king querty doc " + req.params.collection + " doc name " + req.params.docname)
     const all = await db.collection(req.params.collection).doc(req.params.docname).get();
     // const all = await db.collection('bountys').doc('bounty').get();
     if (!all.exists) {
@@ -315,7 +320,7 @@ testController.get("/ryutools/:collection/:docname", isAdmin, async (req, res) =
         res.send(all.data())
     }
     // try {
-    //     console.log('----------->Start');
+    //     log.info('----------->Start');
     //     //res.send("start")
     //     res.status(200).send({
     //         'statusCode': '200',
@@ -340,7 +345,7 @@ testController.get("/roletest", async (req, res) => {
 
 testController.get("/logout", (req, res) => {
     try {
-        console.log('----------> Logout')
+        log.info('----------> Logout')
         req.logout();
         res.redirect("/");
     } catch (err) {
@@ -362,11 +367,11 @@ function isLoggedIn(req, res, next) {
     try {
         // if user is authenticated in the session, carry on
         if (req.isAuthenticated()) {
-            console.log('---------->isOn');
+            log.info('---------->isOn');
             return next();
         }
         else {    // if they aren't redirect them to the home page
-            console.log('----------->isOut');
+            log.info('----------->isOut');
             res.redirect("/");
         }
     } catch (err) {
@@ -384,17 +389,17 @@ function isAdmin(req, res, next) {
         // if user is authenticated in the session, carry on
         if (req.isAuthenticated()) {
             if (req.user.role == 'king') {
-                console.log('king use')
+                log.info('king use')
                 return next();
             }
             else {
-                console.log("user request admin tool")
+                log.info("user request admin tool")
                 res.send("you shall not pass");
                 return;
             }
         }
         else {// if they aren't redirect them to the home page
-            console.log('----------->isOut');
+            log.info('----------->isOut');
             res.send("you shall not pass");
             return;
         }
