@@ -20,14 +20,17 @@ const SCANSRef = db.collection('scans');
 const USERSRef = db.collection('users');
 const LINKRef = db.collection('links');
 const ALLRef = db.collection('allstats');
+const helmet = require("helmet");
 var bunyan = require('bunyan');
-var log = bunyan.createLogger({name: "myapp"});
+const { doc } = require('prettier');
+var log = bunyan.createLogger({ name: "myapp" });
 log.info("hi");
 // server setup
 testController.use(session({
     secret: "ilovescotchscotfchyscotchscotch", resave: false,
     saveUninitialized: false
 }));
+testController.use(helmet());
 testController.use(passport.initialize());
 testController.use(passport.session());
 testController.use(cookieParser());
@@ -49,7 +52,6 @@ passport.use(
                 try {
                     const usersnapshot = await USERSRef.doc(profile.id).get();
                     if (!usersnapshot.exists) {//user สมัครครั้งแรก
-                        
                         log.info("new User")
                         const res = await USERSRef.doc(profile.id).set({
                             id: uuidv4(),
@@ -67,10 +69,16 @@ passport.use(
                             newuser: 1,
                             count: 0,
                         })
+                        const newusers = ALLRef.doc('stat').get().then((newusers)=> {
+                            const newuse = ALLRef.doc('stat').set({alluser: newusers.data().alluser + 1}, { merge: true })
+                        })
                     }
                     const usersnapshots = await USERSRef.doc(profile.id).get().then((doc) => {
+                        const vis = ALLRef.doc('stat').get().then((vis)=> {
+                            const visit = ALLRef.doc('stat').set({allvisitor: vis.data().allvisitor + 1 }, { merge: true })
+                        })
                         log.info("user found");
-                        log.info(doc.data())
+                        log.info(doc.data().name + " is logged in")
                         return done(null, doc.data());
                     })
                 }
@@ -338,7 +346,7 @@ testController.get("/ryutools/:collection/:docname", isAdmin, async (req, res) =
     // }
 });
 
-testController.get("/roletest", async (req, res) => {
+testController.get("/roletest", isAdmin ,async (req, res) => {
     res.send(req.user)
 
 });
@@ -359,7 +367,8 @@ testController.get("/logout", (req, res) => {
 });
 testController.use(function (req, res, next) {
     res.status(404);
-    res.render("gimmick")
+    res.render("404")
+    // res.render("gimmick")
 })
 
 // route middleware to make sure
@@ -386,21 +395,19 @@ function isLoggedIn(req, res, next) {
 
 function isAdmin(req, res, next) {
     try {
-        // if user is authenticated in the session, carry on
         if (req.isAuthenticated()) {
             if (req.user.role == 'king') {
-                log.info('king use')
+                log.info('king ' + req.user.name +" use")
                 return next();
             }
             else {
-                log.info("user request admin tool")
-                res.send("you shall not pass");
+                log.info(req.user.name + " request admin tool")
+                res.render("404");
                 return;
             }
         }
-        else {// if they aren't redirect them to the home page
-            log.info('----------->isOut');
-            res.send("you shall not pass");
+        else {
+            res.render("404");
             return;
         }
     } catch (err) {
@@ -412,5 +419,4 @@ function isAdmin(req, res, next) {
         });
     }
 }
-
 module.exports = testController;
