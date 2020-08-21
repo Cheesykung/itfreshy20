@@ -117,7 +117,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
                     const qrDel = db.collection('links').doc(doc.id).delete()
                         .then(() => {
                             console.log(name + req.user.uid);
-                            const newDoc = db.collection('links').add(data).then(() => {
+                            const newDoc = db.collection('links').doc(req.user.uid).set(data).then(() => {
                                 res.status(200).send({
                                     'statusCode': '201',
                                     'statusText': 'Created',
@@ -158,90 +158,98 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
 });
 //เสร็จ
 testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
-    const snapshot = await LINKRef.where('link', '==', req.params.id).get();
-    const userupdate = await USERSRef.where('uid', '==', req.user.uid).get();
-    const scan = await SCANSRef.where('uid', '==', req.user.uid).get();
-    const bountylink = await SBOUNTYRef.where('uid', '==', req.user.uid).get();
-    if (snapshot.empty) {
-        res.send("cannot find link")
-        console.log(req.user.name + " cannot find link")
-        return;
-    }
-    else {
-        snapshot.forEach(doc => {
-            const idlink = doc.id
-            const uidlink = doc.data().uid
-            const timelink = doc.data().time
-            const bounty = BOUNTYRef.doc(uidlink).get()
-            let check = false
+    let boun
+    let usersa
+    const useruid = req.user.uid
+    const linkRef = LINKRef.where('link', '==', req.params.id).get().then((linkRef, req) => {
+        if (linkRef.empty) {
+            console.log(req.user.uid + " หา " + req.params.id + " ไม่เจอ ");
+            res.send("ลิ้งคเสีย")
+            return;
+        }
+        linkRef.forEach(doc => {
             if (doc.data().time <= 0) {
-                res.send("code เสียแล้ว")
-                console.log(req.user.name + " scan fail code ของ " + doc.data().name)
+                res.send("ลิ้งคหมดอายุ")
                 return;
             }
             else {
-                if (bounty.exists) {
-                    const scanbounty = SCANSRef.where('uid', '==', req.user.uid).get();
-                    bountylink.forEach(doc => {
-                        for (var k = 0; k < doc.data().scan.length; i++) {
-                            if (doc.data().scan[i] == uidlink) {
-                                console.log("bounty นี้ เคย scan แล้ว")
-                                res.send("เคยscan bounty นี้แล้ว")
+                (async function () {
+                    const scanchecks1 = await SCANSRef.doc(useruid).get().then((scanchecks1) => {
+                        if (scanchecks1.data().scan.indexOf(doc.data().uid) != "-1") {
+                            usersa = false
+                            return;
+                        }
+                        usersa = true
+                        return;
+                    })
+                    const bountya = await SBOUNTYRef.doc(useruid).get().then((bountya) => {
+                        if (bountya.data().scan.indexOf(doc.data().uid) != "-1") {
+                            boun = false
+                            return;
+                        }
+                        boun = true
+                        return;
+                    })
+                    const bountychek = await BOUNTYRef.doc(doc.data().uid).get().then((bountychek) => {
+                        if (!bountychek.exists) {
+                            if (usersa) {
+                                console.log("kuy" + scanchecks1)
+                                const userupdatepoint = USERSRef.doc(useruid).get().then((userupdatepoint) => {
+                                    const update = USERSRef.doc(useruid).set({ point: userupdatepoint.data().point + 3 }, { merge: true })
+                                })
+                                const timedecrease = LINKRef.doc(doc.id).set({ time: doc.data().time - 1 }, { merge: true })
+                                const scansave = SCANSRef.doc(useruid).update({
+                                    scan: admin.firestore.FieldValue.arrayUnion(doc.data().uid)
+                                });
+                                res.send("ล่าปกติ point + 3")
                                 return;
                             }
-                        }
-                        scanbounty.forEach(doc => {
-                            for (var i = 0; i < doc.data().scan.length; i++) {
-                                if (doc.data().scan[i] == uidlink) {
-                                    letcheck = true
-                                    return;
-                                }
-                            }
-                            if (letcheck) {
-                                userupdate.forEach(doc => {
-                                    console.log("scan just bounty")
-                                    const useruptaeres = USERSRef.doc(doc.id).update({ point: doc.data().point + 2 });
-                                });
-                            }
                             else {
-                                userupdate.forEach(doc => {
-                                    console.log("scan all")
-                                    const useruptaeres = USERSRef.doc(doc.id).update({ point: doc.data().point + 5 });
-                                });
-                            }
-                            const timeupdate = db.collection('links').doc(idlink).update({ time: timelink - 1 });
-                            const scanres = SCANSRef.doc(doc.id).update({
-                                scan: admin.firestore.FieldValue.arrayUnion(uidlink)
-                            })
-                            const bounryscanres = SBOUNTYRef.doc(doc.id).update({
-                                scan: admin.firestore.FieldValue.arrayUnion(uidlink)
-                            })
-                            res.send(uidlink)
-                        })
-                    })
-                }
-                else {
-                    console.log("not bounty")
-                    scan.forEach(doc => {
-                        for (var i = 0; i < doc.data().scan.length; i++) {
-                            if (doc.data().scan[i] == uidlink) {
                                 res.send("เคยscan แล้ว")
                                 return;
                             }
+                        } else {
+                            if (usersa && boun) {
+                                console.log("kuy" + scanchecks1)
+                                const userupdatepoint = USERSRef.doc(useruid).get().then((userupdatepoint) => {
+                                    const update = USERSRef.doc(useruid).set({ point: userupdatepoint.data().point + 5 }, { merge: true })
+                                })
+                                const timedecrease = LINKRef.doc(doc.id).set({ time: doc.data().time - 1 }, { merge: true })
+                                const scansave = SCANSRef.doc(useruid).update({
+                                    scan: admin.firestore.FieldValue.arrayUnion(doc.data().uid)
+                                });
+                                const bountysave = SBOUNTYRef.doc(useruid).update({
+                                    scan: admin.firestore.FieldValue.arrayUnion(doc.data().uid)
+                                });
+                                res.send("ล่าพิเศษ point + 5")
+                                return;
+                            }
+                            else if (usersa || boun) {
+                                console.log("kuy" + scanchecks1)
+                                const userupdatepoint = USERSRef.doc(useruid).get().then((userupdatepoint) => {
+                                    const update = USERSRef.doc(useruid).set({ point: userupdatepoint.data().point + 2 }, { merge: true })
+                                })
+                                const timedecrease = LINKRef.doc(doc.id).set({ time: doc.data().time - 1 }, { merge: true })
+                                const scansave = SCANSRef.doc(useruid).update({
+                                    scan: admin.firestore.FieldValue.arrayUnion(doc.data().uid)
+                                });
+                                const bountysave = SBOUNTYRef.doc(useruid).update({
+                                    scan: admin.firestore.FieldValue.arrayUnion(doc.data().uid)
+                                });
+                                res.send("ล่าซ่ำ + 2")
+                                return;
+                            }
+                            else {
+                                res.send("เคย scan แล้ว")
+                                return;
+                            }
                         }
-                        const timeupdate = db.collection('links').doc(idlink).update({ time: timelink - 1 });
-                        userupdate.forEach(doc => {
-                            const useruptaeres = USERSRef.doc(doc.id).update({ point: doc.data().point + 3 });
-                        });
-                        const scanres = SCANSRef.doc(doc.id).update({
-                            scan: admin.firestore.FieldValue.arrayUnion(uidlink)
-                        })
-                        res.send(uidlink)
                     })
-                };
+                })();
+
             }
-        })
-    }
+        });
+    })
 });
 
 testController.get(
