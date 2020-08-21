@@ -21,4 +21,5 @@ export default {
   outline: 0;
   box-shadow: none;
 }
+
 </style>

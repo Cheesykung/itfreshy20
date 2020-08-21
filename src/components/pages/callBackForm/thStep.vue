@@ -9,25 +9,21 @@
       <!--- Form area --->
       <formContain>
         <template #content>
-            <!-- <div class="content-center"> -->
-                <!-- <div style="padding-left: 15%; padding-right: 15%"> -->
-                    <div class="grid grid-flow-col grid-cols-2 grid-rows-1">
-                        <div class="border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 border-teal-400 text-xs cursor-pointer">music</div>
-                        <div class="border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 text-xs cursor-pointer">movie</div>
-                    </div>
-                <!-- </div> -->
-                <!-- <div style="padding-left: 35%; padding-right: 35%"> -->
-                    <div class="content-center border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 text-xs cursor-pointer"
-                    >sport</div>
-                 <!-- </div> -->
-                <div>
-                    <div class="grid grid-flow-col grid-cols-2 grid-rows-1">
-                        <div class="border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 text-xs cursor-pointer">pet</div>
-                        <div class="border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 text-xs cursor-pointer">code</div>
-                    </div>
+            <div class="grid grid-flow-col grid-cols-3 grid-rows-3 gap-4 flex mb-2 ml-4 mr-0">
+                <div class="transition duration-500 ease-in-out hover:bg-teal-500 transform hover:-translate-y-1 hover:scale-150 border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 border-teal-400 text-xs cursor-pointer "
+                    :class="active === 'movie' ? 'active' : ''"
+                >music</div>
+                <div class="transition duration-500 ease-in-out hover:bg-gray-500 transform hover:-translate-y-1 hover:scale-150 border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 border-teal-400 text-xs cursor-pointer ">music</div>
+                <div class="transition duration-500 ease-in-out hover:bg-gray-500 transform hover:-translate-y-1 hover:scale-150 border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 border-teal-400 text-xs cursor-pointer ">music</div>
+                <div class="transition duration-500 ease-in-out hover:bg-gray-500 transform hover:-translate-y-1 hover:scale-150 border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 border-teal-400 text-xs cursor-pointer ">music</div>
+                <div class="transition duration-500 ease-in-out hover:bg-gray-500 transform hover:-translate-y-1 hover:scale-150 border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 border-teal-400 text-xs cursor-pointer ">music</div>
+                <div class="transition duration-500 ease-in-out hover:bg-gray-500 transform hover:-translate-y-1 hover:scale-150 border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 border-teal-400 text-xs cursor-pointer ">music</div>
+                <div class="transition duration-500 ease-in-out hover:bg-gray-500 transform hover:-translate-y-1 hover:scale-150 border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 border-teal-400 text-xs cursor-pointer ">music</div>
+                <div class="transition duration-500 ease-in-out hover:bg-gray-500 transform hover:-translate-y-1 hover:scale-150 border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 border-teal-400 text-xs cursor-pointer ">music</div>
+                <div class="transition duration-500 ease-in-out hover:bg-gray-500 transform hover:-translate-y-1 hover:scale-150 border rounded-full h-16 w-16 flex items-center justify-center bg-gray-600 border-teal-400 text-xs cursor-pointer ">music</div>
             </div>
         <span class="content-center flex-wrap">
-            <button class="font-medium text-sm w-1/6 h-8 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 border-1 text-white rounded " type="button">
+            <button class="font-medium text-sm w-1/6 h-8 btn bg-blue-600 hover:bg-blue-800 border-1 text-white rounded" type="button">
               next
             </button>
         </span>
@@ -55,9 +51,8 @@ export default {
   },
   data() {
       return {
-          name: "",
-          nickname: "",
-          age: null
+          gender: ["", "", ""],
+          active: "movie"
       }
   },
   methods: {
@@ -73,7 +68,7 @@ export default {
 } */
 
 .grid-container {
-  @apply grid grid-cols-3 gap-10 text-gray-400 content-center;
+  @apply grid grid-cols-3 gap-10 text-gray-700 content-center;
 }
 
 .bullet {
@@ -83,4 +78,8 @@ export default {
 .bullet.active {
   @apply bg-blue-500;
 }
+
+
+
+
 </style>

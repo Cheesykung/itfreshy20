@@ -3,7 +3,7 @@
     <template #headline>
       STEP
       <span class="text-orange-500 font-semibold">1</span>
-      <p class="text-sm">Profile</p>
+      <p class="text-sm">About you</p>
     </template>
     <template #body>
       <!--- Form area --->
@@ -11,27 +11,40 @@
         <template #content>
           <div class="flex flex-col flex-wrap space-y-8">
             <span class="space-y-3 flex flex-col">
-              <p class="text-left text-gray-100 text-opacity-100">Name</p>
-              <input
-                type="text"
+              <label
+                for="branch"
+                class="text-left text-gray-100 text-opacity-100"
+              >Branch : {{ branch }}</label>
+              <select
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                v-model="name"
-              />
+                name="branch"
+                v-model="branch"
+              >
+                <option>IT</option>
+                <option>DSBA</option>
+                <option>BIT</option>
+              </select>
             </span>
             <span class="space-y-3 flex flex-col">
-              <p class="text-left text-gray-100 text-opacity-100">Nickname</p>
-              <input
-                type="text"
+              <label for="year" class="text-left text-gray-100 text-opacity-100">Year : {{ year }}</label>
+              <select
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                v-model="nickname"
-              />
+                name="year"
+                v-model="year"
+              >
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+              </select>
             </span>
             <span class="space-y-3 flex flex-col">
-              <p class="text-left text-gray-100 text-opacity-100">Age</p>
+              <label for="contact" class="text-left text-gray-100 text-opacity-100">Contact</label>
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                v-model="age"
+                name="contact"
+                v-model="contact"
               />
             </span>
           </div>
@@ -40,7 +53,6 @@
             <button
               type="submit"
               class="btn bg-blue-600 hover:bg-blue-800 text-blue-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
-              
               id="sub_button"
             >
               next step
@@ -70,11 +82,14 @@ export default {
     pageHFull,
     formContain
   },
+  mounted() {
+   
+  },
   data() {
     return {
-      name: "",
-      nickname: "",
-      age: null
+      branch: "",
+      year: "",
+      contact: null
     };
   },
   methods: {}
