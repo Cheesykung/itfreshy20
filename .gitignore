@@ -27,3 +27,4 @@ pnpm-debug.log*
 functions/config/serviceAccount.json
 functions/api/config/serviceAccount.json
 functions/firebase-debug.log
+*.log
