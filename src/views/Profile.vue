@@ -15,7 +15,7 @@
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
             <i class="fas fa-map-marked-alt"></i>
-            <span>IT KMITL, รุ่น 18</span>
+            <span>IT KMITL, ปี {{ year }}</span>
           </div>
           <div class="like space-x-4">
             <i class="fas fa-pizza-slice text-gray-400"></i>
@@ -27,7 +27,7 @@
         <!--- Profile Stats --->
         <div class="stats">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">268</span>
+            <span class="text-2xl font-semibold text-gray-200">{{ hunted }}</span>
             <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
@@ -127,7 +127,9 @@ export default {
     ...mapGetters("user", {
       getProfile: "getProfile",
       getBro: "getBro",
-      getProfileById: "getProfileById"
+      getProfileById: "getProfileById",
+      hunted: "getHuntedCount",
+      year: "getYear"
     }),
     // ...mapGetters("register", ["getGender"]),
     routeId() {

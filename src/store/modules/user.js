@@ -82,14 +82,17 @@ const getters = {
   getProfile: (state) => {
     return state.profile;
   },
+  getHuntedCount: (state) => {
+    return state.profile.count;
+  },
+  getYear: (state) => {
+    return state.profile.year;
+  },
   getUser: (state) => {
     return state.profile.user;
   },
   getPhotoURL: (state) => {
     return state.profile.photoURL;
-  },
-  getEmail: (state) => {
-    return state.profile.email;
   },
   getFirstTime: (state) => {
     return state.firstTime;
@@ -112,21 +115,18 @@ const mutations = {
   setPhotoURL: (state, url) => {
     state.profile.photoURL = url;
   },
-  setEmail: (state, email) => {
-    state.profile.email = email;
-  },
   setFirstTime: (state, bool) => {
     state.firstTime = bool;
   },
   clearProfile: (state) => {
     state.profile = null;
   },
-}; 
+};
 
 const actions = {
   async getFacebookAuth({ commit }) {
     return new Promise((resolve, reject) => {
-      axios 
+      axios
         .get("/api/user")
         .then((res) => {
           commit("setProfile", res.data);

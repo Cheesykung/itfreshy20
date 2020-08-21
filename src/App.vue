@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Nav v-if="!signInCheck && !$route.matched.some(({ path }) => path === '/continue')"/>
+    <Nav v-if="signInCheck && !$route.matched.some(({ path }) => path === '/continue')"/>
     <transition name="animated">
       <router-view />
     </transition>
@@ -49,6 +49,22 @@ html, body {
 
 button:focus {
   outline: 0 !important;
+}
+
+::-webkit-scrollbar {
+  width: .35rem;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-primary-1000;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary-850 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary-700 ;
 }
 
 .lucky-font {
