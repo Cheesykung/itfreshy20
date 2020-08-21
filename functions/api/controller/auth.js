@@ -4,9 +4,6 @@ const express = require('express');
 const admin = require('../config/admin');
 const firestore = admin.firestore();
 const linksRef = firestore.collection('links');
-
-const AES = require("crypto-js/aes");
-const CryptoJS = require("crypto-js");
 const { v4: uuidv4 } = require('uuid');
 
 //require('dayjs/locale/th');
