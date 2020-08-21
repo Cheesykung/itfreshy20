@@ -1,8 +1,8 @@
 <template>
   <pageHFull>
     <template #headline>
-      <span class="text-secondary_a font-semibold">STEP 1</span>
-      <p class="text-sm text-gray-500">About you</p>
+      STEP <span class="text-primary-500 font-semibold">1</span>
+      <p class="text-sm text-primary-300">About you</p>
     </template>
     <template #body>
       <!--- Form area --->
@@ -51,7 +51,7 @@
           <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
             <button
               type="submit"
-              class="btn bg-blue-600 hover:bg-blue-800 text-blue-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+              class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               id="sub_button"
             >
               next step
@@ -96,11 +96,5 @@ export default {
 </script>
 
 <style scoped>
-.bullet {
-  @apply w-2 h-2 bg-blue-900 block rounded-full;
-}
 
-.bullet.active {
-  @apply bg-blue-500;
-}
 </style>

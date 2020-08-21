@@ -1,9 +1,9 @@
 <template>
   <pageHFull>
     <template #headline>
-      your
+      <span class="text-3xl">your</span>
       <br />
-      <span class="text-blue-500 font-semibold text-5xl">gender</span>
+      <span class="text-primary-500 font-semibold text-5xl">gender</span>
     </template>
     <template #body>
       <div class="grid-container gap-2 px-4 md:px-24">
@@ -69,7 +69,7 @@
       <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
         <button
           type="submit"
-          class="btn bg-blue-600 hover:bg-opacity-75 text-blue-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+          class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
           :class="active ? 'animate-pulse' : ''"
           @click="submitGen()"
           id="sub_button"
@@ -180,13 +180,14 @@ export default {
 
 .icon-prefix {
   border-radius: 100%;
-  border: 0.1rem #718096 solid;
-  @apply rounded-full flex justify-center items-center flex-col text-gray-500;
+  border: 0.1rem #a8a5da solid;
+  @apply rounded-full flex justify-center items-center flex-col text-primary-275 opacity-75;
 }
 
 .icon-prefix.active {
-  border: 0.2rem #4299e1 solid;
-  @apply text-blue-500 relative;
+  border: 0.2rem #2720A4 solid;
+  
+  @apply text-primary relative opacity-100;
 }
 
 .icon-prefix.active::before {
@@ -195,23 +196,15 @@ export default {
   right: 2%;
   top: 2%;
   transform: translate(-2%, -2%);
-  @apply text-gray-300 bg-blue-500 rounded-full w-6 h-6 flex items-center justify-center;
+  @apply text-primary-275 bg-primary rounded-full w-6 h-6 flex items-center justify-center;
 }
 
 .text-prefix {
-  @apply font-normal text-gray-500;
+  @apply font-normal text-primary-275 opacity-75;
 }
 
 .text-prefix.text-active {
-  @apply text-blue-500 font-semibold;
-}
-
-.bullet {
-  @apply w-2 h-2 bg-blue-900 block rounded-full;
-}
-
-.bullet.active {
-  @apply bg-blue-500;
+  @apply text-primary font-semibold opacity-100;
 }
 
 @media (min-width: 768px) {
