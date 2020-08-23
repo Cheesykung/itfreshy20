@@ -1,9 +1,8 @@
 <template>
   <pageHFull>
     <template #headline>
-      STEP
-      <span class="text-blue-500 font-semibold">2</span>
-      <p class="text-sm">Profile</p>
+      STEP <span class="text-primary-500 font-semibold">2</span>
+      <p class="text-sm text-primary-300">Profile</p>
     </template>
     <template #body>
       <!--- Form area --->
@@ -15,6 +14,7 @@
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="ชื่อจริง นามสกุล"
                 v-model="name"
               />
             </span>
@@ -23,6 +23,7 @@
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="ชื่อเล่น"
                 v-model="nickname"
               />
             </span>
@@ -31,7 +32,8 @@
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                v-model="nickname"
+                placeholder="รหัสนักศึกษา"
+                v-model="id"
               />
             </span>
             <span class="space-y-3 flex flex-col">
@@ -40,7 +42,7 @@
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 v-model="national"
               >
-                <option>Buddhism</option>
+                <option selected>Buddhism</option>
                 <option>Christ</option>
                 <option>Islam</option>
               </select>
@@ -50,15 +52,15 @@
           <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
             <button
               type="submit"
-              class="btn bg-blue-600 hover:bg-blue-800 text-blue-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+              class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               id="sub_button"
             >
               next step
               <ion-icon name="chevron-forward-outline"></ion-icon>
             </button>
             <span class="flex flex-row flex-no-wrap space-x-3">
-              <span class="bullet active"></span>
               <span class="bullet"></span>
+              <span class="bullet active"></span>
               <span class="bullet"></span>
               <span class="bullet"></span>
             </span>
@@ -87,6 +89,7 @@ export default {
       return {
           name: "",
           nickname: "",
+          id: null,
           national: ""
       }
   },
@@ -96,11 +99,5 @@ export default {
 </script>
 
 <style scoped>
-.bullet {
-  @apply w-2 h-2 bg-blue-900 block rounded-full;
-}
 
-.bullet.active {
-  @apply bg-blue-500;
-}
 </style>

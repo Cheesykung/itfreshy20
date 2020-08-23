@@ -24,4 +24,17 @@
   );
 }
 
+
+* >>> .bullet {
+  @apply w-2 h-2 bg-primary-700 block rounded-full;
+}
+
+* >>> .bullet.active {
+  @apply bg-primary-500;
+}
+
+* >>> ::placeholder {
+  @apply text-primary-400 opacity-75 text-sm;
+}
+
 </style>

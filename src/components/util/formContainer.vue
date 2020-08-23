@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-gray-900 bg-opacity-75 flex flex-col justify-center py-16 md:py-24 space-y-8 md:space-y-20 flex-wrap px-10 md:px-24 md:mx-48 rounded-sm"
+    class="bg-primary-1000 bg-opacity-75 flex flex-col justify-center py-16 md:py-24 space-y-16 md:space-y-20 flex-wrap px-6 md:px-24 md:mx-48 rounded-md"
   >
     <slot name="content"></slot>
   </div>
@@ -13,8 +13,9 @@ export default {
 <style scoped>
 /*** Form base styles ***/
 .base-input {
-  @apply bg-gray-800 py-2 px-3 text-gray-500 bg-opacity-50 rounded-sm;
-  caret-color: #a0aec0;
+  @apply bg-transparent py-2 px-2 text-primary-250 bg-opacity-25 rounded-none border-t-0 border-l-0 border-r-0;
+  caret-color: #524cb6;
+  border-bottom: 1px solid #1f1983;
 }
 
 .base-input:focus {
