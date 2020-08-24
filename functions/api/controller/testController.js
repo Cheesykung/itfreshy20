@@ -15,7 +15,6 @@ const { S_IFBLK } = require("constants");
 const testController = express();
 const SECRef = db.collection("secertfromuser");
 const BOUNTYRef = db.collection("bountys");
-const SBOUNTYRef = db.collection("bountyscan");
 const SCANSRef = db.collection("scans");
 const USERSRef = db.collection("users");
 const LINKRef = db.collection("links");
@@ -237,10 +236,10 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
                 usersa = true;
                 return;
               });
-            const bountya = await SBOUNTYRef.doc(useruid)
+            const bountya = await SCANSRef.doc(useruid)
               .get()
               .then((bountya) => {
-                if (bountya.data().scan.indexOf(doc.data().uid) != "-1") {
+                if (bountya.data().bountyscan.indexOf(doc.data().uid) != "-1") {
                   boun = false;
                   return;
                 }
