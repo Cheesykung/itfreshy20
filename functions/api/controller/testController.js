@@ -15,12 +15,19 @@ const { S_IFBLK } = require("constants");
 const testController = express();
 const SECRef = db.collection("secertfromuser");
 const BOUNTYRef = db.collection("bountys");
-const SBOUNTYRef = db.collection("bountyscan");
 const SCANSRef = db.collection("scans");
 const USERSRef = db.collection("users");
 const LINKRef = db.collection("links");
 const ALLRef = db.collection("allstats");
 const helmet = require("helmet");
+const Cookies = require("js-cookie");
+const allowCrossDomain = function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+  next();
+};
+
 var bunyan = require("bunyan");
 const { doc } = require("prettier");
 const { link } = require("fs");
@@ -34,6 +41,7 @@ testController.use(
     saveUninitialized: false,
   })
 );
+testController.use(allowCrossDomain);
 testController.use(helmet());
 testController.use(passport.initialize());
 testController.use(passport.session());

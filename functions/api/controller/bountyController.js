@@ -27,19 +27,6 @@ bountyController.post('/random', async(req, res) => {
 
             bounty_id.push(users[x]);
             bounty.push(firestore.collection('users').doc(users[x])); // push address of users in bounty array
-            
-            //update id into 'scans' in db
-            let scan = [];
-            scan.push(users[x]);
-            await firestore.collection('scans').doc(users[x]).set({
-                'scan' : scan,
-                'uid' : users[x]
-            });
-            //update id into 'bountyscan' in db
-            await firestore.collection('bountyscan').doc(users[x]).set({
-                'scan' : scan,
-                'uid' : users[x]
-            });
         }
 
         // update ref of bounty to 'bounty' in db

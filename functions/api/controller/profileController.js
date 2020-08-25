@@ -32,6 +32,29 @@ profileController.post('/create', async (req, res) => {
             // upload payload that have all info to db
             await userRef.update(payload);
 
+            // update info in 'scans' db
+            // if input year = 1 or 2
+            if (year == 1 || year == 2) {
+                let scan = [];
+                let bountyscan = [];
+                scan.push(uid);
+                bountyscan.push(uid);
+                await firestore.collection('scans').doc(uid).update({
+                    'scan' : scan,
+                    'bountyscan' : bountyscan,
+                    'uid' : uid
+                    });
+                
+                // if input year = 1
+                // create doc in db 'secretfromuser' to get random gate
+                if (year == 1){
+                    await firestore.collection('secertfromuser').doc(id).set({
+                            'family' : "",
+                            'uid' : uid
+                    });
+                }
+            }
+
             res.status(200).send({
                 'statusCode' : '200',
                 'statusText' : 'OK',

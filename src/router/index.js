@@ -1,21 +1,23 @@
 /* eslint-disable prettier/prettier */
 import Vue from "vue";
 import VueRouter from "vue-router";
+import store from "@/store/index.js";
+import Cookies from "js-cookie";
 //import { urlencoded } from "express";
 
 /* Declare and import routes */
-const Dashboard = () => import("../views/Dashboard.vue")
-const Signin = () => import("../views/Login.vue")
-const Profile = () => import("../views/Profile.vue")
-const Hunted = () => import("../views/Hunted.vue")
+const Dashboard = () => import("../views/Dashboard.vue");
+const Signin = () => import("../views/Login.vue");
+const Profile = () => import("../views/Profile.vue");
+const Hunted = () => import("../views/Hunted.vue");
 
-const callback = () => import("../views/Callback.vue")
-const gender = () => import("../components/pages/callBackForm/gender.vue")
-const step1 = () => import("../components/pages/callBackForm/firstStep.vue")
-const step2 = () => import("../components/pages/callBackForm/secondStep.vue")
-const step3 = () => import("../components/pages/callBackForm/thStep.vue")
-const step4 = () => import("../components/pages/callBackForm/likesStep.vue")
-const step5 = () => import("../components/pages/callBackForm/lastStep.vue")
+const callback = () => import("../views/Callback.vue");
+const gender = () => import("../components/pages/callBackForm/gender.vue");
+const step1 = () => import("../components/pages/callBackForm/firstStep.vue");
+const step2 = () => import("../components/pages/callBackForm/secondStep.vue");
+const step3 = () => import("../components/pages/callBackForm/thStep.vue");
+const step4 = () => import("../components/pages/callBackForm/likesStep.vue");
+const step5 = () => import("../components/pages/callBackForm/lastStep.vue");
 
 Vue.use(VueRouter);
 
@@ -25,14 +27,13 @@ const routes = [
     name: "Dashboard",
     component: Dashboard,
     redirect: "/signin",
-
     meta: {
       title: "IT@KMITL FRESHY 2020",
+      requiresAuth: true,
       metaTags: [
         {
           name: "description",
           content: "For IT KMITL Freshy 17th only",
-          requiresAuth: true
         },
       ],
     },
@@ -43,7 +44,8 @@ const routes = [
     component: callback,
     meta: {
       title: "To be a freshy | IT@KMITL FRESHY 2020",
-      requiresAuth: true
+      requiresAuth: true,
+      firstTimeAuth: true,
     },
     redirect: "continue/gender",
     children: [
@@ -53,7 +55,7 @@ const routes = [
       { path: "step3", component: step3, name: "Step 3" },
       { path: "step4", component: step4, name: "What you likes?" },
       { path: "step5", component: step5, name: "Your Gate" },
-    ]
+    ],
   },
   {
     path: "/profile",
@@ -61,7 +63,7 @@ const routes = [
     component: Profile,
     meta: {
       title: "Your profile | IT@KMITL FRESHY 2020",
-      requiresAuth: true
+      requiresAuth: true,
     },
     children: [{ path: ":id", component: Profile, name: "Profile" }],
   },
@@ -71,8 +73,8 @@ const routes = [
     component: Hunted,
     meta: {
       title: "Hunted | IT@KMITL FRESHY 2020",
-      requiresAuth: true
-    }
+      requiresAuth: true,
+    },
   },
   {
     path: "/signin",
@@ -80,7 +82,6 @@ const routes = [
     component: Signin,
     meta: {
       title: "Sign in | IT@KMITL FRESHY 2020",
-      requiresAuth: false,
       metaTags: [
         {
           name: "description",
@@ -97,7 +98,32 @@ const router = new VueRouter({
   routes,
 });
 
+let firstTime = store.getters["user/getFirstTime"];
+
 router.beforeEach((to, from, next) => {
+  if (to.matched.some((item) => item.meta.requiresAuth)) {
+    if (Cookies.get("token") === null) {
+      next({
+        path: "/signin",
+        params: {
+          nextUrl: to.fullPath,
+        },
+      });
+    } else if (to.matched.some((item) => item.meta.firstTimeAuth) && Cookies.get("token") !== null) {
+      if (firstTime === 0) {
+        next();
+      } else {
+        next({
+          path: "/profile",
+          params: {
+            nextUrl: to.fullPath,
+          },
+        });
+      }
+    }
+  } else {
+    next();
+  }
   const nearestTitle = to.matched
     .slice()
     .reverse()
