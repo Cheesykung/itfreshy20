@@ -19,19 +19,16 @@ bountyController.post('/random', async(req, res) => {
             users.push(data.id);
         });
 
-        let bounty = [];
         let bounty_id = [];
         for (let i = 0; i < 10; i++) {
             //random number between 0 - 9 for array[index]
             let x = Math.floor(Math.random() * users.length);
-
             bounty_id.push(users[x]);
-            bounty.push(firestore.collection('users').doc(users[x])); // push address of users in bounty array
         }
 
         // update ref of bounty to 'bounty' in db
         await firestore.collection('bounty').doc('list').set({
-            'list' : bounty
+            'list' : bounty_id
         });
 
         res.status(200).send({
