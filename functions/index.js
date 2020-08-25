@@ -1,8 +1,7 @@
 require('module-alias/register')  
 const functions = require('firebase-functions');
 const testController = require('@app');
-const authController = require('@auth');
-// const profileController = require('@proflie');
+const profileController = require('@profile');
 // const ldrBoardController = require('@leaderboard');
 const bountyController = require('@bounty');
 
@@ -10,8 +9,7 @@ const bountyController = require('@bounty');
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 
 exports.test = functions.https.onRequest(testController);
-exports.auth = functions.https.onRequest(authController);
-// exports.profile = functions.https.onRequest(profileController);
+exports.profile = functions.https.onRequest(profileController);
 // exports.ldrboard = functions.https.onRequest(ldrBoardController);
 exports.bounty = functions.https.onRequest(bountyController);
 

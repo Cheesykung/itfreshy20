@@ -15,14 +15,15 @@
     "@app": "./api/controller/testController",
     "@auth": "./api/controller/auth",
     "@profile": "./api/controller/profileController",
-    "@leaderboard":"./api/controller/leaderboard",
-    "@bounty":"./api/controller/bountyController"
+    "@leaderboard": "./api/controller/leaderboard",
+    "@bounty": "./api/controller/bountyController"
   },
   "main": "index.js",
   "dependencies": {
     "bunyan": "^1.8.14",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
+    "cookie-session": "^1.4.0",
     "cors": "^2.8.5",
     "debug": "^4.1.1",
     "ejs": "^3.1.3",
