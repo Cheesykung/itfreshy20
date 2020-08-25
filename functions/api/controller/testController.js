@@ -15,6 +15,7 @@ const { S_IFBLK } = require("constants");
 const testController = express();
 const SECRef = db.collection("secertfromuser");
 const BOUNTYRef = db.collection("bountys");
+const SBOUNTYRef = db.collection("bountyscan");
 const SCANSRef = db.collection("scans");
 const USERSRef = db.collection("users");
 const LINKRef = db.collection("links");
@@ -250,7 +251,7 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
                         { point: userupdatepoint.data().point + 3 },
                         { merge: true }
                       );
-                       //ค่อยใส่ bounty
+                           //ค่อยใส่ bounty
                       res.send(userupdatepoint.data())
                       return;
                     })
