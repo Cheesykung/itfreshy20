@@ -3,88 +3,111 @@ const express = require('express');
 const admin = require('../config/admin');
 const { doc } = require('prettier');
 const firestore = admin.firestore();
-
 const profileController = express();
-
 profileController.use(cors({ origin: true }));
 
 profileController.post('/create', async (req, res) => {
+    //Create users profile
     try {
-        let uid = req.body.uid;
-        //let user_uid = req.user.uid;
-        //console.log(user_uid);
-        let {id, fname, surname, nickname, age, sex, religion, branch, year, contact} = req.body;
+        let uid = req.headers.uid; //require front-end send uid to know where to update the info
+        let userRef = firestore.collection('users').doc(uid);
+        let haveUID = await userRef.get();
 
-        let payload = {
-            'id' : id,
-            'fname' : fname,
-            'surname' : surname,
-            'nickname' : nickname,
-            'age' : age,
-            'sex' : sex,
-            'religion' : religion,
-            'branch' : branch,
-            'year' : year,
-            'contact' : contact
-        };
+        //Check that we have this uid in db or not?
+        if (haveUID.exists){
+            let {id, fname, surname, nickname, age, sex, religion, branch, year, contact} = req.body;
 
-        let userRef = await firestore.collection("users").where("uid", "==", uid).get();
-        let ref = '';   // ประกาศตัวแปรมารับค่าที่อยู่ uid เพื่อให้สามารถนำตัวแปรนี้ไปใช้นอกฟังชั่น querySnapshot ได้
-                        // ไม่รู้ทำไมมันใช้ return ไม่ได้เหมือนกัน
-                        // ตอน re-faq code เดะมาดูละกันนะ ^-^
-        userRef.forEach(function (querySnapshot) {
-            ref = querySnapshot.id;
-        });
-        await firestore.collection("users").doc(ref).update(payload);
+            let payload = {
+                'id' : id,
+                'fname' : fname,
+                'surname' : surname,
+                'nickname' : nickname,
+                'age' : age,
+                'sex' : sex,
+                'religion' : religion,
+                'branch' : branch,
+                'year' : year,
+                'contact' : contact
+            };
+            // upload payload that have all info to db
+            await userRef.update(payload);
 
-        res.status(200).send({
-            'status' : '200',
-            'status code' : 'OK',
-            'error' : false,
-            'message' : 'PROFILE UPDATED',
-            'data' : payload
-        });
-        return ;
+            // update info in 'scans' db
+            // if input year = 1 or 2
+            if (year == 1 || year == 2) {
+                let scan = [];
+                let bountyscan = [];
+                scan.push(uid);
+                bountyscan.push(uid);
+                await firestore.collection('scans').doc(uid).update({
+                    'scan' : scan,
+                    'bountyscan' : bountyscan,
+                    'uid' : uid
+                    });
+                
+                // if input year = 1
+                // create doc in db 'secretfromuser' to get random gate
+                if (year == 1){
+                    await firestore.collection('secertfromuser').doc(id).set({
+                            'family' : "",
+                            'uid' : uid
+                    });
+                }
+            }
 
+            res.status(200).send({
+                'statusCode' : '200',
+                'statusText' : 'OK',
+                'error' : false,
+                'message' : 'PROFILE UPDATED',
+                'data' : payload
+            }); 
+            return ;
+        } else {
+            res.status(400).send({
+                'statusCode' : '404',
+                'statusText' : 'Not Found',
+                'error' : true,
+                'message' : 'UID NOT FOUND'
+            }); 
+            return ;
+        }
     } catch (e) {
-        console.log(e);
+        log.info(e);
         res.status(500).send({
-            'status' : '500',
-            'error' : true,
-            'message' : 'Internal Server Error'
+            'statusCode' : '500',
+            'statusText' : 'Internal Server Error',
+            'error' : true
         });
     } return ;
 });
 
-profileController.put('/edit/:id', async (req, res) => {
+profileController.put('/edit', async (req, res) => {
+    //Edit(Change info) users profile on db
     try {
-        let id = req.params.id;
+        let uid = req.headers.uid; //require front-end send uid to know where to update the info
         let {fname, surname, nickname, age, sex, religion, branch, year, contact} = req.body;
+        // อันไหนที่ไม่ต้องการให้แก้ให้ก็ให้ frontend lock ไว้ เอาเเล้วกันนะ!
 
-        let userRef = await firestore.collection("users").where("id", "==", id).get();
-        let ref = '';   // ประกาศตัวแปรมารับค่าที่อยู่ id เพื่อให้สามารถนำตัวแปรนี้ไปใช้นอกฟังชั่น querySnapshot ได้
-                        // ไม่รู้ทำไมมันใช้ return ไม่ได้เหมือนกัน
-                        // ตอน re-faq code เดะมาดูละกันนะ ^-^
-        userRef.forEach(function (querySnapshot) {
-            ref = querySnapshot.id;
-        });
-        console.log(ref);
+        let userRef = firestore.collection('users').doc(uid);
+        let haveUID = await userRef.get();
 
-        let userDoc = firestore.collection('users').doc(ref);
-        let haveData = await userDoc.get();
+        //Check that we have this uid in db or not?
+        if (haveUID.exists) {
+            let userData = haveUID.data(); //that UID exist on db so let's get it's data
 
-        if (haveData.exists) {
-            let userData = haveData.data();
-
-            //condition ? exprIfTrue : exprIfFalse
+            //Ternary operation
+            //syntax: condition ? exprIfTrue : exprIfFalse
+            //This mean if front-end didn't send anything we gonna let's each info be the same as on db
+            //but if front-end send changed info we gonna put it to db by payload
             fname =  req.body.fname == null ? userData.fname : req.body.fname;
             surname =  req.body.surname == null ? userData.surname : req.body.surname;
             nickname =  req.body.nickname == null ? userData.nickname : req.body.nickname;
             age =  req.body.age == null ? userData.age : req.body.age;
             sex =  req.body.sex == null ? userData.sex : req.body.sex;
             religion =  req.body.religion == null ? userData.religion : req.body.religion;
-            branch =  req.body.branch == null ? userData.branch : req.body.branch;
-            year =  req.body.year == null ? userData.year : req.body.year;
+            branch =  userData.branch;  //cannot change so we return the same data to db
+            year = userData.year;   //cannot change so we return the same data to db
             contact =  req.body.contact == null ? userData.contact : req.body.contact;
 
             let payload = {
@@ -98,68 +121,72 @@ profileController.put('/edit/:id', async (req, res) => {
                 'year' : year,
                 'contact' : contact
             };
-            console.log(payload);
-            await userDoc.update(payload);
+            await userRef.update(payload);
 
             res.status(200).send({
-                'status' : '200',
-                'status code' : 'OK',
+                'statusCode' : '200',
+                'statusText' : 'OK',
                 'error' : false,
-                'message' : 'update completed',
+                'message' : 'PROFILE UPDATED',
                 'data updated' : payload
             });
             return ;
+        // If uid is not exist on db then mean the we don't have that uid on db
         } else {
             res.status(404).send({
-                'status' : '404',
-                'status code' : '404 NOT FOUND',
+                'statusCode' : '404',
+                'statusText' : '404 Not Found',
                 'error' : true,
-                'message' : 'id not found'
+                'message' : 'UID NOT FOUND'
             });
         }
         return ;
     }
     catch (e) {
-        console.log(e);
+        log.info(e);
         res.status(500).send({
-            'status' : '500',
-            'status code' : 'Internal Server Error',
+            'statusCode' : '500',
+            'statusText' : 'Internal Server Error',
             'error' : true
         });
     } return ;
 });
 
 profileController.get('', async (req, res) => {
+    //To get users info in db and put it to front-end as them requst
     try{
     let uid = req.headers.uid;
-    let userRef = await firestore.collection("users").where("uid", "==", uid).get();
-        let ref = '';   // ประกาศตัวแปรมารับค่าที่อยู่ id เพื่อให้สามารถนำตัวแปรนี้ไปใช้นอกฟังชั่น querySnapshot ได้
-                        // ไม่รู้ทำไมมันใช้ return ไม่ได้เหมือนกัน
-                        // ตอน re-faq code เดะมาดูละกันนะ ^-^
-        userRef.forEach(function (querySnapshot) {
-            ref = querySnapshot.id;
-        });
+    let userDoc = await firestore.collection('users').doc(uid).get();
 
-    let userDoc = await firestore.collection('users').doc(ref).get();
-    let userData = userDoc.data();
+    if (userDoc.exists){
+        let userData = userDoc.data();
 
-    res.status(200).send({
-        'status' : '200',
-        'status code' : 'OK',
-        'error' : false,
-        'message' : 'Data found',
-        'data' : userData
-    });
-    return ;
+        res.status(200).send({
+            'statusCode' : '200',
+            'statusText' : 'OK',
+            'error' : false,
+            'message' : 'DATA FOUND',
+            'data' : userData
+            }); 
+        return ;
+    } else {
+        res.status(404).send({
+            'statusCode' : '404',
+            'statusText' : 'Not Found',
+            'error' : true,
+            'message' : 'UID NOT FOUND'
+            });
+        } return ;
     } catch (e){
-        console.log(e);
+        log.info(e);
         res.status(500).send({
-            'status' : '500',
-            'status code' : 'Internal Server Error',
+            'statusCode' : '500',
+            'statusText' : 'Internal Server Error',
             'error' : true
         });
-    } return ;
-        
+        return ;
+    }  
 });
 
+//exports this function index.js
 module.exports = profileController;

@@ -15,7 +15,6 @@ const { S_IFBLK } = require("constants");
 const testController = express();
 const SECRef = db.collection("secertfromuser");
 const BOUNTYRef = db.collection("bountys");
-const SBOUNTYRef = db.collection("bountyscan");
 const SCANSRef = db.collection("scans");
 const USERSRef = db.collection("users");
 const LINKRef = db.collection("links");
@@ -32,7 +31,7 @@ const allowCrossDomain = function(req, res, next) {
 var bunyan = require("bunyan");
 const { doc } = require("prettier");
 var log = bunyan.createLogger({ name: "myapp" });
-log.info("hi");
+log.info("Server start");
 // server setup
 testController.use(
   session({
@@ -60,8 +59,8 @@ passport.use(
       callbackURL: "http://localhost:8080/facebook/callback",
       profileFields: ["id", "displayName", "name", "gender", "photos", "email"],
     }, // facebook will send back the token and profile
-    function(token, refreshToken, profile, done) {
-      process.nextTick(async function() {
+    function (token, refreshToken, profile, done) {
+      process.nextTick(async function () {
         // asynchronous
         try {
           const usersnapshot = await USERSRef.doc(profile.id).get();
@@ -116,11 +115,11 @@ passport.use(
     }
   )
 );
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user.id);
 }); //เก็บ id ไว้ใน session
 // used to deserialize the user //นำ id ที่เก็บไว้ใน session เรียกกลับมาใช้
-passport.deserializeUser(async function(id, done) {
+passport.deserializeUser(async function (id, done) {
   const userdeserialize = await USERSRef.where("id", "==", id).get();
   userdeserialize.forEach((doc) => {
     done(null, doc.data());
@@ -128,7 +127,7 @@ passport.deserializeUser(async function(id, done) {
 });
 
 //generate qrcode รอเทส
-testController.get("/genqrcode", isLoggedIn, async function(req, res) {
+testController.get("/genqrcode", isLoggedIn, async function (req, res) {
   try {
     log.info("genQR: " + req.user.uid);
     const genqrsnapshot = await LINKRef.where("uid", "==", req.user.uid).get();
@@ -217,9 +216,10 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
   }
 });
 //เสร็จ
-testController.get("/qrcode/:id", isLoggedIn, async function(req, res) {
+testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
   let boun;
   let usersa;
+  let isinbounty;
   const useruid = req.user.uid;
   const linkRef = LINKRef.where("link", "==", req.params.id)
     .get()
@@ -234,7 +234,7 @@ testController.get("/qrcode/:id", isLoggedIn, async function(req, res) {
           res.send("ลิ้งคหมดอายุ");
           return;
         } else {
-          (async function() {
+          (async function () {
             const scanchecks1 = await SCANSRef.doc(useruid)
               .get()
               .then((scanchecks1) => {
@@ -245,22 +245,28 @@ testController.get("/qrcode/:id", isLoggedIn, async function(req, res) {
                 usersa = true;
                 return;
               });
-            const bountya = await SBOUNTYRef.doc(useruid)
+            const bountya = await SCANSRef.doc(useruid)
               .get()
               .then((bountya) => {
-                if (bountya.data().scan.indexOf(doc.data().uid) != "-1") {
+                if (bountya.data().bountyscan.indexOf(doc.data().uid) != "-1") {
                   boun = false;
                   return;
                 }
                 boun = true;
                 return;
               });
-            const bountychek = await BOUNTYRef.doc(doc.data().uid)
+            const bountychek = await BOUNTYRef.doc("list")
               .get()
               .then((bountychek) => {
-                if (!bountychek.exists) {
+                if (bountychek.data().list.indexOf("/users/"+doc.data().uid) != "-1") {
+                  isinbounty  = true;
+                  return;
+                }
+                isinbounty  = false;})
+                .then((boun) => {
+                if (isinbounty) {
                   if (usersa) {
-                    log.info("kuy" + scanchecks1);
+                    log.info("test" + scanchecks1);
                     const userupdatepoint = USERSRef.doc(useruid)
                       .get()
                       .then((userupdatepoint) => {
@@ -406,9 +412,9 @@ testController.get(
   async (req, res) => {
     log.info(
       "king querty doc " +
-        req.params.collection +
-        " doc name " +
-        req.params.docname
+      req.params.collection +
+      " doc name " +
+      req.params.docname
     );
     const all = await db
       .collection(req.params.collection)
@@ -422,20 +428,20 @@ testController.get(
       res.send(all.data());
     }
     // try {
-    //     log.info('----------->Start');
+    //     log.info("----------->Start");
     //     //res.send("start")
     //     res.status(200).send({
-    //         'statusCode': '200',
-    //         'statusText': 'Request Success',
-    //         'error': false,
-    //         'message': 'Start'
+    //         "statusCode": "200",
+    //         "statusText": "Request Success",
+    //         "error": false,
+    //         "message": "Start"
     //     });
     // } catch (err) {
     //     res.status(500).send({
-    //         statusCode: '500',
-    //         statusText: 'Internal Server Error',
+    //         statusCode: "500",
+    //         statusText: "Internal Server Error",
     //         error: true,
-    //         message: 'Internal Server Error'
+    //         message: "Internal Server Error"
     //     });
     // }
   }
@@ -459,7 +465,7 @@ testController.get("/logout", (req, res) => {
     });
   }
 });
-testController.use(function(req, res, next) {
+testController.use(function (req, res, next) {
   res.status(404);
   res.render("404");
   // res.render("gimmick")
