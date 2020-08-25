@@ -95,7 +95,7 @@ const getters = {
     return state.profile.photoURL;
   },
   getFirstTime: (state) => {
-    return state.firstTime;
+    return state.profile.newuser;
   },
   signInCheck: (state) => {
     let loggedin = false;
@@ -108,12 +108,6 @@ const getters = {
 const mutations = {
   setProfile: (state, profile) => {
     state.profile = profile;
-  },
-  setUser: (state, user) => {
-    state.profile.user = user;
-  },
-  setPhotoURL: (state, url) => {
-    state.profile.photoURL = url;
   },
   setFirstTime: (state, bool) => {
     state.firstTime = bool;
@@ -130,6 +124,7 @@ const actions = {
         .get("/api/user")
         .then((res) => {
           commit("setProfile", res.data);
+          commit("setFirstTime", res.data.newuser);
           resolve(res);
         })
         .catch((e) => {

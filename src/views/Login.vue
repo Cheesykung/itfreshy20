@@ -13,8 +13,20 @@ export default {
   data() {
     return {};
   },
+  mounted() {
+    this.chkSign()
+  },
+  methods: {
+    chkSign() {
+      this.signInCheck && this.getFirstTime === 1
+      ? this.$router.push("/profile")
+      : this.getFirstTime === 0 && this.signInCheck
+      ? this.$router.push("/continue")
+      : "";
+    }
+  },
   computed: {
-    ...mapGetters(["user/getProfile", "user/getUser", "user/signInCheck"])
+    ...mapGetters("user", ["signInCheck", "getFirstTime"])
   },
   components: {
     LoginBox

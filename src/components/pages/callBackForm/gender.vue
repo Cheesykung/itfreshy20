@@ -204,7 +204,7 @@ export default {
 }
 
 .text-prefix.text-active {
-  @apply text-primary font-semibold opacity-100;
+  @apply text-secondary_b font-semibold opacity-100;
 }
 
 @media (min-width: 768px) {
