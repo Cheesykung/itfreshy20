@@ -22,7 +22,7 @@ const LINKRef = db.collection("links");
 const ALLRef = db.collection("allstats");
 const helmet = require("helmet");
 const Cookies = require("js-cookie");
-const allowCrossDomain = function(req, res, next) {
+const allowCrossDomain = function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "*");
   res.header("Access-Control-Allow-Headers", "*");
@@ -134,7 +134,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
     log.info("genQR: " + req.user.uid);
     const genqrsnapshot = await LINKRef.where("uid", "==", req.user.uid).get();
     const name = uuidv4();
-    const data = { link: name, uid: req.user.uid, time: 10 };
+    const data = { link: name, uid: req.user.uid, time: 10, year: parseInt(req.user.year) };
     if (genqrsnapshot.empty) {
       log.info("create qr " + req.user.uid);
       const newDoc = await db
@@ -219,16 +219,21 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
 });
 //เสร็จ
 testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
+  if (req.user.year > 2) {
+    res.send("year3 year4 cannot scan")
+    return;
+  }
   const findlink = LINKRef.where('link', '==', req.params.id)
     .get().then((findlink) => {
-
       if (findlink.empty) {
         res.send("link not found")
         return;
       }
       findlink.forEach(linkdata => {
-        let time = linkdata.data().time
-        let id = linkdata.data().id
+        if (req.user.year == 2 && linkdata.data().year >= 2) {
+          res.send("year2 can scan only year1")
+          return
+        }
         if (linkdata.data().time <= 0) {
           res.send("time out link")
           return
@@ -237,36 +242,50 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
           const scanuserdata = db.collection('scans').doc(req.user.uid)
             .get()
             .then((scanuserdata) => {
-              if (false) { } // checkbounty
+              if (scanuserdata.data().scan.indexOf(linkdata.data().uid) != "-1") {
+                res.send("havedscan")
+              }
               else {
-                if (scanuserdata.data().scan.indexOf(linkdata.data().uid) != "-1") {
-                  res.send("havedscan")
-                }
-                else {
-                  const userupdatepoint = USERSRef.doc(req.user.uid)
-                    .get()
-                    .then((userupdatepoint) => {
-                      //ค่อยใส่ bounty
-                      const update = USERSRef.doc(req.user.uid).set(
-                        { point: userupdatepoint.data().point + 3 },
-                        { merge: true }
-                      );
-                           //ค่อยใส่ bounty
-                      res.send(userupdatepoint.data())
-                      return;
-                    })
-                    .then(() => {
-                      const timedecrease = LINKRef.doc(linkdata.data().uid).set(
-                        { time: linkdata.data().time - 1 },
-                        { merge: true }
-                      );
-                      const scansave = SCANSRef.doc(req.user.uid).update({
-                        scan: admin.firestore.FieldValue.arrayUnion(
-                          linkdata.data().uid
-                        )
-                      });
-                    })
-                }
+                const bountyplus = db.collection('bounty').doc('list')
+                  .get()
+                  .then((bountyplus) => {
+                    if (bountyplus.data().list.indexOf("/users/" + linkdata.data().uid) != "-1") {
+                      const userupdatepoint = USERSRef.doc(req.user.uid)
+                        .get()
+                        .then((userupdatepoint) => {
+                          const update = USERSRef.doc(req.user.uid).set(
+                            { point: userupdatepoint.data().point + 5 },
+                            { merge: true }
+                          );
+                          res.send({data: userupdatepoint.data(), point: 5})
+                          return;
+                        })
+                    }
+                    else{
+                      const userupdatepoint = USERSRef.doc(req.user.uid)
+                        .get()
+                        .then((userupdatepoint) => {
+                          const update = USERSRef.doc(req.user.uid).set(
+                            { point: userupdatepoint.data().point + 3 },
+                            { merge: true }
+                          );
+                          res.send({data: userupdatepoint.data(), point: 3})
+                          return;
+                        })
+                    }
+
+                  })
+                  .then(() => {
+                    const timedecrease = LINKRef.doc(linkdata.data().uid).set(
+                      { time: linkdata.data().time - 1 },
+                      { merge: true }
+                    );
+                    const scansave = SCANSRef.doc(req.user.uid).update({
+                      scan: admin.firestore.FieldValue.arrayUnion(
+                        linkdata.data().uid
+                      )
+                    });
+                  })
               }
               return;
             })
@@ -317,22 +336,22 @@ testController.get("/api/user", isLoggedIn, (req, res) => {
   }
 });
 
-testController.get("/", (req, res) => {
-  try {
-    log.info("----------->Index");
-    res.status(200).render("index");
-  } catch (err) {
-    res.status(500).send({
-      statusCode: "500",
-      statusText: "Internal Server Error",
-      error: true,
-      message: "Internal Server Error",
-    });
-  }
-});
+// testController.get("/", (req, res) => {
+//   try {
+//     log.info("----------->Index");
+//     res.status(200).render("index");
+//   } catch (err) {
+//     res.status(500).send({
+//       statusCode: "500",
+//       statusText: "Internal Server Error",
+//       error: true,
+//       message: "Internal Server Error",
+//     });
+//   }
+// });
 //admin query tools
 testController.get(
-  "/ryutools/:collection/:docname",
+  "/ryutools/finddoc/:collection/:docname",
   isAdmin,
   async (req, res) => {
     log.info(
@@ -354,16 +373,24 @@ testController.get(
     }
   }
 );
-
-testController.get("/roletest", async (req, res) => {
-  const cityRef = db.collection('bounty').doc('list');
-  const doc = await cityRef.get();
-  if (!doc.exists) {
-    console.log('No such document!');
-  } else {
-    res.send(doc.data());
+testController.get("/ryutools/find/:id", isAdmin, async (req, res) => {
+  async function getMarkers(id) {
+    const markers = [];
+    await db.collection(id).get()
+      .then(querySnapshot => {
+        querySnapshot.docs.forEach(doc => {
+          markers.push({ id: doc.id, data: doc.data() });
+        });
+      });
+    return res.send(markers);
   }
+  getMarkers(req.params.id)
 
+});
+
+
+testController.get("/help", async (req, res) => {
+  res.render("help")
 });
 
 testController.get("/logout", (req, res) => {
