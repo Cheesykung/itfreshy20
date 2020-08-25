@@ -1,7 +1,7 @@
 const cors = require('cors');
 const express = require('express');
 const admin = require('../config/admin');
-const { doc } = require('prettier');
+//const { doc } = require('prettier');
 const { user } = require('firebase-functions/lib/providers/auth');
 const firestore = admin.firestore();
 
