@@ -23,6 +23,7 @@ const ALLRef = db.collection("allstats");
 const helmet = require("helmet");
 var bunyan = require("bunyan");
 const { doc } = require("prettier");
+const { link } = require("fs");
 var log = bunyan.createLogger({ name: "myapp" });
 log.info("Server start");
 // server setup
@@ -209,142 +210,65 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
 });
 //เสร็จ
 testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
-  let boun;
-  let usersa;
-  let isinbounty;
-  const useruid = req.user.uid;
-  const linkRef = LINKRef.where("link", "==", req.params.id)
-    .get()
-    .then((linkRef, req) => {
-      if (linkRef.empty) {
-        log.info(req.user.uid + " หา " + req.params.id + " ไม่เจอ ");
-        res.send("ลิ้งคเสีย");
+  const findlink = LINKRef.where('link', '==', req.params.id)
+    .get().then((findlink) => {
+
+      if (findlink.empty) {
+        res.send("link not found")
         return;
       }
-      linkRef.forEach((doc) => {
-        if (doc.data().time <= 0) {
-          res.send("ลิ้งคหมดอายุ");
-          return;
-        } else {
-          (async function () {
-            const scanchecks1 = await SCANSRef.doc(useruid)
-              .get()
-              .then((scanchecks1) => {
-                if (scanchecks1.data().scan.indexOf(doc.data().uid) != "-1") {
-                  usersa = false;
-                  return;
-                }
-                usersa = true;
-                return;
-              });
-            const bountya = await SBOUNTYRef.doc(useruid)
-              .get()
-              .then((bountya) => {
-                if (bountya.data().scan.indexOf(doc.data().uid) != "-1") {
-                  boun = false;
-                  return;
-                }
-                boun = true;
-                return;
-              });
-            const bountychek = await BOUNTYRef.doc("list")
-              .get()
-              .then((bountychek) => {
-                if (bountychek.data().list.indexOf("/users/"+doc.data().uid) != "-1") {
-                  isinbounty  = true;
-                  return;
-                }
-                isinbounty  = false;})
-                .then((boun) => {
-                if (isinbounty) {
-                  if (usersa) {
-                    log.info("test" + scanchecks1);
-                    const userupdatepoint = USERSRef.doc(useruid)
-                      .get()
-                      .then((userupdatepoint) => {
-                        const update = USERSRef.doc(useruid).set(
-                          { point: userupdatepoint.data().point + 3 },
-                          { merge: true }
-                        );
-                      });
-                    const timedecrease = LINKRef.doc(doc.id).set(
-                      { time: doc.data().time - 1 },
-                      { merge: true }
-                    );
-                    const scansave = SCANSRef.doc(useruid).update({
-                      scan: admin.firestore.FieldValue.arrayUnion(
-                        doc.data().uid
-                      ),
-                    });
-                    res.send("ล่าปกติ point + 3");
-                    return;
-                  } else {
-                    res.send("เคยscan แล้ว");
-                    return;
-                  }
-                } else {
-                  if (usersa && boun) {
-                    log.info("kuy" + scanchecks1);
-                    const userupdatepoint = USERSRef.doc(useruid)
-                      .get()
-                      .then((userupdatepoint) => {
-                        const update = USERSRef.doc(useruid).set(
-                          { point: userupdatepoint.data().point + 5 },
-                          { merge: true }
-                        );
-                      });
-                    const timedecrease = LINKRef.doc(doc.id).set(
-                      { time: doc.data().time - 1 },
-                      { merge: true }
-                    );
-                    const scansave = SCANSRef.doc(useruid).update({
-                      scan: admin.firestore.FieldValue.arrayUnion(
-                        doc.data().uid
-                      ),
-                    });
-                    const bountysave = SBOUNTYRef.doc(useruid).update({
-                      scan: admin.firestore.FieldValue.arrayUnion(
-                        doc.data().uid
-                      ),
-                    });
-                    res.send("ล่าพิเศษ point + 5");
-                    return;
-                  } else if (usersa || boun) {
-                    log.info("kuy" + scanchecks1);
-                    const userupdatepoint = USERSRef.doc(useruid)
-                      .get()
-                      .then((userupdatepoint) => {
-                        const update = USERSRef.doc(useruid).set(
-                          { point: userupdatepoint.data().point + 2 },
-                          { merge: true }
-                        );
-                      });
-                    const timedecrease = LINKRef.doc(doc.id).set(
-                      { time: doc.data().time - 1 },
-                      { merge: true }
-                    );
-                    const scansave = SCANSRef.doc(useruid).update({
-                      scan: admin.firestore.FieldValue.arrayUnion(
-                        doc.data().uid
-                      ),
-                    });
-                    const bountysave = SBOUNTYRef.doc(useruid).update({
-                      scan: admin.firestore.FieldValue.arrayUnion(
-                        doc.data().uid
-                      ),
-                    });
-                    res.send("ล่าซ่ำ + 2");
-                    return;
-                  } else {
-                    res.send("เคย scan แล้ว");
-                    return;
-                  }
-                }
-              });
-          })();
+      findlink.forEach(linkdata => {
+        let time = linkdata.data().time
+        let id = linkdata.data().id
+        if (linkdata.data().time <= 0) {
+          res.send("time out link")
+          return
         }
+        else {
+          const scanuserdata = db.collection('scans').doc(req.user.uid)
+            .get()
+            .then((scanuserdata) => {
+              if (false) { } // checkbounty
+              else {
+                if (scanuserdata.data().scan.indexOf(linkdata.data().uid) != "-1") {
+                  res.send("havedscan")
+                }
+                else {
+                  const userupdatepoint = USERSRef.doc(req.user.uid)
+                    .get()
+                    .then((userupdatepoint) => {
+                      //ค่อยใส่ bounty
+                      const update = USERSRef.doc(req.user.uid).set(
+                        { point: userupdatepoint.data().point + 3 },
+                        { merge: true }
+                      );
+                       //ค่อยใส่ bounty
+                      res.send(userupdatepoint.data())
+                      return;
+                    })
+                    .then(() => {
+                      const timedecrease = LINKRef.doc(linkdata.data().uid).set(
+                        { time: linkdata.data().time - 1 },
+                        { merge: true }
+                      );
+                      const scansave = SCANSRef.doc(req.user.uid).update({
+                        scan: admin.firestore.FieldValue.arrayUnion(
+                          linkdata.data().uid
+                        )
+                      });
+                    })
+                }
+              }
+              return;
+            })
+        }
+        // res.send(linkdata.data());
       });
-    });
+
+    })
+
+
+
 });
 
 testController.get(
@@ -419,28 +343,18 @@ testController.get(
     } else {
       res.send(all.data());
     }
-    // try {
-    //     log.info("----------->Start");
-    //     //res.send("start")
-    //     res.status(200).send({
-    //         "statusCode": "200",
-    //         "statusText": "Request Success",
-    //         "error": false,
-    //         "message": "Start"
-    //     });
-    // } catch (err) {
-    //     res.status(500).send({
-    //         statusCode: "500",
-    //         statusText: "Internal Server Error",
-    //         error: true,
-    //         message: "Internal Server Error"
-    //     });
-    // }
   }
 );
 
-testController.get("/roletest", isAdmin, async (req, res) => {
-  res.send(req.user);
+testController.get("/roletest", async (req, res) => {
+  const cityRef = db.collection('bounty').doc('list');
+  const doc = await cityRef.get();
+  if (!doc.exists) {
+    console.log('No such document!');
+  } else {
+    res.send(doc.data());
+  }
+
 });
 
 testController.get("/logout", (req, res) => {
