@@ -246,10 +246,10 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
                         .get()
                         .then((userupdatepoint) => {
                           const update = USERSRef.doc(req.user.uid).set(
-                            { point: userupdatepoint.data().point + 5,count: userupdatepoint.data().count + 1 },
+                            { point: userupdatepoint.data().point + 6,count: userupdatepoint.data().count + 1 },
                             { merge: true }
                           );
-                          res.send({ name: userupdatepoint.data().name, year: userupdatepoint.data().year, pic: userupdatepoint.data().pic, point: 5 })
+                          res.send({ name: userupdatepoint.data().name, year: userupdatepoint.data().year, pic: userupdatepoint.data().pic, point: 6 })
                           return;
                         })
                     }
