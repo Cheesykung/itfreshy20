@@ -37,6 +37,11 @@ module.exports = {
         secure: false,
         ws: false,
       },
+      "/qrcode/*": {
+        target: "https://us-central1-itfreshy2020.cloudfunctions.net/test",
+        secure: false,
+        ws: false,
+      },
     },
   },
 };

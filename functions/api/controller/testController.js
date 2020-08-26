@@ -38,7 +38,7 @@ log.info("Server start");
 testController.use(
   session({
     secret: "ilovescotchscotfchyscotchscotch",
-     resave: false,
+    resave: false,
     saveUninitialized: true,
   })
 );
@@ -246,22 +246,23 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
                         .get()
                         .then((userupdatepoint) => {
                           const update = USERSRef.doc(req.user.uid).set(
-                            { point: userupdatepoint.data().point + 5 },
+                            { point: userupdatepoint.data().point + 5,count: userupdatepoint.data().count + 1 },
                             { merge: true }
                           );
-                          res.send({data: userupdatepoint.data(), point: 5})
+                          res.send({ name: userupdatepoint.data().name, year: userupdatepoint.data().year, pic: userupdatepoint.data().pic, point: 5 })
                           return;
                         })
                     }
-                    else{
+                    else {
                       const userupdatepoint = USERSRef.doc(req.user.uid)
                         .get()
                         .then((userupdatepoint) => {
                           const update = USERSRef.doc(req.user.uid).set(
-                            { point: userupdatepoint.data().point + 3 },
+                            { point: userupdatepoint.data().point + 3 ,count: userupdatepoint.data().count + 1},
                             { merge: true }
                           );
-                          res.send({data: userupdatepoint.data(), point: 3})
+                          res.send({ name: userupdatepoint.data().name, year: userupdatepoint.data().year, pic: userupdatepoint.data().pic, point: 3 })
+
                           return;
                         })
                     }
@@ -402,7 +403,7 @@ testController.get("/logout", (req, res) => {
 });
 
 testController.get("/checka", (req, res) => {
-  res.send({data: req.user})
+  res.send({ data: req.user })
   console.log(req.user)
 });
 
