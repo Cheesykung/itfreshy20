@@ -6,7 +6,7 @@ const express = require("express");
 const admin = require("../config/admin");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
-const session = require("cookie-session");
+const session = require("express-session");
 const db = admin.firestore();
 const facebookStrategy = require("passport-facebook").Strategy;
 const firestore = admin.firestore();
@@ -38,8 +38,8 @@ log.info("Server start");
 testController.use(
   session({
     secret: "ilovescotchscotfchyscotchscotch",
-    resave: false,
-    saveUninitialized: false,
+     resave: false,
+    saveUninitialized: true,
   })
 );
 testController.use(allowCrossDomain);
@@ -219,10 +219,6 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
 });
 //เสร็จ
 testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
-  if (req.user.year > 2) {
-    res.send("year3 year4 cannot scan")
-    return;
-  }
   const findlink = LINKRef.where('link', '==', req.params.id)
     .get().then((findlink) => {
       if (findlink.empty) {
@@ -230,10 +226,6 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
         return;
       }
       findlink.forEach(linkdata => {
-        if (req.user.year == 2 && linkdata.data().year >= 2) {
-          res.send("year2 can scan only year1")
-          return
-        }
         if (linkdata.data().time <= 0) {
           res.send("time out link")
           return
@@ -303,6 +295,7 @@ testController.get(
   "/auth/facebook",
   passport.authenticate("facebook", {
     scope: "email",
+    session: true
   })
 );
 
@@ -407,6 +400,12 @@ testController.get("/logout", (req, res) => {
     });
   }
 });
+
+testController.get("/checka", (req, res) => {
+  res.send({data: req.user})
+  console.log(req.user)
+});
+
 testController.use(function (req, res, next) {
   res.status(404);
   res.render("404");
