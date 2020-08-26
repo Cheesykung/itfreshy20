@@ -4,6 +4,9 @@ const admin = require('../config/admin');
 //const { doc } = require('prettier');
 const firestore = admin.firestore();
 const profileController = express();
+const bunyan = require("bunyan");
+const log = bunyan.createLogger({ name: "myapp" });
+
 profileController.use(cors({ origin: true }));
 
 profileController.post('/create', async (req, res) => {
@@ -15,7 +18,7 @@ profileController.post('/create', async (req, res) => {
 
         //Check that we have this uid in db or not?
         if (haveUID.exists){
-            let {id, fname, surname, nickname, age, sex, religion, branch, year, contact} = req.body;
+            let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like1, like2, like3, like4} = req.body;
 
             let payload = {
                 'id' : id,
@@ -27,7 +30,8 @@ profileController.post('/create', async (req, res) => {
                 'religion' : religion,
                 'branch' : branch,
                 'year' : year,
-                'contact' : contact
+                'contact' : contact,
+                'like' : [like1, like2, like3, like4]
             };
             // upload payload that have all info to db
             await userRef.update(payload);
@@ -36,19 +40,16 @@ profileController.post('/create', async (req, res) => {
             // if input year = 1 or 2
             if (year == 1 || year == 2) {
                 let scan = [];
-                let bountyscan = [];
                 scan.push(uid);
-                bountyscan.push(uid);
                 await firestore.collection('scans').doc(uid).update({
                     'scan' : scan,
-                    'bountyscan' : bountyscan,
                     'uid' : uid
                     });
                 
                 // if input year = 1
-                // create doc in db 'secretfromuser' to get random gate
+                // Update doc in db 'secretfromuser' to get random gate
                 if (year == 1){
-                    await firestore.collection('secertfromuser').doc(id).set({
+                    await firestore.collection('secertfromuser').doc(id).update({
                             'family' : "",
                             'uid' : uid
                     });
@@ -187,6 +188,92 @@ profileController.get('', async (req, res) => {
         return ;
     }  
 });
+
+// One-use function
+// To Create All year1 profile
+// profileController.post('/total', async (req, res) => {
+//     // Create all year1 users in db 'secertfromuser' to keep info family and uid
+//     try {
+//         let userRef = firestore.collection('secertfromuser');
+//         let batch = firestore.batch();
+
+//         for (let i = 63070001; i < 63070252; i++) {
+//             let ref = i.toString();
+//             batch.set(userRef.doc(ref), {'family' : '', 'uid':''});
+//         }
+//         await batch.commit();
+
+//         res.status(200).send({
+//             'statusCode' : '200',
+//             'statusText' : 'OK',
+//             'error' : false,
+//             'message' : 'All Year1 users has been created'
+//             }); 
+
+//     } catch (e) {
+//         log.info(e);
+//         res.status(500).send({
+//             'statusCode' : '500',
+//             'statusText' : 'Internal Server Error',
+//             'error' : true
+//         });
+//         return ;
+//     }
+// });
+
+
+// Another One-Used function
+// To rnadom gate of year1 users
+// profileController.post('/family/random', async (req, res) => {
+//     try {
+//         let gate = ['AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND',
+//         'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND',
+//         'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND',
+//         'AND','AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND',
+//         'AND', 'AND', 'AND', 'AND', 'AND','OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR',
+//         'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR',
+//         'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR',
+//         'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR', 'OR','NOR', 'NOR', 'NOR',
+//         'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR',
+//         'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR',
+//         'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR',
+//         'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOR', 'NOT', 'NOT', 'NOT', 'NOT',
+//         'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT',
+//         'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT',
+//         'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT',
+//         'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT', 'NOT'];
+
+//         let batch = firestore.batch();
+
+//         for (let i = 63070001; i < 63070252; i++) {
+//             let index = Math.floor(Math.random() * gate.length);
+//             let user_gate = gate[index];
+//             gate.splice(index, 1);
+//             let ref = firestore.collection('secertfromuser').doc(i.toString());
+//             console.log(i.toString() + "'s Gate is " + user_gate);
+//             batch.update(ref, {family: user_gate});
+//         }
+//         batch.commit();
+
+//         res.status(200).send({
+//             'statusCode' : '200',
+//             'statusText' : 'OK',
+//             'error' : false,
+//             'message' : 'Random Complete',
+//             }); 
+//         return ;
+//     } catch (e) {
+
+
+//         console.log(e);
+//         res.status(500).send({
+//             'statusCode' : '500',
+//             'statusText' : 'Internal Server Error',
+//             'error' : true
+//         });
+//         return ;
+//     }
+// });
 
 //exports this function index.js
 module.exports = profileController;

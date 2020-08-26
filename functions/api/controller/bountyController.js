@@ -4,6 +4,8 @@ const admin = require('../config/admin');
 //const { doc } = require('prettier');
 const { user } = require('firebase-functions/lib/providers/auth');
 const firestore = admin.firestore();
+const bunyan = require("bunyan");
+const log = bunyan.createLogger({ name: "myapp" });
 
 const bountyController = express();
 
@@ -72,7 +74,7 @@ bountyController.get('', async (req, res) => {
         });
 
     } catch (e) {
-        console.log(e);
+        log.info(e);
         res.status(500).send({
             'statusCode' : '500',
             'statusText' : 'Internal Server Error',
