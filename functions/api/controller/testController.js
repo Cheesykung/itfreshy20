@@ -452,8 +452,12 @@ testController.get("/logout", (req, res) => {
     log.info("----------> Logout");
 
     req.logout();
-
-    res.redirect("https://itfreshy2020.web.app/");
+    res.status(200).send({
+      statusCode: "200",
+      statusText: "Request Success",
+      error: false,
+      message: "logout succesful",
+    });
   } catch (err) {
     res.status(500).send({
       statusCode: "500",
