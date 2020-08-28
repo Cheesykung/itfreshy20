@@ -22,19 +22,20 @@ const LINKRef = db.collection("links");
 const ALLRef = db.collection("allstats");
 const helmet = require("helmet");
 const Cookies = require("js-cookie");
-const allowCrossDomain = function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app/");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "*"
-  );
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  next();
-};
+
+// const allowCrossDomain = function(req, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+//   );
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Content-Type, Origin, X-Auth-Token, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+//   );
+//   res.setHeader("Access-Control-Allow-Credentials", true);
+//   next();
+// };
 
 var bunyan = require("bunyan");
 //const { doc } = require("prettier");
@@ -45,16 +46,31 @@ log.info("Server start");
 testController.use(
   session({
     cookie: {
-      domain: "https://us-central1-itfreshy2020.cloudfunctions.net/profile",
-      maxAge: 24 * 60 * 60 * 1000,
-    },
-    name: "session",
+      domain: 'itfreshy2020.web.app', maxAge: 24 * 60 * 60 * 1000,    },
+    name: 'session',
     secret: "ilovescotchscotfchyscotchscotch",
     resave: false,
     saveUninitialized: true,
   })
 );
-testController.use(allowCrossDomain);
+testController.use(function (req, res, next) {
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', 'https://itfreshy2020.web.app/');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  // Pass to next layer of middleware
+  next();
+});
 testController.use(helmet());
 testController.use(passport.initialize());
 testController.use(passport.session());
@@ -74,7 +90,6 @@ passport.use(
       callbackURL:
         "https://us-central1-itfreshy2020.cloudfunctions.net/test/facebook/callback",
       profileFields: ["id", "displayName", "name", "gender", "photos", "email"],
-      // passReqToCallback: true
     }, // facebook will send back the token and profile
     function(token, refreshToken, profile, done) {
       process.nextTick(async function() {
@@ -438,7 +453,7 @@ testController.get("/logout", (req, res) => {
 
     req.logout();
 
-    res.redirect("/");
+    res.redirect("https://itfreshy2020.web.app/");
   } catch (err) {
     res.status(500).send({
       statusCode: "500",
