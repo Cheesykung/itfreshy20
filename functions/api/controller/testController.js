@@ -6,7 +6,7 @@ const express = require("express");
 const admin = require("../config/admin");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
+const session = require("cookie-session");
 const db = admin.firestore();
 const facebookStrategy = require("passport-facebook").Strategy;
 const firestore = admin.firestore();
@@ -38,6 +38,9 @@ log.info("Server start");
 // server setup
 testController.use(
   session({
+    cookie: {
+      domain: 'https://us-central1-itfreshy2020.cloudfunctions.net/profile', maxAge: 24 * 60 * 60 * 1000,    },
+    name: 'session',
     secret: "ilovescotchscotfchyscotchscotch",
     resave: false,
     saveUninitialized: true,
@@ -59,7 +62,8 @@ passport.use(
       // pull in our app id and secret from our auth.js file
       clientID: "306264320456438",
       clientSecret: "f076de5e27c1ea459950049ccad236a1",
-      callbackURL: "http://localhost:8080/facebook/callback",
+      // callbackURL: "http://localhost:8080/facebook/callback",
+      callbackURL: "https://us-central1-itfreshy2020.cloudfunctions.net/test/facebook/callback",
       profileFields: ["id", "displayName", "name", "gender", "photos", "email"],
     }, // facebook will send back the token and profile
     function(token, refreshToken, profile, done) {
@@ -109,7 +113,7 @@ passport.use(
                 });
               log.info("user found");
               log.info(doc.data().name + " is logged in");
-              return done(null, doc.data());
+              return done(null, doc.data().id);
             });
         } catch (err) {
           if (err) return done(err);
@@ -118,8 +122,8 @@ passport.use(
     }
   )
 );
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
+passport.serializeUser(function (user, done) {
+  done(null, user);
 }); //เก็บ id ไว้ใน session
 // used to deserialize the user //นำ id ที่เก็บไว้ใน session เรียกกลับมาใช้
 passport.deserializeUser(async function(id, done) {
@@ -227,6 +231,7 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
         return;
       }
       findlink.forEach(linkdata => {
+        checker = linkdata.data().uid
         if (linkdata.data().time <= 0) {
           res.send("time out link")
           return
@@ -239,31 +244,39 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
                 res.send("havedscan")
               }
               else {
+                //year 1 scan2 or 2 scan 1 return
                 const bountyplus = db.collection('bounty').doc('list')
                   .get()
                   .then((bountyplus) => {
                     if (bountyplus.data().list.indexOf(linkdata.data().uid) != "-1") {
+                      const sender = USERSRef.doc(checker).get()
+                        .then((sender) => {
+                          res.send({ name: sender.data().name, year: sender.data().year, pic: sender.data().pic, point: 6 })
+                        })
                       const userupdatepoint = USERSRef.doc(req.user.uid)
                         .get()
                         .then((userupdatepoint) => {
                           const update = USERSRef.doc(req.user.uid).set(
-                            { point: userupdatepoint.data().point + 6,count: userupdatepoint.data().count + 1 },
+                            { point: userupdatepoint.data().point + 6, count: userupdatepoint.data().count + 1 },
                             { merge: true }
                           );
-                          res.send({ name: userupdatepoint.data().name, year: userupdatepoint.data().year, pic: userupdatepoint.data().pic, point: 6 })
                           return;
                         })
                     }
                     else {
+                      //year 1 scan2 or 2 scan 1 return
+
+                      const sender = USERSRef.doc(checker).get()
+                        .then((sender) => {
+                          res.send({ name: sender.data().name, year: sender.data().year, pic: sender.data().pic, point: 6 })
+                        })
                       const userupdatepoint = USERSRef.doc(req.user.uid)
                         .get()
                         .then((userupdatepoint) => {
                           const update = USERSRef.doc(req.user.uid).set(
-                            { point: userupdatepoint.data().point + 3 ,count: userupdatepoint.data().count + 1},
+                            { point: userupdatepoint.data().point + 3, count: userupdatepoint.data().count + 1 },
                             { merge: true }
                           );
-                          res.send({ name: userupdatepoint.data().name, year: userupdatepoint.data().year, pic: userupdatepoint.data().pic, point: 3 })
-
                           return;
                         })
                     }
@@ -304,7 +317,7 @@ testController.get(
 
 testController.route("/facebook/callback").get(
   passport.authenticate("facebook", {
-    successRedirect: "/profile",
+    successRedirect: "/test/checka",
     failureRedirect: "/",
   })
 );
@@ -403,7 +416,7 @@ testController.get("/logout", (req, res) => {
 });
 
 testController.get("/checka", (req, res) => {
-  res.send({ data: req.user })
+  res.send({ data: req.user, session: req.session })
   console.log(req.user)
 });
 
