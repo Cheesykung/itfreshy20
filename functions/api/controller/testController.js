@@ -23,19 +23,19 @@ const ALLRef = db.collection("allstats");
 const helmet = require("helmet");
 const Cookies = require("js-cookie");
 
-const allowCrossDomain = function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Origin, X-Auth-Token, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-  );
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  next();
-};
+// const allowCrossDomain = function(req, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+//   );
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Content-Type, Origin, X-Auth-Token, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+//   );
+//   res.setHeader("Access-Control-Allow-Credentials", true);
+//   next();
+// };
 
 var bunyan = require("bunyan");
 //const { doc } = require("prettier");
@@ -55,7 +55,24 @@ testController.use(
     saveUninitialized: true,
   })
 );
-testController.use(allowCrossDomain);
+testController.use(function (req, res, next) {
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', 'https://itfreshy2020.web.app/');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  // Pass to next layer of middleware
+  next();
+});
 testController.use(helmet());
 testController.use(passport.initialize());
 testController.use(passport.session());
