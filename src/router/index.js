@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import Vue from "vue";
 import VueRouter from "vue-router";
-//import store from "@/store/index.js";
-// import Cookies from "js-cookie";
+import store from "@/store/index.js";
+import Cookies from "js-cookie";
 //import { urlencoded } from "express";
 
 /* Declare and import routes */
@@ -22,6 +22,10 @@ const step4 = () => import("../components/pages/callBackForm/likesStep.vue");
 const step5 = () => import("../components/pages/callBackForm/lastStep.vue");
 
 Vue.use(VueRouter);
+
+const token = Cookies.get("session");
+const firstTime = store.getters["user/getFirstTime"];
+const signedIn = store.getters["user/signInCheck"];
 
 const routes = [
   {
@@ -50,6 +54,19 @@ const routes = [
       firstTimeAuth: null,
     },
     redirect: "continue/gender",
+    beforeEnter: (to, from, next) => {
+      if (to.matched.some((item) => item.path === "/continue")) {
+        if (token && firstTime === 0) {
+          next();
+        } else if (token && firstTime === 1) {
+          next({ path: "/profile" });
+        } else {
+          next({ path: "/signin" });
+        }
+      } else {
+        next();
+      }
+    },
     children: [
       { path: "gender", component: gender, name: "Your Gender" },
       { path: "step1", component: step1, name: "Step 1" },
@@ -58,22 +75,24 @@ const routes = [
       { path: "step4", component: step4, name: "What you likes?" },
       { path: "step5", component: step5, name: "Your Gate" },
     ],
-  },{
+  },
+  {
     path: "/leaderboard",
     name: "Leaderboard",
     component: Leaderboard,
     meta: {
       title: "Leaderboard | IT@KMITL FRESHY 2020",
       requiresAuth: true,
-    }
-  },{
+    },
+  },
+  {
     path: "/bounty",
     name: "Bounty",
     component: Bounty,
     meta: {
       title: "Bounty | IT@KMITL FRESHY 2020",
       requiresAuth: true,
-    }
+    },
   },
   {
     path: "/profile",
@@ -107,6 +126,26 @@ const routes = [
         },
       ],
     },
+    beforeEnter: (to, from, next) => {
+      if (token) {
+        next({ path: "/profile" });
+      } else {
+        next();
+      }
+    },
+  },
+  {
+    path: "*",
+    redirect: "/signin",
+    beforeEnter: (to, from, next) => {
+      if (to.matched.some((item) => item.meta.requiresAuth)) {
+        if (!token) {
+          next({ path: "/signin" });
+        } else {
+          next();
+        }
+      }
+    },
   },
 ];
 
@@ -116,29 +155,28 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  // if (to.matched.some((item) => item.meta.requiresAuth)) {
-  //   //const user = localStorage.getItem("user");
-  //   const firstTime = store.getters["user/getFirstTime"];
-  //   const signedIn = store.getters["user/signInCheck"];
-  //   if (!signedIn) {
-  //     next("/signin");
-  //   } else if (signedIn === true && to.name !== "Signin") {
-  //     if (firstTime === 0 && to.fullPath) {
-  //       next("/continue");
-  //     } else if (firstTime === 1) {
-  //       if (
-  //         to.matched.some(
-  //           (item) => item.path === "/continue" && item.path === "/signin"
-  //         )
-  //       ) {
-  //         next("/profile");
-  //       } else {
-  //         next();
-  //       }
-  //     }
-  //   }
-  //}
+router.beforeResolve((to, from, next) => {
+  if (to.matched.some((item) => item.meta.requiresAuth)) {
+    if (!signedIn && !token) {
+      next({ path: "/signin", query: { from: to.path } });
+    } else if (signedIn === true && token && to.name !== "Signin") {
+      if (firstTime === 0 && to.fullPath) {
+        next({ path: "/continue", query: { from: to.path } });
+      } else if (firstTime === 1) {
+        if (
+          to.matched.some(
+            (item) => item.path === "/continue" && item.path === "/signin"
+          )
+        ) {
+          next({ path: "/profile", query: { from: to.path } });
+        } else {
+          next();
+        }
+      }
+    }
+  } else {
+    next();
+  }
 
   const nearestTitle = to.matched
     .slice()

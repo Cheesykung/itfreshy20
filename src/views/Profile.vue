@@ -40,53 +40,14 @@
           <button
             class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm animate-pulse"
           >ล่ารายชื่อเลย!</button>
-          <button class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm" @click="genQr()">สร้างลิงค์ใหม่</button>
-        </div>
-      </div>
-    </div>
-    <!--- SEE ANOTHER PROFILE --->
-    <div class="flex flex-col content-center justify-center items-center h-full py-12" v-else>
-      <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
-        <div class="img-wrap space-y-4">
-          <img
-            :src="showProfile.img"
-            class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
-          />
-          <div class="details space-y-2 items-center">
-            <!-- <span class="text-gray-500 font-normal text-sm">#6207002</span> -->
-            <h1
-              class="text-3xl text-primary-100 font-thin"
-            >{{ showProfile.name }} ({{ showProfile.nickName }})</h1>
-          </div>
-          <div class="faculty space-x-2 font-normal uppercase">
-            <i class="fas fa-map-marked-alt"></i>
-            <span>{{ showProfile.branch }} KMITL, ปี {{ showProfile.year }}</span>
-          </div>
-          <div class="like space-x-4">
-            <i class="fas fa-pizza-slice text-gray-400"></i>
-            <i class="fas fa-football-ball text-gray-400"></i>
-            <i class="fab fa-spotify text-gray-400"></i>
-            <i class="fas fa-film text-gray-400"></i>
-          </div>
-        </div>
-        <div class="stats">
-          <div class="chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">268</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
-          </div>
-          <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">2K</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
-          </div>
-        </div>
-        <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8">
           <button
-            class="px-2 py-3 border-blue-600 border-4 text-blue-100 rounded text-sm"
-          >ข้อมูลส่วนตัว</button>
+            class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm"
+            @click="genQr()"
+          >สร้างลิงค์ใหม่</button>
           <button
-            class="px-2 py-3 bg-blue-900 text-blue-100 rounded text-sm"
-            @click="goBack()"
-          >ย้อนกลับ</button>
+            class="px-2 py-3 bg-complementary text-primary-200 rounded text-sm"
+            @click="resetProfile"
+          >ล็อกเอาท์</button>
         </div>
       </div>
     </div>
@@ -105,8 +66,10 @@ export default {
     this.getFacebookAuth();
   },
   methods: {
-    ...mapActions("user", { getFacebookAuth: "getFacebookAuth" }),
-    // ...mapActions("register", ["setGender"]),
+    ...mapActions("user", {
+      getFacebookAuth: "getFacebookAuth",
+      resetProfile: "resetProfile"
+    }),
     goProfile(id) {
       this.$router.push({ path: "/profile/" + id });
     },
@@ -120,7 +83,10 @@ export default {
       return this.$router.push("/hunted");
     },
     genQr() {
-      return window.open('/genqrcode', '_blank')
+      return window.open("/genqrcode", "_blank");
+    },
+    logout() {
+      return this.signout();
     }
   },
   computed: {
@@ -224,8 +190,10 @@ export default {
   word-break: break-all;
 }
 
-.shadow-outline, .shadow-outline:hover, .hover\:shadow-outline:hover {
-  box-shadow: 0 0 0 3px rgba(60,54,173, .65) !important;
+.shadow-outline,
+.shadow-outline:hover,
+.hover\:shadow-outline:hover {
+  box-shadow: 0 0 0 3px rgba(60, 54, 173, 0.65) !important;
 }
 
 @media screen and (max-width: 676.8px) {
