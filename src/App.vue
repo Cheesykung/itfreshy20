@@ -13,6 +13,7 @@ import Nav from "@/components/util/Nav.vue";
 import { mapGetters } from "vuex";
 
 export default {
+  name: 'IT HUNTER GAME',
   components: {
     //  Footer,
     Nav

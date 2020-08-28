@@ -1,6 +1,7 @@
 import axios from "axios";
 //import AuthController from "../services/auth.service";
 import Cookies from "js-cookie";
+// import router from "../../main";
 
 const state = () => ({
   profile: {},
@@ -131,12 +132,12 @@ const actions = {
           "https://us-central1-itfreshy2020.cloudfunctions.net/test/logout",
           {
             withCredentials: true,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            headers: { "X-Requested-With": "XMLHttpRequest" },
           }
         )
         .then((res) => {
           if (res.status === 200) {
-            resolve("success");
+            resolve("success"); 
             commit("clearProfile");
           }
         })
@@ -147,7 +148,7 @@ const actions = {
   },
   async getFacebookAuth({ commit }) {
     return new Promise((resolve, reject) => {
-      //const token = Cookies.get("session");
+      const token = Cookies.get("session");
       axios
         .get(
           "https://us-central1-itfreshy2020.cloudfunctions.net/test/checka",
@@ -155,19 +156,19 @@ const actions = {
             withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              
+              "Authorization": "Bearer " + token
             },
           }
         )
         .then((res) => {
           if (res.status === 200) {
-            if (res.data.session.passport.user.length > 2) {
+            if (res.data.data) {
               commit("setProfile", res.data.data);
               commit("setFirstTime", res.data.data.newuser);
               Cookies.set("session", res.data.session.passport.user);
               resolve(res);
             } else {
-              reject("NO ACCESS!");
+              reject(res)
             }
           }
         })
