@@ -19,7 +19,8 @@ dashboardController.get('/test', async (req, res) => {
 
     res.render('dashboard', {
         stat: snap.data().allvisitor,
-        user: snap.data().alluser
+        user: snap.data().alluser,
+        gen: snap.data().allgenerate
     });
 
 })
