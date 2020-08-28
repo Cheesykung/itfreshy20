@@ -19,7 +19,27 @@ exports.random = functions.https.onRequest(randomController);
 exports.tool = functions.https.onRequest(toolController);
 exports.dashboard = functions.https.onRequest(dashBoardController);
 
-// ยาาางช้ายม่ายยยยด้ายยยรอก่อน UPGRADE น้าาานายยยยย
-exports.scheduledFunction = functions.pubsub.schedule("* * * * *").timeZone('Asia/Bangkok').onRun((context) => {
-    console.log("This will be run every minute!");
+// Cron-job Schedule-Work
+// Set auto run random bounty everyday at 12:00
+exports.scheduledFunction = functions.pubsub.schedule("* * * * *").timeZone('Asia/Bangkok').onRun(async (context) => {
+    let userRef = await firestore.collection('users').get();
+    let users = [];
+
+    // forEach to .data() in each item in array users
+    userRef.forEach(function (data) {
+        let user = data.data();
+        users.push(data.id);
+    });
+
+    let bounty_id = [];
+    for (let i = 0; i < 10; i++) {
+        //random number between 0 - 9 for array[index]
+        let x = Math.floor(Math.random() * users.length); //math.random will return number between 0 -> 1
+        bounty_id.push(users[x]);
+    }
+
+    // update ref of bounty to 'bounty' in db
+    await firestore.collection('bounty').doc('list').set({
+        'list' : bounty_id
+    });
 });
