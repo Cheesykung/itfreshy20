@@ -116,23 +116,49 @@ const mutations = {
     state.firstTime = status;
   },
   clearProfile: (state) => {
-    localStorage.removeItem("user");
+    Cookies.remove("session");
     state.profile = null;
     state.status = false;
   },
 };
 
 const actions = {
+  async resetProfile({ commit }) {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(
+          "https://us-central1-itfreshy2020.cloudfunctions.net/test/logout",
+          {
+            withCredentials: true,
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            commit("clearProfile"); 
+            resolve("/signin");
+          }
+        })
+        .catch((e) => {
+          reject(e);
+        });
+    });
+  },
   async getFacebookAuth({ commit }) {
     return new Promise((resolve, reject) => {
       axios
-        .get("https://us-central1-itfreshy2020.cloudfunctions.net/test/checka")
+        .get(
+          "https://us-central1-itfreshy2020.cloudfunctions.net/test/checka",
+          {
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" },
+          }
+        )
         .then((res) => {
           if (res.status === 200) {
-            if (res.session) {
-              commit("setProfile", res.data);
-              commit("setFirstTime", res.data.newuser);
-              Cookies.set("user", res.session);
+            if (res.data.session.passport.user.length > 2) {
+              commit("setProfile", res.data.data);
+              commit("setFirstTime", res.data.data.newuser);
+              Cookies.set("session", res.data.session.passport.user);
               resolve(res);
             }
           }
