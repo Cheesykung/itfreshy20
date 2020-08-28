@@ -17,7 +17,6 @@
 export default {
   methods: {
     loginSubmit() {
-      // return this.$router.push("/profile");
       return window.open("/auth/facebook", "_self");
     }
   }

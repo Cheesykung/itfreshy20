@@ -1,8 +1,10 @@
 import axios from "axios";
+//import AuthController from "../services/auth.service";
 
 const state = () => ({
   profile: {},
-  firstTime: false,
+  status: Boolean,
+  firstTime: null,
   broMock: [
     {
       id: 1,
@@ -98,9 +100,8 @@ const getters = {
     return state.profile.newuser;
   },
   signInCheck: (state) => {
-    let loggedin = false;
-    if (state.profile !== null)
-      loggedin = Object.keys(state.profile).length > 2;
+    let loggedin = state.status;
+
     return loggedin;
   },
 };
@@ -108,12 +109,15 @@ const getters = {
 const mutations = {
   setProfile: (state, profile) => {
     state.profile = profile;
+    state.status = Object.keys(profile.token).length > 2 ? true : false;
   },
-  setFirstTime: (state, bool) => {
-    state.firstTime = bool;
+  setFirstTime: (state, status) => {
+    state.firstTime = status;
   },
   clearProfile: (state) => {
+    localStorage.removeItem("user");
     state.profile = null;
+    state.status = false;
   },
 };
 
@@ -123,9 +127,13 @@ const actions = {
       axios
         .get("/api/user")
         .then((res) => {
-          commit("setProfile", res.data);
-          commit("setFirstTime", res.data.newuser);
-          resolve(res);
+          if (res.status === 200) {
+            if (res.data.token) {
+              commit("setProfile", res.data);
+              commit("setFirstTime", res.data.newuser);
+              resolve(res);
+            }
+          }
         })
         .catch((e) => {
           reject(e);

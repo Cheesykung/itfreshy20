@@ -2,7 +2,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "@/store/index.js";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 //import { urlencoded } from "express";
 
 /* Declare and import routes */
@@ -45,7 +45,7 @@ const routes = [
     meta: {
       title: "To be a freshy | IT@KMITL FRESHY 2020",
       requiresAuth: true,
-      firstTimeAuth: true,
+      firstTimeAuth: null,
     },
     redirect: "continue/gender",
     children: [
@@ -98,32 +98,30 @@ const router = new VueRouter({
   routes,
 });
 
-let firstTime = store.getters["user/getFirstTime"];
-
 router.beforeEach((to, from, next) => {
   if (to.matched.some((item) => item.meta.requiresAuth)) {
-    if (Cookies.get("token") === null) {
-      next({
-        path: "/signin",
-        params: {
-          nextUrl: to.fullPath,
-        },
-      });
-    } else if (to.matched.some((item) => item.meta.firstTimeAuth) && Cookies.get("token") !== null) {
-      if (firstTime === 0) {
-        next();
-      } else {
-        next({
-          path: "/profile",
-          params: {
-            nextUrl: to.fullPath,
-          },
-        });
+    //const user = localStorage.getItem("user");
+    const firstTime = store.getters["user/getFirstTime"];
+    const signedIn = store.getters["user/signInCheck"];
+    if (!signedIn) {
+      next("/signin");
+    } else if (signedIn === true && to.name !== "Signin") {
+      if (firstTime === 0 && to.fullPath) {
+        next("/continue");
+      } else if (firstTime === 1) {
+        if (
+          to.matched.some(
+            (item) => item.path === "/continue" && item.path === "/signin"
+          )
+        ) {
+          next("/profile");
+        } else {
+          next();
+        }
       }
     }
-  } else {
-    next();
   }
+
   const nearestTitle = to.matched
     .slice()
     .reverse()
