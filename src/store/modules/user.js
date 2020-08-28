@@ -1,5 +1,6 @@
 import axios from "axios";
 //import AuthController from "../services/auth.service";
+import Cookies from "js-cookie";
 
 const state = () => ({
   profile: {},
@@ -125,12 +126,13 @@ const actions = {
   async getFacebookAuth({ commit }) {
     return new Promise((resolve, reject) => {
       axios
-        .get("/api/user")
+        .get("https://us-central1-itfreshy2020.cloudfunctions.net/test/checka")
         .then((res) => {
           if (res.status === 200) {
-            if (res.data.token) {
+            if (res.session) {
               commit("setProfile", res.data);
               commit("setFirstTime", res.data.newuser);
+              Cookies.set("user", res.session);
               resolve(res);
             }
           }
