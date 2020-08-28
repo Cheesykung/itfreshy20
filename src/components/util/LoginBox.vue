@@ -17,7 +17,7 @@
 export default {
   methods: {
     loginSubmit() {
-      return window.open("/auth/facebook", "_self");
+      return window.open("https://us-central1-itfreshy2020.cloudfunctions.net/test/auth/facebook", "_self");
     }
   }
 };
