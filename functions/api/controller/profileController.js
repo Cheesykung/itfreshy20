@@ -6,7 +6,10 @@ const firestore = admin.firestore();
 const profileController = express();
 const bunyan = require("bunyan");
 const log = bunyan.createLogger({ name: "myapp" });
+const passport = require("passport");
 
+profileController.use(passport.initialize());
+profileController.use(passport.session());
 profileController.use(cors({ origin: true }));
 
 profileController.post('/create', async (req, res) => {
@@ -17,21 +20,21 @@ profileController.post('/create', async (req, res) => {
         let haveUID = await userRef.get();
 
         //Check that we have this uid in db or not?
-        if (haveUID.exists){
-            let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like1, like2, like3, like4} = req.body;
+        if (haveUID.exists) {
+            let { id, fname, surname, nickname, age, sex, religion, branch, year, contact, like1, like2, like3, like4 } = req.body;
 
             let payload = {
-                'id' : id,
-                'fname' : fname,
-                'surname' : surname,
-                'nickname' : nickname,
-                'age' : age,
-                'sex' : sex,
-                'religion' : religion,
-                'branch' : branch,
-                'year' : year,
-                'contact' : contact,
-                'like' : [like1, like2, like3, like4]
+                'id': id,
+                'fname': fname,
+                'surname': surname,
+                'nickname': nickname,
+                'age': age,
+                'sex': sex,
+                'religion': religion,
+                'branch': branch,
+                'year': year,
+                'contact': contact,
+                'like': [like1, like2, like3, like4]
             };
             // upload payload that have all info to db
             await userRef.update(payload);
@@ -42,52 +45,56 @@ profileController.post('/create', async (req, res) => {
                 let scan = [];
                 scan.push(uid);
                 await firestore.collection('scans').doc(uid).update({
-                    'scan' : scan,
-                    'uid' : uid
-                    });
-                
+                    'scan': scan,
+                    'uid': uid
+                });
+
                 // if input year = 1
                 // Update doc in db 'secretfromuser' to get random gate
-                if (year == 1){
+                if (year == 1) {
                     await firestore.collection('secertfromuser').doc(id).update({
-                            'family' : "",
-                            'uid' : uid
+                        'family': "",
+                        'uid': uid
                     });
                 }
             }
 
             res.status(200).send({
-                'statusCode' : '200',
-                'statusText' : 'OK',
-                'error' : false,
-                'message' : 'PROFILE UPDATED',
-                'data' : payload
-            }); 
-            return ;
+                'statusCode': '200',
+                'statusText': 'OK',
+                'error': false,
+                'message': 'PROFILE UPDATED',
+                'data': payload
+            });
+            return;
         } else {
             res.status(400).send({
-                'statusCode' : '404',
-                'statusText' : 'Not Found',
-                'error' : true,
-                'message' : 'UID NOT FOUND'
-            }); 
-            return ;
+                'statusCode': '404',
+                'statusText': 'Not Found',
+                'error': true,
+                'message': 'UID NOT FOUND'
+            });
+            return;
         }
     } catch (e) {
         log.info(e);
         res.status(500).send({
-            'statusCode' : '500',
-            'statusText' : 'Internal Server Error',
-            'error' : true
+            'statusCode': '500',
+            'statusText': 'Internal Server Error',
+            'error': true
         });
-    } return ;
+    } return;
 });
-
+profileController.get("/checka", (req, res) => {
+    res.send({ data: req.user, session: req.session })
+    console.log(req.user)
+    return;
+});
 profileController.put('/edit', async (req, res) => {
     //Edit(Change info) users profile on db
     try {
         let uid = req.headers.uid; //require front-end send uid to know where to update the info
-        let {fname, surname, nickname, age, sex, religion, branch, year, contact} = req.body;
+        let { fname, surname, nickname, age, sex, religion, branch, year, contact } = req.body;
         // อันไหนที่ไม่ต้องการให้แก้ให้ก็ให้ frontend lock ไว้ เอาเเล้วกันนะ!
 
         let userRef = firestore.collection('users').doc(uid);
@@ -101,92 +108,92 @@ profileController.put('/edit', async (req, res) => {
             //syntax: condition ? exprIfTrue : exprIfFalse
             //This mean if front-end didn't send anything we gonna let's each info be the same as on db
             //but if front-end send changed info we gonna put it to db by payload
-            fname =  req.body.fname == null ? userData.fname : req.body.fname;
-            surname =  req.body.surname == null ? userData.surname : req.body.surname;
-            nickname =  req.body.nickname == null ? userData.nickname : req.body.nickname;
-            age =  req.body.age == null ? userData.age : req.body.age;
-            sex =  req.body.sex == null ? userData.sex : req.body.sex;
-            religion =  req.body.religion == null ? userData.religion : req.body.religion;
-            branch =  userData.branch;  //cannot change so we return the same data to db
+            fname = req.body.fname == null ? userData.fname : req.body.fname;
+            surname = req.body.surname == null ? userData.surname : req.body.surname;
+            nickname = req.body.nickname == null ? userData.nickname : req.body.nickname;
+            age = req.body.age == null ? userData.age : req.body.age;
+            sex = req.body.sex == null ? userData.sex : req.body.sex;
+            religion = req.body.religion == null ? userData.religion : req.body.religion;
+            branch = userData.branch;  //cannot change so we return the same data to db
             year = userData.year;   //cannot change so we return the same data to db
-            contact =  req.body.contact == null ? userData.contact : req.body.contact;
+            contact = req.body.contact == null ? userData.contact : req.body.contact;
 
             let payload = {
-                'fname' : fname,
-                'surname' : surname,
-                'nickname' : nickname,
-                'age' : age,
-                'sex' : sex,
-                'religion' : religion,
-                'branch' : branch,
-                'year' : year,
-                'contact' : contact
+                'fname': fname,
+                'surname': surname,
+                'nickname': nickname,
+                'age': age,
+                'sex': sex,
+                'religion': religion,
+                'branch': branch,
+                'year': year,
+                'contact': contact
             };
             await userRef.update(payload);
 
             res.status(200).send({
-                'statusCode' : '200',
-                'statusText' : 'OK',
-                'error' : false,
-                'message' : 'PROFILE UPDATED',
-                'data updated' : payload
+                'statusCode': '200',
+                'statusText': 'OK',
+                'error': false,
+                'message': 'PROFILE UPDATED',
+                'data updated': payload
             });
-            return ;
-        // If uid is not exist on db then mean the we don't have that uid on db
+            return;
+            // If uid is not exist on db then mean the we don't have that uid on db
         } else {
             res.status(404).send({
-                'statusCode' : '404',
-                'statusText' : '404 Not Found',
-                'error' : true,
-                'message' : 'UID NOT FOUND'
+                'statusCode': '404',
+                'statusText': '404 Not Found',
+                'error': true,
+                'message': 'UID NOT FOUND'
             });
         }
-        return ;
+        return;
     }
     catch (e) {
         log.info(e);
         res.status(500).send({
-            'statusCode' : '500',
-            'statusText' : 'Internal Server Error',
-            'error' : true
+            'statusCode': '500',
+            'statusText': 'Internal Server Error',
+            'error': true
         });
-    } return ;
+    } return;
 });
 
 profileController.get('', async (req, res) => {
     //To get users info in db and put it to front-end as them requst
-    try{
-    let uid = req.headers.uid;
-    let userDoc = await firestore.collection('users').doc(uid).get();
+    try {
+        let uid = req.headers.uid;
+        let userDoc = await firestore.collection('users').doc(uid).get();
 
-    if (userDoc.exists){
-        let userData = userDoc.data();
+        if (userDoc.exists) {
+            let userData = userDoc.data();
 
-        res.status(200).send({
-            'statusCode' : '200',
-            'statusText' : 'OK',
-            'error' : false,
-            'message' : 'DATA FOUND',
-            'data' : userData
-            }); 
-        return ;
-    } else {
-        res.status(404).send({
-            'statusCode' : '404',
-            'statusText' : 'Not Found',
-            'error' : true,
-            'message' : 'UID NOT FOUND'
+            res.status(200).send({
+                'statusCode': '200',
+                'statusText': 'OK',
+                'error': false,
+                'message': 'DATA FOUND',
+                'data': userData
             });
-        } return ;
-    } catch (e){
+            return;
+        } else {
+            res.status(404).send({
+                'statusCode': '404',
+                'statusText': 'Not Found',
+                'error': true,
+                'message': 'UID NOT FOUND'
+            });
+        } return;
+    } catch (e) {
         log.info(e);
         res.status(500).send({
-            'statusCode' : '500',
-            'statusText' : 'Internal Server Error',
-            'error' : true
+            'statusCode': '500',
+            'statusText': 'Internal Server Error',
+            'error': true
         });
-        return ;
-    }  
+        return;
+    }
 });
 
 // One-use function
