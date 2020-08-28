@@ -456,7 +456,7 @@ testController.get("/logout", (req, res) => {
       statusCode: "200",
       statusText: "Request Success",
       error: false,
-      message: "logout succesful",
+      message: "logout succesful  ",
     });
   } catch (err) {
     res.status(500).send({
