@@ -125,17 +125,19 @@ const mutations = {
 const actions = {
   async resetProfile({ commit }) {
     return new Promise((resolve, reject) => {
+      //const token = Cookies.get("session");
       axios
         .get(
           "https://us-central1-itfreshy2020.cloudfunctions.net/test/logout",
           {
             withCredentials: true,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
           }
         )
         .then((res) => {
           if (res.status === 200) {
-            commit("clearProfile"); 
-            resolve("/signin");
+            resolve("success");
+            commit("clearProfile");
           }
         })
         .catch((e) => {
@@ -145,12 +147,16 @@ const actions = {
   },
   async getFacebookAuth({ commit }) {
     return new Promise((resolve, reject) => {
+      //const token = Cookies.get("session");
       axios
         .get(
           "https://us-central1-itfreshy2020.cloudfunctions.net/test/checka",
           {
             withCredentials: true,
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              
+            },
           }
         )
         .then((res) => {
@@ -160,6 +166,8 @@ const actions = {
               commit("setFirstTime", res.data.data.newuser);
               Cookies.set("session", res.data.session.passport.user);
               resolve(res);
+            } else {
+              reject("NO ACCESS!");
             }
           }
         })

@@ -22,15 +22,16 @@ const LINKRef = db.collection("links");
 const ALLRef = db.collection("allstats");
 const helmet = require("helmet");
 const Cookies = require("js-cookie");
+
 const allowCrossDomain = function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app/");
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
   );
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "*"
+    "Content-Type, Origin, X-Auth-Token, Access-Control-Allow-Headers, Authorization, X-Requested-With"
   );
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
@@ -74,7 +75,6 @@ passport.use(
       callbackURL:
         "https://us-central1-itfreshy2020.cloudfunctions.net/test/facebook/callback",
       profileFields: ["id", "displayName", "name", "gender", "photos", "email"],
-      // passReqToCallback: true
     }, // facebook will send back the token and profile
     function(token, refreshToken, profile, done) {
       process.nextTick(async function() {
@@ -438,7 +438,7 @@ testController.get("/logout", (req, res) => {
 
     req.logout();
 
-    res.redirect("/");
+    res.redirect("https://itfreshy2020.web.app/");
   } catch (err) {
     res.status(500).send({
       statusCode: "500",
