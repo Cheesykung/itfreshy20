@@ -16,7 +16,10 @@
     "@auth": "./api/controller/auth",
     "@profile": "./api/controller/profileController",
     "@leaderboard": "./api/controller/leaderboard",
-    "@bounty": "./api/controller/bountyController"
+    "@bounty": "./api/controller/bountyController",
+    "@random": "./api/controller/random",
+    "@tool": "./api/controller/tool",
+    "@dashboard": "./api/controller/dashboard"
   },
   "main": "index.js",
   "dependencies": {
