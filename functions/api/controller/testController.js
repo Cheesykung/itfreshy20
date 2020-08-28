@@ -46,10 +46,8 @@ log.info("Server start");
 testController.use(
   session({
     cookie: {
-      domain: "https://us-central1-itfreshy2020.cloudfunctions.net/profile",
-      maxAge: 24 * 60 * 60 * 1000,
-    },
-    name: "session",
+      domain: 'itfreshy2020.web.app', maxAge: 24 * 60 * 60 * 1000,    },
+    name: 'session',
     secret: "ilovescotchscotfchyscotchscotch",
     resave: false,
     saveUninitialized: true,
