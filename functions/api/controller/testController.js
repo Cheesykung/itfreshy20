@@ -65,6 +65,7 @@ passport.use(
       // callbackURL: "http://localhost:8080/facebook/callback",
       callbackURL: "https://us-central1-itfreshy2020.cloudfunctions.net/test/facebook/callback",
       profileFields: ["id", "displayName", "name", "gender", "photos", "email"],
+      // passReqToCallback: true
     }, // facebook will send back the token and profile
     function(token, refreshToken, profile, done) {
       process.nextTick(async function() {
