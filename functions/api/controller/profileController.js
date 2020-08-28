@@ -15,67 +15,84 @@ profileController.use(cors({ origin: true }));
 profileController.post('/create', async (req, res) => {
     //Create users profile
     try {
+        let batch = firestore.batch();
         let uid = req.headers.uid; //require front-end send uid to know where to update the info
         let userRef = firestore.collection('users').doc(uid);
         let haveUID = await userRef.get();
+        let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like} = req.body;
+
+        if (like.length != 5) {
+            res.status(400).send({
+                'statusCode' : '400',
+                'statusText' : 'Bad Request',
+                'error' : true,
+                'message' : 'INVALID PAYLOAD'
+            });
+            return ;
+        }
+
+        let payload = {
+            'id' : id,
+            'fname' : fname,
+            'surname' : surname,
+            'nickname' : nickname,
+            'age' : age,
+            'sex' : sex,
+            'religion' : religion,
+            'branch' : branch,
+            'year' : year,
+            'contact' : contact,
+            'like' : {
+                '1' : like[0],
+                '2' : like[1],
+                '3' : like[2],
+                '4' : like[3],
+                '5' : like[4]
+            }
+        };
 
         //Check that we have this uid in db or not?
-        if (haveUID.exists) {
-            let { id, fname, surname, nickname, age, sex, religion, branch, year, contact, like1, like2, like3, like4 } = req.body;
+        if (haveUID.exists){
+        // upload payload that have all info to db
+        batch.update(userRef, payload);
 
-            let payload = {
-                'id': id,
-                'fname': fname,
-                'surname': surname,
-                'nickname': nickname,
-                'age': age,
-                'sex': sex,
-                'religion': religion,
-                'branch': branch,
-                'year': year,
-                'contact': contact,
-                'like': [like1, like2, like3, like4]
-            };
-            // upload payload that have all info to db
-            await userRef.update(payload);
-
-            // update info in 'scans' db
-            // if input year = 1 or 2
-            if (year == 1 || year == 2) {
-                let scan = [];
-                scan.push(uid);
-                await firestore.collection('scans').doc(uid).update({
-                    'scan': scan,
-                    'uid': uid
-                });
-
-                // if input year = 1
-                // Update doc in db 'secretfromuser' to get random gate
-                if (year == 1) {
-                    await firestore.collection('secertfromuser').doc(id).update({
-                        'family': "",
-                        'uid': uid
-                    });
-                }
-            }
-
-            res.status(200).send({
-                'statusCode': '200',
-                'statusText': 'OK',
-                'error': false,
-                'message': 'PROFILE UPDATED',
-                'data': payload
+        // Create info in 'scans' db
+        let scan = [];
+        scan.push(uid);
+        batch.set(firestore.collection('scans').doc(uid), {
+            'scan' : scan,
+            'uid' : uid
+        });
+            
+        // if input year = 1
+        // Update uid in db 'secretfromuser'
+        if (year == 1){
+            batch.update(firestore.collection('secretfromuser').doc(id), {
+                'family' : "",
+                'uid' : uid
             });
-            return;
-        } else {
-            res.status(400).send({
-                'statusCode': '404',
-                'statusText': 'Not Found',
-                'error': true,
-                'message': 'UID NOT FOUND'
-            });
-            return;
         }
+        } else {
+            res.status(404).send({
+                'statusCode' : '404',
+                'statusText' : 'Not Found',
+                'error' : true,
+                'message' : 'UID NOT FOUND'
+            }); 
+            return ;
+        }
+
+        await batch.commit();
+
+        res.status(200).send({
+            'statusCode' : '200',
+            'statusText' : 'OK',
+            'error' : false,
+            'message' : 'PROFILE UPDATED',
+            'data' : payload
+        }); 
+        return ;
+
     } catch (e) {
         log.info(e);
         res.status(500).send({
@@ -90,12 +107,25 @@ profileController.get("/checka", (req, res) => {
     console.log(req.user)
     return;
 });
+
 profileController.put('/edit', async (req, res) => {
     //Edit(Change info) users profile on db
     try {
         let uid = req.headers.uid; //require front-end send uid to know where to update the info
-        let { fname, surname, nickname, age, sex, religion, branch, year, contact } = req.body;
+        let {fname, surname, nickname, age, sex, religion, contact} = req.body;
         // อันไหนที่ไม่ต้องการให้แก้ให้ก็ให้ frontend lock ไว้ เอาเเล้วกันนะ!
+
+        let payload = {
+            'fname' : fname,
+            'surname' : surname,
+            'nickname' : nickname,
+            'age' : age,
+            'sex' : sex,
+            'religion' : religion,
+            // 'branch' : branch,
+            // 'year' : year,
+            'contact' : contact
+        };
 
         let userRef = firestore.collection('users').doc(uid);
         let haveUID = await userRef.get();
@@ -108,27 +138,29 @@ profileController.put('/edit', async (req, res) => {
             //syntax: condition ? exprIfTrue : exprIfFalse
             //This mean if front-end didn't send anything we gonna let's each info be the same as on db
             //but if front-end send changed info we gonna put it to db by payload
-            fname = req.body.fname == null ? userData.fname : req.body.fname;
-            surname = req.body.surname == null ? userData.surname : req.body.surname;
-            nickname = req.body.nickname == null ? userData.nickname : req.body.nickname;
-            age = req.body.age == null ? userData.age : req.body.age;
-            sex = req.body.sex == null ? userData.sex : req.body.sex;
-            religion = req.body.religion == null ? userData.religion : req.body.religion;
-            branch = userData.branch;  //cannot change so we return the same data to db
-            year = userData.year;   //cannot change so we return the same data to db
-            contact = req.body.contact == null ? userData.contact : req.body.contact;
+            fname =  req.body.fname == null ? userData.fname : req.body.fname;
+            surname =  req.body.surname == null ? userData.surname : req.body.surname;
+            nickname =  req.body.nickname == null ? userData.nickname : req.body.nickname;
+            age =  req.body.age == null ? userData.age : req.body.age;
+            sex =  req.body.sex == null ? userData.sex : req.body.sex;
+            religion =  req.body.religion == null ? userData.religion : req.body.religion;
+            // branch =  userData.branch;  //cannot change so we return the same data to db
+            // year = userData.year;   //cannot change so we return the same data to db
+            contact =  req.body.contact == null ? userData.contact : req.body.contact;
+            // like = userData.like;
 
             let payload = {
-                'fname': fname,
-                'surname': surname,
-                'nickname': nickname,
-                'age': age,
-                'sex': sex,
-                'religion': religion,
-                'branch': branch,
-                'year': year,
-                'contact': contact
+                'fname' : fname,
+                'surname' : surname,
+                'nickname' : nickname,
+                'age' : age,
+                'sex' : sex,
+                'religion' : religion,
+                // 'branch' : branch,
+                // 'year' : year,
+                'contact' : contact
             };
+            
             await userRef.update(payload);
 
             res.status(200).send({
@@ -196,17 +228,167 @@ profileController.get('', async (req, res) => {
     }
 });
 
+profileController.put('/scaned', async (req, res) => {
+    //To get users info in db and put it to front-end as them requst
+    //And update info in db 'scans'
+    try {
+        let uid = req.headers.uid; //uid ของคนที่แสกนไป
+        let userRef = await firestore.collection('users').doc(uid).get();
+
+        if (userRef.exists) {
+            let userDoc = userRef.data();
+            let userData = {
+                'name' : userDoc.name,
+                'year' : userDoc.year,
+                'pic' : userDoc.pic,
+            };
+            let userLike = userDoc.like;
+            await firestore.collection('scans').doc(uid).update(userData);
+
+            res.status(200).send({
+                'statusCode' : '200',
+                'statusText' : 'OK',
+                'error' : false,
+                'message' : 'SCAN FOUND',
+                'data' : userData,
+                'like' : userLike
+                });
+            return ;
+        } else {
+            res.status(404).send({
+                'statusCode' : '404',
+                'statusText' : 'Not Found',
+                'error' : true,
+                'message' : 'UID NOT FOUND'
+            });
+            return ;
+        }
+
+    } catch (e) {
+        log.info(e);
+        res.status(500).send({
+            'statusCode' : '500',
+            'statusText' : 'Internal Server Error',
+            'error' : true
+        });
+        return ;
+    }
+
+});
+
+profileController.put('/answer', async (req, res) => {
+    try {
+        // นายต้องส่งกลับมาเป็น object นะ เเล้วก็บอกด้วยว่าอันไหนคือคำตอบของข้อไหน
+        // let answer = {
+        // first : 1-5 (number)
+        // second : 1-5 (number)
+        // third : 1-5 (number)
+        // fourth : 1-5 (number)
+        // fifth : 1-5 (number)
+        // };
+        let answer = req.body.answer;
+        let year = req.headers.year; //require ปีของคนที่ตอบคำถามอ่ะ หมายถึง คนที่ทำอยู่นะไม่ใช่เจ้าของคำถามนั้นๆ
+        let id = req.headers.id; //require id ของคนที่ตอบคำถามอ่ะ หมายถึง คนที่ทำอยู่นะไม่ใช่เจ้าของคำถามนั้นๆ
+        // ถ้าน้องปี 1 เป็นคนทำต้องส่งมา
+        // ถ้าพี่ปี 2 เป็นคนทำไม่ต้องส่งมาก็ได้
+        let uid = req.headers.uid ; //require uid ของคนที่ถูกแสกน จำของคำถามนั้นๆอ่ะ
+
+        console.log(answer);
+        let score = 0;
+        score += answer.first * 2.5;
+        score += answer.second * 2;
+        score += answer.third *  1.5;
+        score += answer.fourth * 1.25;
+        score += answer.fifth;
+        console.log(score);
+
+        //if he/she is 1st year
+        if (year == 1) {
+            if (id != undefined) {
+                let userRef = firestore.collection('secretfromuser').doc(id);
+                let userGet = await userRef.get();
+                let userData = userGet.data();
+                console.log(userData);
+                if (userData.score != 0) {
+                    score += userData.score;
+                }
+
+                await userRef.update({'score' : score});
+
+                res.status(200).send({
+                    'statusCode' : '200',
+                    'statusText' : 'OK',
+                    'error' : false,
+                    'message' : 'SCORE UPDATE',
+                    'score' : score
+                });
+
+            } else {
+                res.status(404).send({
+                    'statusCode' : '404',
+                    'statusText' : 'Not Found',
+                    'error' : true,
+                    'message' : 'ID NOT FOUND'
+                });
+                return ;
+            }
+        }
+        else if (year == 2) {
+            if (uid != undefined) {
+                let owner = await firestore.collection('users').doc(uid).get();
+                let data = owner.data();
+                let ref = data.id;
+
+                let userRef = firestore.collection('secretfromuser').doc(ref);
+                let userGet = await userRef.get();
+                let userData = userGet.data();
+                if (userData.score != 0) {
+                    score += userData.score;
+                }
+
+                await userRef.update({'score' : score});
+
+                res.status(200).send({
+                    'statusCode' : '200',
+                    'statusText' : 'OK',
+                    'error' : false,
+                    'message' : 'SCORE UPDATE',
+                    'score' : score
+                });
+            } else {
+                res.status(404).send({
+                    'statusCode' : '404',
+                    'statusText' : 'Not Found',
+                    'error' : true,
+                    'message' : 'UID NOT FOUND'
+                });
+                return ;
+            }
+        }
+
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({
+            'statusCode' : '500',
+            'statusText' : 'Internal Server Error',
+            'error' : true,
+        });
+    }
+});
+
+
+
 // One-use function
 // To Create All year1 profile
 // profileController.post('/total', async (req, res) => {
-//     // Create all year1 users in db 'secertfromuser' to keep info family and uid
+//     // Create all year1 users in db 'secretfromuser' to keep info family and uid
 //     try {
-//         let userRef = firestore.collection('secertfromuser');
+//         let userRef = firestore.collection('secretfromuser');
 //         let batch = firestore.batch();
 
 //         for (let i = 63070001; i < 63070252; i++) {
 //             let ref = i.toString();
-//             batch.set(userRef.doc(ref), {'family' : '', 'uid':''});
+//             batch.set(userRef.doc(ref), {'family' : '', 'uid':'', 'score' : 0});
 //         }
 //         await batch.commit();
 
@@ -231,7 +413,7 @@ profileController.get('', async (req, res) => {
 
 // Another One-Used function
 // To rnadom gate of year1 users
-// profileController.post('/family/random', async (req, res) => {
+// profileController.post('/gate/random', async (req, res) => {
 //     try {
 //         let gate = ['AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND',
 //         'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND',
@@ -256,9 +438,9 @@ profileController.get('', async (req, res) => {
 //             let index = Math.floor(Math.random() * gate.length);
 //             let user_gate = gate[index];
 //             gate.splice(index, 1);
-//             let ref = firestore.collection('secertfromuser').doc(i.toString());
+//             let ref = firestore.collection('secretfromuser').doc(i.toString());
 //             console.log(i.toString() + "'s Gate is " + user_gate);
-//             batch.update(ref, {family: user_gate});
+//             batch.update(ref, {'gate': user_gate});
 //         }
 //         batch.commit();
 
