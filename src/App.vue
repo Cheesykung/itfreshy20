@@ -47,6 +47,14 @@ html, body {
   @apply min-h-full;
 }
 
+.main-wrap {
+  background-image: linear-gradient(
+    to top,
+    rgba(11, 9, 49, 0.9) 45%,
+    transparent 70%
+  );
+}
+
 button:focus {
   outline: 0 !important;
 }

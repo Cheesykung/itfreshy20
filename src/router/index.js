@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import Vue from "vue";
 import VueRouter from "vue-router";
-import store from "@/store/index.js";
+//import store from "@/store/index.js";
 // import Cookies from "js-cookie";
 //import { urlencoded } from "express";
 
@@ -10,6 +10,8 @@ const Dashboard = () => import("../views/Dashboard.vue");
 const Signin = () => import("../views/Login.vue");
 const Profile = () => import("../views/Profile.vue");
 const Hunted = () => import("../views/Hunted.vue");
+const Bounty = () => import("../views/Bounty.vue");
+const Leaderboard = () => import("../views/Leaderboard.vue");
 
 const callback = () => import("../views/Callback.vue");
 const gender = () => import("../components/pages/callBackForm/gender.vue");
@@ -56,6 +58,22 @@ const routes = [
       { path: "step4", component: step4, name: "What you likes?" },
       { path: "step5", component: step5, name: "Your Gate" },
     ],
+  },{
+    path: "/leaderboard",
+    name: "Leaderboard",
+    component: Leaderboard,
+    meta: {
+      title: "Leaderboard | IT@KMITL FRESHY 2020",
+      requiresAuth: true,
+    }
+  },{
+    path: "/bounty",
+    name: "Bounty",
+    component: Bounty,
+    meta: {
+      title: "Bounty | IT@KMITL FRESHY 2020",
+      requiresAuth: true,
+    }
   },
   {
     path: "/profile",
@@ -99,28 +117,28 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((item) => item.meta.requiresAuth)) {
-    //const user = localStorage.getItem("user");
-    const firstTime = store.getters["user/getFirstTime"];
-    const signedIn = store.getters["user/signInCheck"];
-    if (!signedIn) {
-      next("/signin");
-    } else if (signedIn === true && to.name !== "Signin") {
-      if (firstTime === 0 && to.fullPath) {
-        next("/continue");
-      } else if (firstTime === 1) {
-        if (
-          to.matched.some(
-            (item) => item.path === "/continue" && item.path === "/signin"
-          )
-        ) {
-          next("/profile");
-        } else {
-          next();
-        }
-      }
-    }
-  }
+  // if (to.matched.some((item) => item.meta.requiresAuth)) {
+  //   //const user = localStorage.getItem("user");
+  //   const firstTime = store.getters["user/getFirstTime"];
+  //   const signedIn = store.getters["user/signInCheck"];
+  //   if (!signedIn) {
+  //     next("/signin");
+  //   } else if (signedIn === true && to.name !== "Signin") {
+  //     if (firstTime === 0 && to.fullPath) {
+  //       next("/continue");
+  //     } else if (firstTime === 1) {
+  //       if (
+  //         to.matched.some(
+  //           (item) => item.path === "/continue" && item.path === "/signin"
+  //         )
+  //       ) {
+  //         next("/profile");
+  //       } else {
+  //         next();
+  //       }
+  //     }
+  //   }
+  //}
 
   const nearestTitle = to.matched
     .slice()

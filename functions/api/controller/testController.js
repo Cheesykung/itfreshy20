@@ -312,8 +312,9 @@ testController.get("/api/user", isLoggedIn, (req, res) => {
   try {
     log.info("---------->api/user");
     if (isLoggedIn) {
-      let data = req.user;
-      res.status(200).json(data);
+      let data = req.data;
+      let session = req.session;
+      res.status(200).json({data, session});
     } else {
       res.status(400);
     }
