@@ -92,4 +92,9 @@ button:focus {
   opacity: 0;
 }
 
+.alertify .ajs-dialog {
+    top: 50%;
+    transform: translateY(-50%);
+    margin: auto;
+}
 </style>

@@ -190,7 +190,7 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
             error: false,
             message: "Successfully generated qr code",
             qrcode:
-              "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
+              "https://us-central1-itfreshy2020.cloudfunctions.net/test/qrcode/" +
               name,
           });
         })
@@ -223,7 +223,7 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
                     error: false,
                     message: "Successfully generated new qr code",
                     qrcode:
-                      "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
+                      "https://us-central1-itfreshy2020.cloudfunctions.net/test/qrcode/" +
                       name,
                   });
                 })
@@ -244,7 +244,7 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
             error: false,
             message: "Successfully request qr",
             qrcode:
-              "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
+              "https://us-central1-itfreshy2020.cloudfunctions.net/test/qrcode/" +
               doc.data().link,
           });
         }

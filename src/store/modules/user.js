@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 const state = () => ({
   profile: {},
   status: Boolean,
+  link: null,
   firstTime: null,
   broMock: [
     {
@@ -80,6 +81,9 @@ const getters = {
   getBro: (state) => {
     return state.broMock;
   },
+  getLink: (state) => {
+    return state.link;
+  },
   getProfileById: (state) => (proId) => {
     return state.broMock.find(({ id }) => id === proId);
   },
@@ -116,6 +120,9 @@ const mutations = {
   setFirstTime: (state, status) => {
     state.firstTime = status;
   },
+  setLink: (state, payloadLink) => {
+    state.link = payloadLink;
+  },
   clearProfile: (state) => {
     Cookies.remove("session");
     state.profile = null;
@@ -124,6 +131,9 @@ const mutations = {
 };
 
 const actions = {
+  linkActions({ commit }, payload) {
+    commit("setLink", payload);
+  },
   async resetProfile({ commit }) {
     return new Promise((resolve, reject) => {
       const token = Cookies.get("session");
