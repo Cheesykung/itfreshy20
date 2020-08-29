@@ -131,6 +131,7 @@ const actions = {
         .get(
           "https://us-central1-itfreshy2020.cloudfunctions.net/test/logout",
           {
+            withCredentials: true,
             headers: { "X-Requested-With": "XMLHttpRequest", "Authorization": "Bearer " + token },
           }
         )
@@ -138,7 +139,7 @@ const actions = {
           if (res.status === 200) {
             setTimeout(() => {
               window.location.replace("/signin");
-            }, 1000);
+            }, 400);
             resolve(res);
             commit("clearProfile");
           } else {

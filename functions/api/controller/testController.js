@@ -57,7 +57,7 @@ testController.use(
 );
 testController.use(function(req, res, next) {
   // Website you wish to allow to connect
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
 
   // Request methods you wish to allow
   res.setHeader(
@@ -68,7 +68,7 @@ testController.use(function(req, res, next) {
   // Request headers you wish to allow
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "X-Requested-With,Content-type, Authorization"
+    "X-Requested-With,Content-Type,Authorization"
   );
 
   // Set to true if you need the website to include cookies in the requests sent
