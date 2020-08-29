@@ -15,7 +15,7 @@
     "@app": "./api/controller/testController",
     "@auth": "./api/controller/auth",
     "@profile": "./api/controller/profileController",
-    "@leaderboard": "./api/controller/leaderboard",
+    "@leaderboard": "./api/controller/leaderBoard",
     "@bounty": "./api/controller/bountyController",
     "@random": "./api/controller/random",
     "@tool": "./api/controller/tool",
