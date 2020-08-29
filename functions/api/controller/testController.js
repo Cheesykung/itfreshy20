@@ -61,8 +61,6 @@ testController.use(
 );
 // testController.use(allowCrossDomain);
 testController.use(minify());
-testController.use(bodyParser.json());
-testController.use(bodyParser.urlencoded({ extended: true }));
 testController.use(function(req, res, next) {
   // Website you wish to allow to connect
   res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
@@ -86,6 +84,8 @@ testController.use(function(req, res, next) {
   // Pass to next layer of middleware
   next();
 });
+testController.use(bodyParser.json());
+testController.use(bodyParser.urlencoded({ extended: true }));
 testController.use(helmet());
 testController.use(passport.initialize());
 testController.use(passport.session());
@@ -484,7 +484,7 @@ testController.get("/logout", (req, res) => {
 });
 
 testController.get("/checka", (req, res) => {
-  res.send(req.user);
+  res.json({ data: req.user, session: req.session });
   console.log(req.user);
 });
 
