@@ -288,32 +288,29 @@ profileController.put('/answer', async (req, res) => {
         // };
         let answer = req.body.answer;
         let year = req.headers.year; //require ปีของคนที่ตอบคำถามอ่ะ หมายถึง คนที่ทำอยู่นะไม่ใช่เจ้าของคำถามนั้นๆ
-        let id = req.headers.id; //require id ของคนที่ตอบคำถามอ่ะ หมายถึง คนที่ทำอยู่นะไม่ใช่เจ้าของคำถามนั้นๆ
-        // ถ้าน้องปี 1 เป็นคนทำต้องส่งมา
-        // ถ้าพี่ปี 2 เป็นคนทำไม่ต้องส่งมาก็ได้
-        let uid = req.headers.uid ; //require uid ของคนที่ถูกแสกน จำของคำถามนั้นๆอ่ะ
 
-        console.log(answer);
         let score = 0;
         score += answer.first * 2.5;
         score += answer.second * 2;
         score += answer.third *  1.5;
         score += answer.fourth * 1.25;
         score += answer.fifth;
-        console.log(score);
 
         //if he/she is 1st year
         if (year == 1) {
+            let id = req.headers.id; // id ของน้อง
+            let name = req.headers.uid // uid,id ของพี่
+
             if (id != undefined) {
                 let userRef = firestore.collection('secretfromuser').doc(id);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
-                console.log(userData);
-                if (userData.score != 0) {
-                    score += userData.score;
+                console.log(userData[name]);
+                if (userData[name] != 0 && userData[name] != undefined) {
+                    score += userData[name];
                 }
 
-                await userRef.update({'score' : score});
+                await userRef.update({[name] : score});
 
                 res.status(200).send({
                     'statusCode' : '200',
@@ -334,6 +331,9 @@ profileController.put('/answer', async (req, res) => {
             }
         }
         else if (year == 2) {
+            let name = req.headers.id; // uid ,id ของพี่
+            let uid = req.headers.uid; // uid ของน้อง
+
             if (uid != undefined) {
                 let owner = await firestore.collection('users').doc(uid).get();
                 let data = owner.data();
@@ -342,11 +342,11 @@ profileController.put('/answer', async (req, res) => {
                 let userRef = firestore.collection('secretfromuser').doc(ref);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
-                if (userData.score != 0) {
-                    score += userData.score;
+                if (userData[name] != 0 && userData[name] != undefined) {
+                    score += userData[name];
                 }
 
-                await userRef.update({'score' : score});
+                await userRef.update({[name] : score});
 
                 res.status(200).send({
                     'statusCode' : '200',
@@ -388,7 +388,7 @@ profileController.put('/answer', async (req, res) => {
 
 //         for (let i = 63070001; i < 63070252; i++) {
 //             let ref = i.toString();
-//             batch.set(userRef.doc(ref), {'family' : '', 'uid':'', 'score' : 0});
+//             batch.set(userRef.doc(ref), {'family' : '', 'uid':''});
 //         }
 //         await batch.commit();
 
