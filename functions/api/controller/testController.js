@@ -1,4 +1,5 @@
 //require zone
+const minify = require('express-minify')
 const compression = require("compression");
 const path = require("path");
 const cors = require("cors");
@@ -55,6 +56,8 @@ testController.use(
     saveUninitialized: true,
   })
 );
+testController.use(allowCrossDomain);
+testController.use(minify());
 testController.use(function(req, res, next) {
   // Website you wish to allow to connect
   res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
@@ -190,7 +193,7 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
             error: false,
             message: "Successfully generated qr code",
             qrcode:
-              "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
+              "https://itfreshy2020.web.app/qrcode/" +
               name,
           });
         })
@@ -223,7 +226,7 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
                     error: false,
                     message: "Successfully generated new qr code",
                     qrcode:
-                      "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
+                      "https://itfreshy2020.web.app/qrcode/" +
                       name,
                   });
                 })
@@ -244,7 +247,7 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
             error: false,
             message: "Successfully request qr",
             qrcode:
-              "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
+              "https://itfreshy2020.web.app/qrcode/" +
               doc.data().link,
           });
         }
