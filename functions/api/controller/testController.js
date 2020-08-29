@@ -496,7 +496,7 @@ function isLoggedIn(req, res, next) {
     } else {
       // if they aren't redirect them to the home page
       log.info("----------->isOut");
-      res.redirect("/");
+      res.redirect("https://itfreshy2020.web.app/");
     }
   } catch (err) {
     res.status(500).send({
