@@ -23,6 +23,8 @@ const LINKRef = db.collection("links");
 const ALLRef = db.collection("allstats");
 const helmet = require("helmet");
 const Cookies = require("js-cookie");
+// const Cookies = require("js-cookie");
+const cookies = require('cookies')
 const bodyParser = require('body-parser')
 
 // const allowCrossDomain = function(req, res, next) {
@@ -45,20 +47,25 @@ const { link } = require("fs");
 var log = bunyan.createLogger({ name: "myapp" });
 log.info("Server start");
 // server setup
-testController.use(
-  session({
-    cookie: {
-      domain: "https://itfreshy2020.web.app",
-      maxAge: 24 * 60 * 60 * 1000,
-      SameSite: 'None',
-      Secure: true 
-    },
-    name: "session",
-    secret: "ilovescotchscotfchyscotchscotch",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+
+const sessionConfig = {
+  secret: 'ilovescotchscotfchyscotchscotch"',
+  name: 'session',
+  resave: false,
+  saveUninitialized: false,
+  cookie : {
+    domain: "https://itfreshy2020.web.app",
+    SameSite: 'None',
+    maxAge: 24 * 60 * 60 * 1000,
+  }
+};
+
+if (process.env.NODE_ENV === 'production') {
+  testController.set('trust proxy', 1); // trust first proxy
+  sessionConfig.cookie.secure = true;
+  sessionConfig.cookie.SameSite = 'none';  // serve secure cookies
+}
+testController.use(session(sessionConfig));
 // testController.use(allowCrossDomain);
 testController.use(minify());
 testController.use(function(req, res, next) {
@@ -484,9 +491,16 @@ testController.get("/logout", (req, res) => {
 });
 
 testController.get("/checka", (req, res) => {
-  res.json({ data: req.user, session: req.session });
+  // res.json({ data: req.user, session: req.session });
+  res.json(req.user)
   console.log(req.user);
 });
+testController.get("/checkss", (req, res) => {
+  // res.json({ data: req.user, session: req.session });
+  res.json(req.session)
+  console.log(req.user);
+});
+
 
 testController.use(function(req, res, next) {
   res.status(404);
