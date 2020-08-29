@@ -132,14 +132,17 @@ const actions = {
           "https://us-central1-itfreshy2020.cloudfunctions.net/test/logout",
           {
             withCredentials: true,
-            headers: { "X-Requested-With": "XMLHttpRequest", "Authorization": "Bearer " + token },
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "Authorization": "Bearer " + token,
+            },
           }
         )
         .then((res) => {
           if (res.status === 200) {
             setTimeout(() => {
               window.location.replace("/signin");
-            }, 400);
+            }, 50);
             resolve(res);
             commit("clearProfile");
           } else {
@@ -171,7 +174,7 @@ const actions = {
               commit("setProfile", res.data.data);
               commit("setFirstTime", res.data.data.newuser);
               Cookies.set("session", res.data.session.passport.user);
-              resolve(res);
+              resolve("Succesfully!");
             }
           }
         })
