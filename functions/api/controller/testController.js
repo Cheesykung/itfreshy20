@@ -7,7 +7,7 @@ const express = require("express");
 const admin = require("../config/admin");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
-const session = require("cookie-session");
+const session = require("express-session");
 const db = admin.firestore();
 const facebookStrategy = require("passport-facebook").Strategy;
 const firestore = admin.firestore();
@@ -50,8 +50,8 @@ testController.use(
     cookie: {
       domain: "https://itfreshy2020.web.app",
       maxAge: 24 * 60 * 60 * 1000,
-      SameSite: 'None',
-      Secure: true 
+      sameSite: "none",
+      secure: true,
     },
     name: "session",
     secret: "ilovescotchscotfchyscotchscotch",
@@ -484,7 +484,7 @@ testController.get("/logout", (req, res) => {
 });
 
 testController.get("/checka", (req, res) => {
-  res.json({ data: req.user, session: req.session });
+  res.send(req.user);
   console.log(req.user);
 });
 

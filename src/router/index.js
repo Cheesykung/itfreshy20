@@ -156,7 +156,7 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeResolve((to, from, next) => {
+router.beforeEach((to, from, next) => {
   if (to.matched.some((item) => item.meta.requiresAuth)) {
     if (!signedIn && !token) {
       next({ path: "/signin", query: { from: to.path } });

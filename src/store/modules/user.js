@@ -2,6 +2,7 @@ import axios from "axios";
 //import AuthController from "../services/auth.service";
 import Cookies from "js-cookie";
 // import router from "../../main";
+//import passport from "passport"
 
 const state = () => ({
   profile: {},
@@ -144,7 +145,7 @@ const actions = {
             withCredentials: true,
             headers: {
               "X-Requested-With": "XMLHttpRequest",
-              Authorization: "Bearer " + token,
+              "Authorization": "Bearer " + token
             },
           }
         )
@@ -174,7 +175,7 @@ const actions = {
             withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              // "Authorization": "Bearer " + token,
+              // "Authorization": "Bearer " + token_,
             },
           }
         )
@@ -183,9 +184,9 @@ const actions = {
             if (res.data !== "") {
               commit("setProfile", res.data);
               commit("setFirstTime", res.data.newuser);
-              Cookies.set("session", res.data.token, {
-                SameSite: "None",
-                secure: true,
+              Cookies.set("session", res.Cookies.get("session"), {
+                sameSite: "none",
+                secure: true
               });
               resolve("Succesfully!");
             }

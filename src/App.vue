@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <Nav v-if="signInCheck && !$route.matched.some(({ path }) => path === '/continue')"/>
+    <Nav
+      v-if="signInCheck && !$route.matched.some(({ path }) => path === '/continue' && path === '/signin')"
+    />
     <transition name="animated">
       <router-view />
     </transition>
@@ -13,13 +15,13 @@ import Nav from "@/components/util/Nav.vue";
 import { mapGetters } from "vuex";
 
 export default {
-  name: 'IT HUNTER GAME',
+  name: "IT HUNTER GAME",
   components: {
     //  Footer,
     Nav
   },
   computed: {
-    ...mapGetters('user', ["signInCheck"])
+    ...mapGetters("user", ["signInCheck"])
   }
 };
 </script>
@@ -27,7 +29,8 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;300;400&family=Roboto:wght@300;400;600&display=swap");
 
-html, body {
+html,
+body {
   @apply h-full;
 }
 
@@ -37,7 +40,7 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   word-spacing: 1px;
-  letter-spacing: .8px;
+  letter-spacing: 0.8px;
   color: #2c3e50;
   background-image: url("assets/images/bg.jpg");
   background-size: cover;
@@ -61,7 +64,7 @@ button:focus {
 }
 
 ::-webkit-scrollbar {
-  width: .35rem;
+  width: 0.35rem;
 }
 
 ::-webkit-scrollbar-track {
@@ -73,7 +76,7 @@ button:focus {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary-700 ;
+  @apply bg-primary-700;
 }
 
 .lucky-font {
@@ -93,8 +96,8 @@ button:focus {
 }
 
 .alertify .ajs-dialog {
-    top: 50%;
-    transform: translateY(-50%);
-    margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: auto;
 }
 </style>
