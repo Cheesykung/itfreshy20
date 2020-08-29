@@ -100,9 +100,7 @@ export default {
         if (setQr.status === 200) {
           let data = await setQr.data;
           alertify.success("สร้างลิงค์สำเร็จ!");
-          alertify.alert("QR Code ของคุณ", data.qrcode, () => {
-            alertify.message("ตกลง");
-          });
+          alertify.alert("QR Code ของคุณ", data.qrcode);
           this.$store.commit("user/setLink", data.qrcode);
         } else {
           console.log("Something went wrong.");
