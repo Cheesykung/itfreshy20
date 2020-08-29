@@ -22,13 +22,23 @@ const USERSRef = db.collection("users");
 const LINKRef = db.collection("links");
 const ALLRef = db.collection("allstats");
 const helmet = require("helmet");
-const Cookies = require("js-cookie");
-const allowCrossDomain = function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "*");
-  res.header("Access-Control-Allow-Headers", "*");
-  next();
-};
+// const Cookies = require("js-cookie");
+const cookies = require('cookies')
+const bodyParser = require('body-parser')
+
+// const allowCrossDomain = function(req, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+//   );
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Content-Type, Origin, X-Auth-Token, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+//   );
+//   res.setHeader("Access-Control-Allow-Credentials", true);
+//   next();
+// };
 
 var bunyan = require("bunyan");
 //const { doc } = require("prettier");
@@ -36,17 +46,25 @@ const { link } = require("fs");
 var log = bunyan.createLogger({ name: "myapp" });
 log.info("Server start");
 // server setup
-testController.use(
-  session({
-    cookie: {
-      domain: 'https://us-central1-itfreshy2020.cloudfunctions.net/profile', maxAge: 24 * 60 * 60 * 1000,    },
-    name: 'session',
-    secret: "ilovescotchscotfchyscotchscotch",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-testController.use(allowCrossDomain);
+
+const sessionConfig = {
+  secret: 'ilovescotchscotfchyscotchscotch"',
+  name: 'session',
+  resave: false,
+  saveUninitialized: false,
+  cookie : {
+    domain: "https://itfreshy2020.web.app",
+    sameSite:'none'
+  }
+};
+
+if (process.env.NODE_ENV === 'production') {
+  testController.set('trust proxy', 1); // trust first proxy
+  sessionConfig.cookie.secure = true;
+  sessionConfig.cookie.sameSite = 'none';  // serve secure cookies
+}
+testController.use(session(sessionConfig));
+// testController.use(allowCrossDomain);
 testController.use(minify());
 testController.use(function(req, res, next) {
   // Website you wish to allow to connect
@@ -71,12 +89,14 @@ testController.use(function(req, res, next) {
   // Pass to next layer of middleware
   next();
 });
+testController.use(bodyParser.json());
+testController.use(bodyParser.urlencoded({ extended: true }));
 testController.use(helmet());
 testController.use(passport.initialize());
 testController.use(passport.session());
 testController.use(cookieParser());
 testController.use(compression());
-testController.use(cors({ origin: true }));
+testController.use(cors({ origin: true, credentials: true }));
 testController.set("views", path.join(__dirname, "views"));
 testController.set("view engine", "ejs");
 //authen use
@@ -87,11 +107,12 @@ passport.use(
       clientID: "306264320456438",
       clientSecret: "f076de5e27c1ea459950049ccad236a1",
       // callbackURL: "http://localhost:8080/facebook/callback",
-      callbackURL: "https://us-central1-itfreshy2020.cloudfunctions.net/test/facebook/callback",
+      callbackURL:
+        "https://us-central1-itfreshy2020.cloudfunctions.net/test/facebook/callback",
       profileFields: ["id", "displayName", "name", "gender", "photos", "email"],
     }, // facebook will send back the token and profile
-    function (token, refreshToken, profile, done) {
-      process.nextTick(async function () {
+    function(token, refreshToken, profile, done) {
+      process.nextTick(async function() {
         // asynchronous
         try {
           const usersnapshot = await USERSRef.doc(profile.id).get();
@@ -146,11 +167,11 @@ passport.use(
     }
   )
 );
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function(user, done) {
   done(null, user);
 }); //เก็บ id ไว้ใน session
 // used to deserialize the user //นำ id ที่เก็บไว้ใน session เรียกกลับมาใช้
-passport.deserializeUser(async function (id, done) {
+passport.deserializeUser(async function(id, done) {
   const userdeserialize = await USERSRef.where("id", "==", id).get();
   userdeserialize.forEach((doc) => {
     done(null, doc.data());
@@ -158,12 +179,17 @@ passport.deserializeUser(async function (id, done) {
 });
 
 //generate qrcode รอเทส
-testController.get("/genqrcode", isLoggedIn, async function (req, res) {
+testController.get("/genqrcode", isLoggedIn, async function(req, res) {
   try {
     log.info("genQR: " + req.user.uid);
     const genqrsnapshot = await LINKRef.where("uid", "==", req.user.uid).get();
     const name = uuidv4();
-    const data = { link: name, uid: req.user.uid, time: 10, year: parseInt(req.user.year) };
+    const data = {
+      link: name,
+      uid: req.user.uid,
+      time: 10,
+      year: parseInt(req.user.year),
+    };
     if (genqrsnapshot.empty) {
       log.info("create qr " + req.user.uid);
       const newDoc = await db
@@ -177,7 +203,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
             error: false,
             message: "Successfully generated qr code",
             qrcode:
-              "https://itfreshy2020.web.app/qrcode/" +
+              "https://us-central1-itfreshy2020.cloudfunctions.net/test/qrcode/" +
               name,
           });
         })
@@ -210,7 +236,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
                     error: false,
                     message: "Successfully generated new qr code",
                     qrcode:
-                      "https://itfreshy2020.web.app/qrcode/" +
+                      "https://us-central1-itfreshy2020.cloudfunctions.net/test/qrcode/" +
                       name,
                   });
                 })
@@ -231,7 +257,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
             error: false,
             message: "Successfully request qr",
             qrcode:
-              "https://itfreshy2020.web.app/qrcode/" +
+              "https://us-central1-itfreshy2020.cloudfunctions.net/test/qrcode/" +
               doc.data().link,
           });
         }
@@ -247,64 +273,88 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
   }
 });
 //เสร็จ
-testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
-  const findlink = LINKRef.where('link', '==', req.params.id)
-    .get().then((findlink) => {
+testController.get("/qrcode/:id", isLoggedIn, async function(req, res) {
+  const findlink = LINKRef.where("link", "==", req.params.id)
+    .get()
+    .then((findlink) => {
       if (findlink.empty) {
-        res.send("link not found")
+        res.send("link not found");
         return;
       }
-      findlink.forEach(linkdata => {
-        checker = linkdata.data().uid
+      findlink.forEach((linkdata) => {
+        checker = linkdata.data().uid;
         if (linkdata.data().time <= 0) {
-          res.send("time out link")
-          return
-        }
-        else {
-          const scanuserdata = db.collection('scans').doc(req.user.uid)
+          res.send("time out link");
+          return;
+        } else {
+          const scanuserdata = db
+            .collection("scans")
+            .doc(req.user.uid)
             .get()
             .then((scanuserdata) => {
-              if (scanuserdata.data().scan.indexOf(linkdata.data().uid) != "-1") {
-                res.send("havedscan")
-              }
-              else {
+              if (
+                scanuserdata.data().scan.indexOf(linkdata.data().uid) != "-1"
+              ) {
+                res.send("havedscan");
+              } else {
                 //year 1 scan2 or 2 scan 1 return
-                const bountyplus = db.collection('bounty').doc('list')
+                const bountyplus = db
+                  .collection("bounty")
+                  .doc("list")
                   .get()
                   .then((bountyplus) => {
-                    if (bountyplus.data().list.indexOf(linkdata.data().uid) != "-1") {
-                      const sender = USERSRef.doc(checker).get()
+                    if (
+                      bountyplus.data().list.indexOf(linkdata.data().uid) !=
+                      "-1"
+                    ) {
+                      const sender = USERSRef.doc(checker)
+                        .get()
                         .then((sender) => {
-                          res.send({ name: sender.data().name, year: sender.data().year, pic: sender.data().pic, point: 6 })
-                        })
+                          res.send({
+                            name: sender.data().name,
+                            year: sender.data().year,
+                            pic: sender.data().pic,
+                            point: 6,
+                          });
+                        });
                       const userupdatepoint = USERSRef.doc(req.user.uid)
                         .get()
                         .then((userupdatepoint) => {
                           const update = USERSRef.doc(req.user.uid).set(
-                            { point: userupdatepoint.data().point + 6, count: userupdatepoint.data().count + 1 },
+                            {
+                              point: userupdatepoint.data().point + 6,
+                              count: userupdatepoint.data().count + 1,
+                            },
                             { merge: true }
                           );
                           return;
-                        })
-                    }
-                    else {
+                        });
+                    } else {
                       //year 1 scan2 or 2 scan 1 return
 
-                      const sender = USERSRef.doc(checker).get()
+                      const sender = USERSRef.doc(checker)
+                        .get()
                         .then((sender) => {
-                          res.send({ name: sender.data().name, year: sender.data().year, pic: sender.data().pic, point: 6 })
-                        })
+                          res.send({
+                            name: sender.data().name,
+                            year: sender.data().year,
+                            pic: sender.data().pic,
+                            point: 6,
+                          });
+                        });
                       const userupdatepoint = USERSRef.doc(req.user.uid)
                         .get()
                         .then((userupdatepoint) => {
                           const update = USERSRef.doc(req.user.uid).set(
-                            { point: userupdatepoint.data().point + 3, count: userupdatepoint.data().count + 1 },
+                            {
+                              point: userupdatepoint.data().point + 3,
+                              count: userupdatepoint.data().count + 1,
+                            },
                             { merge: true }
                           );
                           return;
-                        })
+                        });
                     }
-
                   })
                   .then(() => {
                     const timedecrease = LINKRef.doc(linkdata.data().uid).set(
@@ -314,34 +364,30 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
                     const scansave = SCANSRef.doc(req.user.uid).update({
                       scan: admin.firestore.FieldValue.arrayUnion(
                         linkdata.data().uid
-                      )
+                      ),
                     });
-                  })
+                  });
               }
               return;
-            })
+            });
         }
         // res.send(linkdata.data());
       });
-
-    })
-
-
-
+    });
 });
 
 testController.get(
   "/auth/facebook",
   passport.authenticate("facebook", {
     scope: "email",
-    session: true
+    session: true,
   })
 );
 
 testController.route("/facebook/callback").get(
   passport.authenticate("facebook", {
-    successRedirect: "/test/checka",
-    failureRedirect: "/",
+    successRedirect: "https://itfreshy2020.web.app/profile",
+    failureRedirect: "https://itfreshy2020.web.app/signin",
   })
 );
 
@@ -349,14 +395,10 @@ testController.get("/api/user", isLoggedIn, (req, res) => {
   try {
     log.info("---------->api/user");
     if (isLoggedIn) {
-      res.status(200).json(req.user);
+      let data = req.data;
+      res.status(200).json({ data });
     } else {
-      res.status(400).send({
-        statusCode: "400",
-        statusText: "Bad Request",
-        error: true,
-        message: "Not logged in.",
-      });
+      res.status(400);
     }
   } catch (err) {
     res.status(500).send({
@@ -388,9 +430,9 @@ testController.get(
   async (req, res) => {
     log.info(
       "king querty doc " +
-      req.params.collection +
-      " doc name " +
-      req.params.docname
+        req.params.collection +
+        " doc name " +
+        req.params.docname
     );
     const all = await db
       .collection(req.params.collection)
@@ -408,28 +450,34 @@ testController.get(
 testController.get("/ryutools/find/:id", isAdmin, async (req, res) => {
   async function getMarkers(id) {
     const markers = [];
-    await db.collection(id).get()
-      .then(querySnapshot => {
-        querySnapshot.docs.forEach(doc => {
+    await db
+      .collection(id)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.docs.forEach((doc) => {
           markers.push({ id: doc.id, data: doc.data() });
         });
       });
     return res.send(markers);
   }
-  getMarkers(req.params.id)
-
+  getMarkers(req.params.id);
 });
 
-
 testController.get("/help", async (req, res) => {
-  res.render("help")
+  res.render("help");
 });
 
 testController.get("/logout", (req, res) => {
   try {
     log.info("----------> Logout");
+
     req.logout();
-    res.redirect("/");
+    res.status(200).send({
+      statusCode: "200",
+      statusText: "Request Success",
+      error: false,
+      message: "logout succesful  ",
+    });
   } catch (err) {
     res.status(500).send({
       statusCode: "500",
@@ -441,11 +489,18 @@ testController.get("/logout", (req, res) => {
 });
 
 testController.get("/checka", (req, res) => {
-  res.send({ data: req.user, session: req.session })
-  console.log(req.user)
+  // res.json({ data: req.user, session: req.session });
+  res.json(req.user)
+  console.log(req.user);
+});
+testController.get("/checkss", (req, res) => {
+  // res.json({ data: req.user, session: req.session });
+  res.json(req.session)
+  console.log(req.user);
 });
 
-testController.use(function (req, res, next) {
+
+testController.use(function(req, res, next) {
   res.status(404);
   res.render("404");
   // res.render("gimmick")
@@ -461,7 +516,7 @@ function isLoggedIn(req, res, next) {
     } else {
       // if they aren't redirect them to the home page
       log.info("----------->isOut");
-      res.redirect("/");
+      res.redirect("https://itfreshy2020.web.app/");
     }
   } catch (err) {
     res.status(500).send({
@@ -481,11 +536,21 @@ function isAdmin(req, res, next) {
         return next();
       } else {
         log.info(req.user.name + " request admin tool");
-        res.render("404");
+        res.status(404).render({
+            statusCode: "404",
+            statusText: "Not Found",
+            error: true,
+            message: "user is not king"
+        });
         return;
       }
     } else {
-      res.render("404");
+      res.status(404).render({
+          statusCode: "404",
+          statusText: "Not Found",
+          error: true,
+          message: "user not found"
+      });
       return;
     }
   } catch (err) {
