@@ -23,6 +23,7 @@ const LINKRef = db.collection("links");
 const ALLRef = db.collection("allstats");
 const helmet = require("helmet");
 const Cookies = require("js-cookie");
+const bodyParser = require('body-parser')
 
 // const allowCrossDomain = function(req, res, next) {
 //   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -60,6 +61,8 @@ testController.use(
 );
 // testController.use(allowCrossDomain);
 testController.use(minify());
+testController.use(bodyParser.json());
+testController.use(bodyParser.urlencoded({ extended: true }));
 testController.use(function(req, res, next) {
   // Website you wish to allow to connect
   res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
@@ -481,7 +484,7 @@ testController.get("/logout", (req, res) => {
 });
 
 testController.get("/checka", (req, res) => {
-  res.send({ data: req.user, session: req.session });
+  res.send(req.user);
   console.log(req.user);
 });
 
