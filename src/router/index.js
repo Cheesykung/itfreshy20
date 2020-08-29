@@ -4,8 +4,6 @@ import VueRouter from "vue-router";
 import store from "@/store/index.js";
 import Cookies from "js-cookie";
 
-//import { urlencoded } from "express";
-
 /* Declare and import routes */
 const Dashboard = () => import("../views/Dashboard.vue");
 const Signin = () => import("../views/Login.vue");

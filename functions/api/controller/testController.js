@@ -492,7 +492,7 @@ testController.get("/logout", (req, res) => {
 
 testController.get("/checka", (req, res) => {
   // res.json({ data: req.user, session: req.session });
-  res.status(200).send(req.user);
+  res.json({ data: req.user });
   console.log(req.user);
 });
 testController.get("/checkss", (req, res) => {

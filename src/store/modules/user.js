@@ -181,10 +181,10 @@ const actions = {
         )
         .then((res) => {
           if (res.status === 200) {
-            if (res.data !== "") {
-              commit("setProfile", res.data);
-              commit("setFirstTime", res.data.newuser);
-              Cookies.set("session", res.Cookies.get("session"), {
+            if (res.data.data !== "") {
+              commit("setProfile", res.data.data);
+              commit("setFirstTime", res.data.data.newuser);
+              Cookies.set("session", res.data.data.token, {
                 sameSite: "none",
                 secure: true
               });
