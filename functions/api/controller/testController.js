@@ -1,4 +1,5 @@
 //require zone
+const minify = require('express-minify')
 const compression = require("compression");
 const path = require("path");
 const cors = require("cors");
@@ -55,6 +56,8 @@ testController.use(
     saveUninitialized: true,
   })
 );
+testController.use(allowCrossDomain);
+testController.use(minify());
 testController.use(function(req, res, next) {
   // Website you wish to allow to connect
   res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
@@ -516,11 +519,21 @@ function isAdmin(req, res, next) {
         return next();
       } else {
         log.info(req.user.name + " request admin tool");
-        res.render("404");
+        res.status(404).render({
+            statusCode: "404",
+            statusText: "Not Found",
+            error: true,
+            message: "user is not king"
+        });
         return;
       }
     } else {
-      res.render("404");
+      res.status(404).render({
+          statusCode: "404",
+          statusText: "Not Found",
+          error: true,
+          message: "user not found"
+      });
       return;
     }
   } catch (err) {
