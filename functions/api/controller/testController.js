@@ -1,5 +1,5 @@
 //require zone
-const minify = require('express-minify')
+const minify = require("express-minify");
 const compression = require("compression");
 const path = require("path");
 const cors = require("cors");
@@ -23,7 +23,9 @@ const LINKRef = db.collection("links");
 const ALLRef = db.collection("allstats");
 const helmet = require("helmet");
 const Cookies = require("js-cookie");
-const bodyParser = require('body-parser')
+// const Cookies = require("js-cookie");
+const cookies = require("cookies");
+const bodyParser = require("body-parser");
 
 // const allowCrossDomain = function(req, res, next) {
 //   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -45,20 +47,25 @@ const { link } = require("fs");
 var log = bunyan.createLogger({ name: "myapp" });
 log.info("Server start");
 // server setup
-testController.use(
-  session({
-    cookie: {
-      domain: "https://itfreshy2020.web.app",
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite: "none",
-      secure: true,
-    },
-    name: "session",
-    secret: "ilovescotchscotfchyscotchscotch",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+
+const sessionConfig = {
+  secret: 'ilovescotchscotfchyscotchscotch"',
+  name: "session",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    domain: "https://itfreshy2020.web.app",
+    sameSite: "none",
+    maxAge: 24 * 60 * 60 * 1000,
+  },
+};
+
+if (process.env.NODE_ENV === "production") {
+  testController.set("trust proxy", 1); // trust first proxy
+  sessionConfig.cookie.secure = true;
+  sessionConfig.cookie.sameSite = "none"; // serve secure cookies
+}
+testController.use(session(sessionConfig));
 // testController.use(allowCrossDomain);
 testController.use(minify());
 testController.use(function(req, res, next) {
@@ -484,7 +491,13 @@ testController.get("/logout", (req, res) => {
 });
 
 testController.get("/checka", (req, res) => {
-  res.send(req.user);
+  // res.json({ data: req.user, session: req.session });
+  res.status(200).send(req.user);
+  console.log(req.user);
+});
+testController.get("/checkss", (req, res) => {
+  // res.json({ data: req.user, session: req.session });
+  res.json(req.session);
   console.log(req.user);
 });
 
@@ -525,19 +538,19 @@ function isAdmin(req, res, next) {
       } else {
         log.info(req.user.name + " request admin tool");
         res.status(404).render({
-            statusCode: "404",
-            statusText: "Not Found",
-            error: true,
-            message: "user is not king"
+          statusCode: "404",
+          statusText: "Not Found",
+          error: true,
+          message: "user is not king",
         });
         return;
       }
     } else {
       res.status(404).render({
-          statusCode: "404",
-          statusText: "Not Found",
-          error: true,
-          message: "user not found"
+        statusCode: "404",
+        statusText: "Not Found",
+        error: true,
+        message: "user not found",
       });
       return;
     }
