@@ -1,4 +1,5 @@
 //require zone
+const minify = require('express-minify')
 const compression = require("compression");
 const path = require("path");
 const cors = require("cors");
@@ -46,6 +47,30 @@ testController.use(
   })
 );
 testController.use(allowCrossDomain);
+testController.use(minify());
+testController.use(function(req, res, next) {
+  // Website you wish to allow to connect
+  res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
+
+  // Request methods you wish to allow
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+
+  // Request headers you wish to allow
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,Content-Type,Authorization"
+  );
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  // Pass to next layer of middleware
+  next();
+});
 testController.use(helmet());
 testController.use(passport.initialize());
 testController.use(passport.session());
@@ -152,7 +177,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
             error: false,
             message: "Successfully generated qr code",
             qrcode:
-              "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
+              "https://itfreshy2020.web.app/qrcode/" +
               name,
           });
         })
@@ -185,7 +210,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
                     error: false,
                     message: "Successfully generated new qr code",
                     qrcode:
-                      "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
+                      "https://itfreshy2020.web.app/qrcode/" +
                       name,
                   });
                 })
@@ -206,7 +231,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
             error: false,
             message: "Successfully request qr",
             qrcode:
-              "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
+              "https://itfreshy2020.web.app/qrcode/" +
               doc.data().link,
           });
         }
