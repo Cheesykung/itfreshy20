@@ -49,6 +49,8 @@ testController.use(
     cookie: {
       domain: "https://itfreshy2020.web.app",
       maxAge: 24 * 60 * 60 * 1000,
+      SameSite: 'None',
+      Secure: true 
     },
     name: "session",
     secret: "ilovescotchscotfchyscotchscotch",
@@ -56,7 +58,7 @@ testController.use(
     saveUninitialized: true,
   })
 );
-testController.use(allowCrossDomain);
+// testController.use(allowCrossDomain);
 testController.use(minify());
 testController.use(function(req, res, next) {
   // Website you wish to allow to connect
