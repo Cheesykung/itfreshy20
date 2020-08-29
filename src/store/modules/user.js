@@ -183,7 +183,6 @@ const actions = {
             if (res.data.session !== "") {
               commit("setProfile", res.data.data);
               commit("setFirstTime", res.data.data.newuser);
-              Cookies.set("session", res.data.session.passport.user);
               resolve("Succesfully!");
             }
           }
