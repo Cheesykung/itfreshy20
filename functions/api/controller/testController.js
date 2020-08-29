@@ -21,7 +21,24 @@ const USERSRef = db.collection("users");
 const LINKRef = db.collection("links");
 const ALLRef = db.collection("allstats");
 const helmet = require("helmet");
-const bunyan = require("bunyan");
+const Cookies = require("js-cookie");
+
+// const allowCrossDomain = function(req, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+//   );
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Content-Type, Origin, X-Auth-Token, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+//   );
+//   res.setHeader("Access-Control-Allow-Credentials", true);
+//   next();
+// };
+
+var bunyan = require("bunyan");
+//const { doc } = require("prettier");
 const { link } = require("fs");
 var log = bunyan.createLogger({ name: "myapp" });
 log.info("Server start");
@@ -38,7 +55,7 @@ testController.use(
     saveUninitialized: true,
   })
 );
-testController.use(function (req, res, next) {
+testController.use(function(req, res, next) {
   // Website you wish to allow to connect
   res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
 
@@ -81,8 +98,8 @@ passport.use(
         "https://us-central1-itfreshy2020.cloudfunctions.net/test/facebook/callback",
       profileFields: ["id", "displayName", "name", "gender", "photos", "email"],
     }, // facebook will send back the token and profile
-    function (token, refreshToken, profile, done) {
-      process.nextTick(async function () {
+    function(token, refreshToken, profile, done) {
+      process.nextTick(async function() {
         // asynchronous
         try {
           const usersnapshot = await USERSRef.doc(profile.id).get();
@@ -137,11 +154,11 @@ passport.use(
     }
   )
 );
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function(user, done) {
   done(null, user);
 }); //เก็บ id ไว้ใน session
 // used to deserialize the user //นำ id ที่เก็บไว้ใน session เรียกกลับมาใช้
-passport.deserializeUser(async function (id, done) {
+passport.deserializeUser(async function(id, done) {
   const userdeserialize = await USERSRef.where("id", "==", id).get();
   userdeserialize.forEach((doc) => {
     done(null, doc.data());
@@ -149,7 +166,7 @@ passport.deserializeUser(async function (id, done) {
 });
 
 //generate qrcode รอเทส
-testController.get("/genqrcode", isLoggedIn, async function (req, res) {
+testController.get("/genqrcode", isLoggedIn, async function(req, res) {
   try {
     log.info("genQR: " + req.user.uid);
     const genqrsnapshot = await LINKRef.where("uid", "==", req.user.uid).get();
@@ -173,7 +190,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
             error: false,
             message: "Successfully generated qr code",
             qrcode:
-              "https://itfreshy2020.web.app/qrcode" +
+              "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
               name,
           });
         })
@@ -206,7 +223,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
                     error: false,
                     message: "Successfully generated new qr code",
                     qrcode:
-                      "https://itfreshy2020.web.app/qrcode" +
+                      "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
                       name,
                   });
                 })
@@ -227,7 +244,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
             error: false,
             message: "Successfully request qr",
             qrcode:
-              "https://itfreshy2020.web.app/qrcode" +
+              "http://localhost:5001/itfreshy2020/us-central1/test/qrcode/" +
               doc.data().link,
           });
         }
@@ -243,7 +260,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
   }
 });
 //เสร็จ
-testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
+testController.get("/qrcode/:id", isLoggedIn, async function(req, res) {
   const findlink = LINKRef.where("link", "==", req.params.id)
     .get()
     .then((findlink) => {
@@ -400,9 +417,9 @@ testController.get(
   async (req, res) => {
     log.info(
       "king querty doc " +
-      req.params.collection +
-      " doc name " +
-      req.params.docname
+        req.params.collection +
+        " doc name " +
+        req.params.docname
     );
     const all = await db
       .collection(req.params.collection)
@@ -463,7 +480,7 @@ testController.get("/checka", (req, res) => {
   console.log(req.user);
 });
 
-testController.use(function (req, res, next) {
+testController.use(function(req, res, next) {
   res.status(404);
   res.render("404");
   // res.render("gimmick")
@@ -472,10 +489,13 @@ testController.use(function (req, res, next) {
 // route middleware to make sure
 function isLoggedIn(req, res, next) {
   try {
+    // if user is authenticated in the session, carry on
     if (req.isAuthenticated()) {
+      log.info("---------->isOn");
       return next();
     } else {
-      log.info("user not have permission request data");
+      // if they aren't redirect them to the home page
+      log.info("----------->isOut");
       res.redirect("https://itfreshy2020.web.app/");
     }
   } catch (err) {
@@ -490,14 +510,27 @@ function isLoggedIn(req, res, next) {
 
 function isAdmin(req, res, next) {
   try {
-    if (req.isAuthenticated() && (req.user.role == "king")) {
-      log.info("king " + req.user.name + " use");
-      return next();
-    } else {
-      if (req.user.name != null || req.user.name != undefined) {
+    if (req.isAuthenticated()) {
+      if (req.user.role == "king") {
+        log.info("king " + req.user.name + " use");
+        return next();
+      } else {
         log.info(req.user.name + " request admin tool");
+        res.status(404).render({
+            statusCode: "404",
+            statusText: "Not Found",
+            error: true,
+            message: "user is not king"
+        });
+        return;
       }
-      res.render("404");
+    } else {
+      res.status(404).render({
+          statusCode: "404",
+          statusText: "Not Found",
+          error: true,
+          message: "user not found"
+      });
       return;
     }
   } catch (err) {
