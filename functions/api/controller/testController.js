@@ -46,27 +46,34 @@ log.info("Server start");
 testController.use(
   session({
     cookie: {
-      domain: 'itfreshy2020.web.app', maxAge: 24 * 60 * 60 * 1000,    },
-    name: 'session',
+      domain: "https://itfreshy2020.web.app",
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+    name: "session",
     secret: "ilovescotchscotfchyscotchscotch",
     resave: false,
     saveUninitialized: true,
   })
 );
-testController.use(function (req, res, next) {
-
+testController.use(function(req, res, next) {
   // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', 'https://itfreshy2020.web.app/');
+  res.setHeader("Access-Control-Allow-Origin", "*");
 
   // Request methods you wish to allow
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
 
   // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,Content-type, Authorization"
+  );
 
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)
-  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader("Access-Control-Allow-Credentials", true);
 
   // Pass to next layer of middleware
   next();

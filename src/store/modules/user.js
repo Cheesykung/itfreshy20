@@ -126,19 +126,23 @@ const mutations = {
 const actions = {
   async resetProfile({ commit }) {
     return new Promise((resolve, reject) => {
-      //const token = Cookies.get("session");
+      const token = Cookies.get("session");
       axios
         .get(
           "https://us-central1-itfreshy2020.cloudfunctions.net/test/logout",
           {
-            withCredentials: true,
-            headers: { "X-Requested-With": "XMLHttpRequest" },
+            headers: { "X-Requested-With": "XMLHttpRequest", "Authorization": "Bearer " + token },
           }
         )
         .then((res) => {
           if (res.status === 200) {
-            resolve("success"); 
+            setTimeout(() => {
+              window.location.replace("/signin");
+            }, 1000);
+            resolve(res);
             commit("clearProfile");
+          } else {
+            reject("Something went wrong!");
           }
         })
         .catch((e) => {
@@ -156,19 +160,17 @@ const actions = {
             withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              "Authorization": "Bearer " + token
+              "Authorization": "Bearer " + token,
             },
           }
         )
         .then((res) => {
           if (res.status === 200) {
-            if (res.data.data) {
+            if (res.data.session !== "") {
               commit("setProfile", res.data.data);
               commit("setFirstTime", res.data.data.newuser);
               Cookies.set("session", res.data.session.passport.user);
               resolve(res);
-            } else {
-              reject(res)
             }
           }
         })
