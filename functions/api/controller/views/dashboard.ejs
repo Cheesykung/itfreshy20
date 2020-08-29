@@ -1,5 +1,36 @@
-<h2>allstats: <%= stat %></h2>
-<h2>alluser: <%= user %></h2>
-<h2>allgenerate: <%= gen %></h2>
-<h2>allbounty: <%= bounty %></h2>
-<h2>allscan: <%= scan %></h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+
+    
+
+    <h2>allvisitor: <%= user.allvisitor %></h2>
+    <h2>alluser: <%= user.alluser %></h2>
+    <h2>allgenerate: <%= user.allgenerate %></h2>
+    <h2>allbounty: <%= user.allbounty %></h2>
+    <h2>allscan: <%= user.allscan %></h2>
+
+</body>
+
+<script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-analytics.js"></script>
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyBNDNp-DItNaKY3MmrJzvi-pv5boYpZAxI",
+    authDomain: "itfreshy2020.firebaseapp.com",
+    databaseURL: "https://itfreshy2020.firebaseio.com",
+    projectId: "itfreshy2020",
+    storageBucket: "itfreshy2020.appspot.com",
+    messagingSenderId: "894830602574",
+    appId: "1:894830602574:web:d5a4c8ffeaafc212fd561f",
+    measurementId: "G-Y6ENHV2GTN"
+  };
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
+</html>
