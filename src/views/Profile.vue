@@ -15,7 +15,7 @@
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
             <i class="fas fa-map-marked-alt"></i>
-            <span>IT KMITL, ปี {{ year }}</span>
+            <span>IT KMITL</span>
           </div>
           <div class="like space-x-4">
             <i class="fas fa-pizza-slice text-gray-400"></i>
@@ -55,6 +55,8 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
+import axios from "axios";
+import alertify from "alertifyjs";
 
 export default {
   data() {
@@ -68,7 +70,8 @@ export default {
   methods: {
     ...mapActions("user", {
       getFacebookAuth: "getFacebookAuth",
-      resetProfile: "resetProfile"
+      resetProfile: "resetProfile",
+      linkActions: "linkActions"
     }),
     goProfile(id) {
       this.$router.push({ path: "/profile/" + id });
@@ -82,8 +85,31 @@ export default {
     seeAll() {
       return this.$router.push("/hunted");
     },
-    genQr() {
-      return window.open("/genqrcode", "_blank");
+    async genQr() {
+      try {
+        const setQr = await axios.get(
+          "https://us-central1-itfreshy2020.cloudfunctions.net/test/genqrcode/",
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "XMLHttpRequest"
+            }
+          }
+        );
+
+        if (setQr.status === 200) {
+          let data = await setQr.data;
+          alertify.success("สร้างลิงค์สำเร็จ!");
+          alertify.alert("QR Code ของคุณ", data.qrcode, () => {
+            alertify.message("ตกลง");
+          });
+          this.$store.commit("user/setLink", data.qrcode);
+        } else {
+          console.log("Something went wrong.");
+        }
+      } catch (e) {
+        console.log(e);
+      }
     },
     logout() {
       return this.signout();
@@ -95,7 +121,8 @@ export default {
       getBro: "getBro",
       getProfileById: "getProfileById",
       hunted: "getHuntedCount",
-      year: "getYear"
+      year: "getYear",
+      getLink: "getLink"
     }),
     // ...mapGetters("register", ["getGender"]),
     routeId() {

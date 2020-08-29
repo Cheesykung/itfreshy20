@@ -13,6 +13,7 @@ import Nav from "@/components/util/Nav.vue";
 import { mapGetters } from "vuex";
 
 export default {
+  name: 'IT HUNTER GAME',
   components: {
     //  Footer,
     Nav
@@ -91,4 +92,9 @@ button:focus {
   opacity: 0;
 }
 
+.alertify .ajs-dialog {
+    top: 50%;
+    transform: translateY(-50%);
+    margin: auto;
+}
 </style>
