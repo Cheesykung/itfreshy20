@@ -1,16 +1,12 @@
 const cors = require('cors');
 const express = require('express');
 const admin = require('../config/admin');
-//const { doc } = require('prettier');
 const { user } = require('firebase-functions/lib/providers/auth');
 const firestore = admin.firestore();
 const bunyan = require("bunyan");
 const log = bunyan.createLogger({ name: "myapp" });
-
 const bountyController = express();
-
 bountyController.use(cors({ origin: true }));
-
 bountyController.post('/random', async(req, res) => {
     //Random 10 users to push in 'bounty' in db
     try {
