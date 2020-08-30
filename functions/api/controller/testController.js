@@ -158,7 +158,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
     });
   }
 });
-//เสร็จ
+//ค้าง qrcode เหลือโยนคำถาม
 testController.get("/qrcode/:id", isLoggedIn, async function(req, res) {
   const findlink = LINKRef.where("link", "==", req.params.id)
     .get()
