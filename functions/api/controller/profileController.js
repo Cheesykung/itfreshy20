@@ -6,10 +6,8 @@ const firestore = admin.firestore();
 const profileController = express();
 const bunyan = require("bunyan");
 const log = bunyan.createLogger({ name: "myapp" });
-const passport = require("passport");
 
-profileController.use(passport.initialize());
-profileController.use(passport.session());
+
 profileController.use(cors({ origin: true }));
 
 profileController.post('/create', async (req, res) => {
