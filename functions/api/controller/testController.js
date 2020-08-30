@@ -262,26 +262,6 @@ testController.get("/qrcode/:id", isLoggedIn, async function(req, res) {
     });
 });
 
-
-// testController.get("/api/user", isLoggedIn, (req, res) => {
-//   try {
-//     log.info("---------->api/user");
-//     if (isLoggedIn) {
-//       let data = req.data;
-//       res.status(200).json({ data });
-//     } else {
-//       res.status(400);
-//     }
-//   } catch (err) {
-//     res.status(500).send({
-//       statusCode: "500",
-//       statusText: "Internal Server Error",
-//       error: true,
-//       message: "Internal Server Error",
-//     });
-//   }
-// });
-
 // // testController.get("/", (req, res) => {
 // //   try {
 // //     log.info("----------->Index");
@@ -393,38 +373,38 @@ async function isLoggedIn(req, res, next) {
   next();
 }
 
-// function isAdmin(req, res, next) {
-//   try {
-//     if (req.isAuthenticated()) {
-//       if (req.user.role == "king") {
-//         log.info("king " + req.user.name + " use");
-//         return next();
-//       } else {
-//         log.info(req.user.name + " request admin tool");
-//         res.status(404).render({
-//             statusCode: "404",
-//             statusText: "Not Found",
-//             error: true,
-//             message: "user is not king"
-//         });
-//         return;
-//       }
-//     } else {
-//       res.status(404).render({
-//           statusCode: "404",
-//           statusText: "Not Found",
-//           error: true,
-//           message: "user not found"
-//       });
-//       return;
-//     }
-//   } catch (err) {
-//     res.status(500).send({
-//       statusCode: "500",
-//       statusText: "Internal Server Error",
-//       error: true,
-//       message: "Internal Server Error",
-//     });
-//   }
-// }
+function isAdmin(req, res, next) {
+  try {
+    if (req.isAuthenticated()) {
+      if (req.user.role == "king") {
+        log.info("king " + req.user.name + " use");
+        return next();
+      } else {
+        log.info(req.user.name + " request admin tool");
+        res.status(404).render({
+            statusCode: "404",
+            statusText: "Not Found",
+            error: true,
+            message: "user is not king"
+        });
+        return;
+      }
+    } else {
+      res.status(404).render({
+          statusCode: "404",
+          statusText: "Not Found",
+          error: true,
+          message: "user not found"
+      });
+      return;
+    }
+  } catch (err) {
+    res.status(500).send({
+      statusCode: "500",
+      statusText: "Internal Server Error",
+      error: true,
+      message: "Internal Server Error",
+    });
+  }
+}
 module.exports = testController;
