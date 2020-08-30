@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import Vue from "vue";
 import VueRouter from "vue-router";
-import store from "@/store/index.js";
+import store from "../store";
+import firebase from "../middleware/services/AuthHeaders";
 import Cookies from "js-cookie";
 
 /* Declare and import routes */
@@ -21,9 +22,6 @@ const step4 = () => import("../components/pages/callBackForm/likesStep.vue");
 const step5 = () => import("../components/pages/callBackForm/lastStep.vue");
 
 Vue.use(VueRouter);
-
-const token = Cookies.get("session");
-const firstTime = store.getters["user/getFirstTime"];
 
 const routes = [
   {
@@ -52,19 +50,6 @@ const routes = [
       firstTimeAuth: null,
     },
     redirect: "continue/gender",
-    beforeEnter: (to, from, next) => {
-      if (to.matched.some((item) => item.path === "/continue")) {
-        if (token && firstTime === 0) {
-          next();
-        } else if (token && firstTime === 1) {
-          next({ path: "/profile" });
-        } else {
-          next({ path: "/signin" });
-        }
-      } else {
-        next();
-      }
-    },
     children: [
       { path: "gender", component: gender, name: "Your Gender" },
       { path: "step1", component: step1, name: "Step 1" },
@@ -115,8 +100,16 @@ const routes = [
     path: "/signin",
     name: "Signin",
     component: Signin,
+    beforeEnter: (to, from, next) => {
+      if (firebase.auth().currentUser) {
+        next({ path: "/profile" });
+      } else {
+        next();
+      }
+    },
     meta: {
       title: "Sign in | IT@KMITL FRESHY 2020",
+      requiresAuth: false,
       metaTags: [
         {
           name: "description",
@@ -124,26 +117,10 @@ const routes = [
         },
       ],
     },
-    beforeEnter: (to, from, next) => {
-      if (token) {
-        next({ path: "/profile" });
-      } else {
-        next();
-      }
-    },
   },
   {
     path: "*",
-    redirect: "/signin",
-    beforeEnter: (to, from, next) => {
-      if (to.matched.some((item) => item.meta.requiresAuth)) {
-        if (!token) {
-          next({ path: "/signin" });
-        } else {
-          next();
-        }
-      }
-    },
+    redirect: "/",
   },
 ];
 
@@ -153,28 +130,35 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  // if (to.matched.some((item) => item.meta.requiresAuth)) {
-  //   if (!signedIn && !token) {
-  //     next({ path: "/signin", query: { from: to.path } });
-  //   } else if (signedIn === true && token && to.name !== "Signin") {
-  //     if (firstTime === 0 && to.fullPath) {
-  //       next({ path: "/continue", query: { from: to.path } });
-  //     } else if (firstTime === 1) {
-  //       if (
-  //         to.matched.some(
-  //           (item) => item.path === "/continue" && item.path === "/signin"
-  //         )
-  //       ) {
-  //         next({ path: "/profile", query: { from: to.path } });
-  //       } else {
-  //         next();
-  //       }
-  //     }
-  //   }
-  // } else {
-  //   next();
-  // }
+router.beforeResolve((to, from, next) => {
+  const user = firebase.auth().currentUser;
+  const firstTime = store.getters["user/getFirstTime"];
+  const token = Cookies.get("user");
+
+  if (to.matched.some((item) => item.meta.requiresAuth)) {
+    if (!user && !token && to.matched.some((item) => item.path !== "/signin")) {
+      next({ path: "/signin" });
+    } else if (user && token) {
+      if (
+        firstTime &&
+        to.matched.some((item) => {
+          item.path !== "/continue";
+        })
+      ) {
+        next({
+          path: "/continue",
+        });
+      } else if (!firstTime) {
+        if (to.matched.some((item) => item.path === "/continue")) {
+          next({ path: "/profile" });
+        } else {
+          next();
+        }
+      }
+    }
+  } else {
+    next();
+  }
 
   const nearestTitle = to.matched
     .slice()
@@ -185,11 +169,6 @@ router.beforeEach((to, from, next) => {
     .slice()
     .reverse()
     .find((r) => r.meta && r.meta.metaTags);
-
-  // const prevNearestMeta = from.matched
-  //   .slice()
-  //   .reverse()
-  //   .find((r) => r.meta && r.meta.metaTags);
 
   nearestTitle
     ? (document.title = nearestTitle.meta.title)

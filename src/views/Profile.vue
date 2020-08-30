@@ -7,11 +7,10 @@
       <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
         <div class="img-wrap space-y-4">
           <img
-            :src="getProfile.pic"
-            class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
-          />
+           :src="getProfile.photoURL + '?width=500'"
+           class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center" />
           <div class="details space-y-2 items-center">
-            <h1 class="text-3xl text-primary-100 font-thin">LOREM IPSOME</h1>
+            <h1 class="text-3xl text-primary-100 font-thin">{{ getProfile.displayName }}</h1>
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
             <i class="fas fa-map-marked-alt"></i>
@@ -44,6 +43,10 @@
             class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm"
             @click="genQr()"
           >สร้างลิงค์ใหม่</button>
+          <button
+            class="px-2 py-3 bg-complementary text-primary-200 rounded text-sm"
+            @click="logout()"
+          >Sign out</button>
         </div>
       </div>
     </div>
@@ -58,7 +61,8 @@ export default {
   data() {
     return {};
   },
-  created() {},
+  mounted() {
+  },
   methods: {
     goProfile(id) {
       this.$router.push({ path: "/profile/" + id });
@@ -92,15 +96,14 @@ export default {
       } catch (e) {
         console.log(e);
       }
+    },
+    logout() {
+      this.$store.dispatch("user/signOut");
     }
   },
   computed: {
     ...mapGetters("user", {
       getProfile: "getProfile",
-      getBro: "getBro",
-      getProfileById: "getProfileById",
-      hunted: "getHuntedCount",
-      year: "getYear",
       getLink: "getLink"
     }),
     routeId() {
@@ -109,8 +112,7 @@ export default {
     showProfile() {
       return this.getProfileById(this.routeId);
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 <style scoped>

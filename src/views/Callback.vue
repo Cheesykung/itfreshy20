@@ -1,8 +1,23 @@
 <template>
   <transition name="animated-form">
-    <router-view></router-view> 
+    <router-view></router-view>
   </transition>
 </template>
+<script>
+
+export default {
+  data() {
+    return {};
+  },
+  beforeRouteEnter: (to, from, next) => {
+    if (localStorage.getItem("firstTime") === false) {
+      next({ path: "/profile" });
+    } else {
+      next();
+    }
+  }
+};
+</script>
 <style scoped>
 .animated-form-enter-active {
   transition: all 0.3s ease;
@@ -24,7 +39,6 @@
   );
 }
 
-
 * >>> .bullet {
   @apply w-2 h-2 bg-primary-700 block rounded-full;
 }
@@ -36,5 +50,4 @@
 * >>> ::placeholder {
   @apply text-primary-400 opacity-75 text-sm;
 }
-
 </style>

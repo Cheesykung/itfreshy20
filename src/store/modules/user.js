@@ -4,11 +4,15 @@
 // import router from "../../main";
 //import passport from "passport"
 
+import actions from "./AuthController";
+
 const state = () => ({
   profile: {},
   status: Boolean,
   link: null,
-  firstTime: null
+  firstTime: localStorage.getItem("firstTime")
+    ? localStorage.getItem("firstTime")
+    : null,
 });
 
 const getters = {
@@ -27,34 +31,26 @@ const getters = {
   getYear: (state) => {
     return state.profile.year;
   },
-  getUser: (state) => {
-    return state.profile.user;
-  },
-  getPhotoURL: (state) => {
-    return state.profile.photoURL;
-  },
   getFirstTime: (state) => {
     return state.profile.newuser;
-  }
+  },
 };
 
 const mutations = {
-  setProfile: (state, profile) => {
-    state.profile = profile;
-    state.status = Object.keys(profile.token).length > 2 ? true : false;
+  setProfile: (state, payloadProfile) => {
+    state.profile = payloadProfile;
+    state.status = true;
   },
   setFirstTime: (state, status) => {
     state.firstTime = status;
   },
   setLink: (state, payloadLink) => {
     state.link = payloadLink;
-  }
-};
-
-const actions = {
-  linkActions({ commit }, payload) {
-    commit("setLink", payload);
-  }
+  },
+  clearProfile: (state) => {
+    state.profile = null;
+    state.status = false;
+  },
 };
 
 export default {

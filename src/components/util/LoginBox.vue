@@ -17,7 +17,7 @@
 export default {
   methods: {
     loginSubmit() {
-      return window.open("https://us-central1-itfreshy2020.cloudfunctions.net/test/auth/facebook", "_self");
+      this.$store.dispatch("user/signInWithFB");
     }
   }
 };
@@ -26,7 +26,9 @@ export default {
 .fb-btn {
   @apply block py-5 font-semibold text-primary-200 rounded-full transition-all duration-150 ease-linear animate-pulse;
 }
-.shadow-outline, .shadow-outline:hover, .hover\:shadow-outline:hover {
-  box-shadow: 0 0 0 3px rgba(60,54,173, .65) !important;
+.shadow-outline,
+.shadow-outline:hover,
+.hover\:shadow-outline:hover {
+  box-shadow: 0 0 0 3px rgba(60, 54, 173, 0.65) !important;
 }
 </style>
