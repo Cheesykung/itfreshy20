@@ -11,7 +11,7 @@
             class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
           />
           <div class="details space-y-2 items-center">
-            <h1 class="text-3xl text-primary-100 font-thin">{{ getProfile.name }}</h1>
+            <h1 class="text-3xl text-primary-100 font-thin">LOREM IPSOME</h1>
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
             <i class="fas fa-map-marked-alt"></i>
@@ -27,11 +27,11 @@
         <!--- Profile Stats --->
         <div class="stats">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">{{ hunted }}</span>
+            <span class="text-2xl font-semibold text-gray-200">1K</span>
             <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">2K</span>
+            <span class="text-2xl font-semibold text-gray-200">2.5K</span>
             <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
           </div>
         </div>
@@ -44,40 +44,24 @@
             class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm"
             @click="genQr()"
           >สร้างลิงค์ใหม่</button>
-          <button
-            class="px-2 py-3 bg-complementary text-primary-200 rounded text-sm"
-            @click="resetProfile"
-          >ล็อกเอาท์</button>
         </div>
       </div>
     </div>
   </section>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import axios from "axios";
 import alertify from "alertifyjs";
 
 export default {
   data() {
-    return {
-      isShow: false
-    };
+    return {};
   },
-  created() {
-    this.getFacebookAuth();
-  },
+  created() {},
   methods: {
-    ...mapActions("user", {
-      getFacebookAuth: "getFacebookAuth",
-      resetProfile: "resetProfile",
-      linkActions: "linkActions"
-    }),
     goProfile(id) {
       this.$router.push({ path: "/profile/" + id });
-    },
-    submitGen(gen) {
-      return this.setGender(gen);
     },
     goBack() {
       return this.$router.go(-1);
@@ -108,9 +92,6 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    },
-    logout() {
-      return this.signout();
     }
   },
   computed: {
@@ -122,12 +103,10 @@ export default {
       year: "getYear",
       getLink: "getLink"
     }),
-    // ...mapGetters("register", ["getGender"]),
     routeId() {
       return parseInt(this.$route.params.id);
     },
     showProfile() {
-      //let route = this.$route.params.id;
       return this.getProfileById(this.routeId);
     }
   },

@@ -24,7 +24,6 @@ Vue.use(VueRouter);
 
 const token = Cookies.get("session");
 const firstTime = store.getters["user/getFirstTime"];
-const signedIn = store.getters["user/signInCheck"];
 
 const routes = [
   {
@@ -155,27 +154,27 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((item) => item.meta.requiresAuth)) {
-    if (!signedIn && !token) {
-      next({ path: "/signin", query: { from: to.path } });
-    } else if (signedIn === true && token && to.name !== "Signin") {
-      if (firstTime === 0 && to.fullPath) {
-        next({ path: "/continue", query: { from: to.path } });
-      } else if (firstTime === 1) {
-        if (
-          to.matched.some(
-            (item) => item.path === "/continue" && item.path === "/signin"
-          )
-        ) {
-          next({ path: "/profile", query: { from: to.path } });
-        } else {
-          next();
-        }
-      }
-    }
-  } else {
-    next();
-  }
+  // if (to.matched.some((item) => item.meta.requiresAuth)) {
+  //   if (!signedIn && !token) {
+  //     next({ path: "/signin", query: { from: to.path } });
+  //   } else if (signedIn === true && token && to.name !== "Signin") {
+  //     if (firstTime === 0 && to.fullPath) {
+  //       next({ path: "/continue", query: { from: to.path } });
+  //     } else if (firstTime === 1) {
+  //       if (
+  //         to.matched.some(
+  //           (item) => item.path === "/continue" && item.path === "/signin"
+  //         )
+  //       ) {
+  //         next({ path: "/profile", query: { from: to.path } });
+  //       } else {
+  //         next();
+  //       }
+  //     }
+  //   }
+  // } else {
+  //   next();
+  // }
 
   const nearestTitle = to.matched
     .slice()

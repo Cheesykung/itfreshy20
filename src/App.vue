@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Nav
-      v-if="signInCheck && !$route.matched.some(({ path }) => path === '/continue' && path === '/signin')"
+      v-if="!$route.matched.some(({ path }) => path === '/continue' && path === '/signin')"
     />
     <transition name="animated">
       <router-view />
@@ -12,16 +12,13 @@
 <script>
 //import Footer from "@/components/util/Footer.vue";
 import Nav from "@/components/util/Nav.vue";
-import { mapGetters } from "vuex";
 
 export default {
-  name: "IT HUNTER GAME",
   components: {
     //  Footer,
     Nav
   },
   computed: {
-    ...mapGetters("user", ["signInCheck"])
   }
 };
 </script>
