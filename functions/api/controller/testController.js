@@ -7,7 +7,6 @@ const cors = require("cors");
 const express = require("express");
 const admin = require("../config/admin");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
 const db = admin.firestore();
 const firestore = admin.firestore();
 const { v4: uuidv4 } = require("uuid");
@@ -26,23 +25,11 @@ const { auth } = require('firebase-admin');
 const authService = auth();
 const bunyan = require("bunyan");
 const { link } = require("fs");
+// const { get } = require("core-js/fn/dict");
 const log = bunyan.createLogger({ name: "myapp" });
-const sessionConfig = {
-  secret: 'ilovescotchscotfchyscotchscotch"',
-  name: "session",
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    domain: "https://itfreshy2020.web.app",
-    sameSite: 'none'
-  }
-};
 if (process.env.NODE_ENV === 'production') {
   testController.set('trust proxy', 1); // trust first proxy
-  sessionConfig.cookie.secure = true;
-  sessionConfig.cookie.sameSite = "none"; // serve secure cookies
 }
-testController.use(session(sessionConfig));
 testController.use(minify());
 testController.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
@@ -73,15 +60,37 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
       .get().then((checknewuser) => {
         if (checknewuser.exists) {
           if (checknewuser.data().newuser == 1) {
+            const allvisitorget = ALLRef.doc('stat').get().then((allvisitorget) => {
+              const allvisitorupdate = ALLRef.doc('stat').set({
+                allvisitor: allvisitorget.data().allvisitor + 1
+              }, { merge: true })
+            })
             res.status(200).json({ data: "newuser" })
             return;
           }
           else {
-            res.status(200).json({ data: "pass" })
+            const allvisitorget = ALLRef.doc('stat').get().then((allvisitorget) => {
+              const allvisitorupdate = ALLRef.doc('stat').set({
+                allvisitor: allvisitorget.data().allvisitor + 1
+              }, { merge: true })
+            })
+            const getuser = USERSRef.doc(req.user.uid).get().then((getuser) => {
+              res.status(200).json({ data: "pass", year: getuser.data().year, status: getuser.data().status, count: getuser.data().count, gate: getuser.data().gate })
+            })
             return;
           }
         } else {
+          const allvisitorget = ALLRef.doc('stat').get().then((allvisitorget) => {
+            const allvisitorupdate = ALLRef.doc('stat').set({
+              allvisitor: allvisitorget.data().allvisitor + 1
+            }, { merge: true })
+          })
           res.status(200).json({ data: "newuser" })
+          const alluserget = ALLRef.doc('stat').get().then((alluserget) => {
+            const alluserupdate = ALLRef.doc('stat').set({
+              alluser: alluserget.data().alluser + 1
+            }, { merge: true })
+          })
           const newuser = USERSRef.doc(req.user.uid).set({
             name: req.user.name,
             uid: req.user.uid,
@@ -93,17 +102,34 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
           return;
         }
       })
-  } catch(error) {
-    res.status(200).json({data: "error"})
+  } catch (error) {
+    res.status(500).json({ data: error })
   };
+})
+testController.get("/gate", isLoggedIn, async (req, res) => {
+  try {
+    const getgate = SECRef.doc(req.body.id).get().then((getgate) => {
+      res.status(200).json({ data: getgate.data().gate })
+      const assigngate = USERSRef.doc(req.user.uid).set({
+        gate: getgate.data().gate
+      }, { merge: true })
+    })
+
+  }
+  catch (err) {
+    res.status(500).json({ data: err })
+  }
 })
 
 testController.get("/genqrcode", isLoggedIn, async function (req, res) {
+  let data = {}
   try {
+    const getyear = USERSRef.doc(req.user.uid).get().then((getyear) => {
+      let data = { link: name, uid: req.user.uid, time: 10, year: getyear.data().year,player: getyear.data().player};
+    })
     log.info("genQR: " + req.user.uid);
     const genqrsnapshot = await LINKRef.where("uid", "==", req.user.uid).get();
     const name = uuidv4();
-    const data = { link: name, uid: req.user.uid, time: 10, year: parseInt(req.user.year), };
     if (genqrsnapshot.empty) {
       log.info("create qr " + req.user.uid);
       const newDoc = await db
@@ -291,83 +317,56 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
     });
 });
 
-// // testController.get("/", (req, res) => {
-// //   try {
-// //     log.info("----------->Index");
-// //     res.status(200).render("index");
-// //   } catch (err) {
-// //     res.status(500).send({
-// //       statusCode: "500",
-// //       statusText: "Internal Server Error",
-// //       error: true,
-// //       message: "Internal Server Error",
-// //     });
-// //   }
-// // });
-// //admin query tools
-// testController.get(
-//   "/ryutools/finddoc/:collection/:docname",
-//   isAdmin,
-//   async (req, res) => {
-//     log.info(
-//       "king querty doc " +
-//         req.params.collection +
-//         " doc name " +
-//         req.params.docname
-//     );
-//     const all = await db
-//       .collection(req.params.collection)
-//       .doc(req.params.docname)
-//       .get();
-//     // const all = await db.collection('bountys').doc('bounty').get();
-//     if (!all.exists) {
-//       res.send("cannot find");
-//       return "หาไม่เจอ";
-//     } else {
-//       res.send(all.data());
-//     }
-//   }
-// );
-// testController.get("/ryutools/find/:id", isAdmin, async (req, res) => {
-//   async function getMarkers(id) {
-//     const markers = [];
-//     await db
-//       .collection(id)
-//       .get()
-//       .then((querySnapshot) => {
-//         querySnapshot.docs.forEach((doc) => {
-//           markers.push({ id: doc.id, data: doc.data() });
-//         });
-//       });
-//     return res.send(markers);
-//   }
-//   getMarkers(req.params.id);
-// });
+testController.get("/", (req, res) => {
+  try {
+    log.info("----------->Index");
+    res.status(200).render("index");
+  } catch (err) {
+    res.status(500).send({
+      statusCode: "500",
+      statusText: "Internal Server Error",
+      error: true,
+      message: "Internal Server Error",
+    });
+  }
+});
+//admin query tools
+testController.get("/ryutools/finddoc/:collection/:docname", (req, res) => {
+  try {
+    log.info(
+      "king querty doc " +
+      req.params.collection +
+      " doc name " +
+      req.params.docname
+    );
+    const all = db.collection(req.params.collection).doc(req.params.docname)
+      .get()
+      .then((all) => {
+        if (!all.exists) {
+          res.send("cannot find");
+          return "หาไม่เจอ";
+        } else {
+          res.send(all.data());
+        }
+      })
+  }
+  catch (err) {
+    res.send('error');
+  }
+}
+);
+testController.get("/ryutools/find/:id", async (req, res) => {
+  const snapshot = await firebase.firestore().collection(req.params.id).get()
+  const documents = [];
+  snapshot.forEach(doc => {
+    documents[doc.id] = doc.data();
+  });
+  res.json(documents);
+});
 
-// testController.get("/help", async (req, res) => {
-//   res.render("help");
-// });
-
-// testController.get("/logout", (req, res) => {
-//   try {
-//     log.info("----------> Logout");
-
-//     req.logout();
-//     res.status(200).send({
-//       statusCode: "200",
-//       statusText: "Request Success",
-//       error: false,
-//       message: "logout succesful  ",
-//     });
-//   } catch (err) {
-//     res.status(500).send({
-//       statusCode: "500",
-//       statusText: "Internal Server Error",
-//       error: true,
-//       message: "Internal Server Error",
-//     });
-//   }
-// });
+testController.get("/help", async (req, res) => {
+  res.render("help");
+});
 
 // testController.get("/checka", (req, res) => {
 //   // res.json({ data: req.user, session: req.session });

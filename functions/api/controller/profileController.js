@@ -1,15 +1,16 @@
 const cors = require('cors');
 const express = require('express');
 const admin = require('../config/admin');
-//const { doc } = require('prettier');
 const firestore = admin.firestore();
 const profileController = express();
 const bunyan = require("bunyan");
+const e = require('express');
 const log = bunyan.createLogger({ name: "myapp" });
+const minify = require("express-minify");
 
 
+profileController.use(minify());
 profileController.use(cors({ origin: true }));
-
 profileController.post('/create', async (req, res) => {
     //Create users profile
     try {
@@ -17,8 +18,7 @@ profileController.post('/create', async (req, res) => {
         let uid = req.headers.uid; //require front-end send uid to know where to update the info
         let userRef = firestore.collection('users').doc(uid);
         let haveUID = await userRef.get();
-        let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like} = req.body;
-
+        let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like ,player} = req.body;
         if (like.length != 5) {
             res.status(400).send({
                 'statusCode' : '400',
@@ -28,27 +28,63 @@ profileController.post('/create', async (req, res) => {
             });
             return ;
         }
-
-        let payload = {
-            'id' : id,
-            'fname' : fname,
-            'surname' : surname,
-            'nickname' : nickname,
-            'age' : age,
-            'sex' : sex,
-            'religion' : religion,
-            'branch' : branch,
-            'year' : year,
-            'contact' : contact,
-            'like' : {
-                '1' : like[0],
-                '2' : like[1],
-                '3' : like[2],
-                '4' : like[3],
-                '5' : like[4]
+        if (year == 1){
+            let status = "pirate"
+        }
+        else if(year == 2){
+            let status = "captain"
+        }
+        else{
+            let status = "captain"
+        }
+        let payload = {};
+        if (year >= 3) {
+            payload = {
+                'id' : id,
+                'fname' : fname,
+                'surname' : surname,
+                'nickname' : nickname,
+                'age' : age,
+                'sex' : sex,
+                'religion' : religion,
+                'branch' : branch,
+                'year' : year,
+                'contact' : contact,
+                'like' : null,
+                'player': player,
             }
-        };
+        } else {
+            if (like.length != 5) {
+                res.status(400).send({
+                    'statusCode' : '400',
+                    'statusText' : 'Bad Request',
+                    'error' : true,
+                    'message' : 'INVALID PAYLOAD'
+                });
+                return ;
+            }
 
+            payload = {
+                'id' : id,
+                'fname' : fname,
+                'surname' : surname,
+                'nickname' : nickname,
+                'age' : age,
+                'sex' : sex,
+                'religion' : religion,
+                'branch' : branch,
+                'year' : year,
+                'contact' : contact,
+                'like' : {
+                    '1' : like[0],
+                    '2' : like[1],
+                    '3' : like[2],
+                    '4' : like[3],
+                    '5' : like[4]
+                },
+                'player': player,
+            };
+        }
         //Check that we have this uid in db or not?
         if (haveUID.exists){
         // upload payload that have all info to db
@@ -59,7 +95,8 @@ profileController.post('/create', async (req, res) => {
         scan.push(uid);
         batch.set(firestore.collection('scans').doc(uid), {
             'scan' : scan,
-            'uid' : uid
+            'uid' : uid,
+            'year': year,
         });
             
         // if input year = 1
@@ -99,11 +136,6 @@ profileController.post('/create', async (req, res) => {
             'error': true
         });
     } return;
-});
-profileController.get("/checka", (req, res) => {
-    res.send({ data: req.user, session: req.session })
-    console.log(req.user)
-    return;
 });
 
 profileController.put('/edit', async (req, res) => {
@@ -303,12 +335,31 @@ profileController.put('/answer', async (req, res) => {
                 let userRef = firestore.collection('secretfromuser').doc(id);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
-                console.log(userData[name]);
-                if (userData[name] != 0 && userData[name] != undefined) {
-                    score += userData[name];
-                }
 
-                await userRef.update({[name] : score});
+                for (let i = 0; i < userData.score.length; i++) {
+                    let ref = userData.score[i];
+                    if (ref.uid == name) {
+                        if (ref.point != 0) {
+                            score += ref.point;
+                            let remove = {
+                                'uid' : name,
+                                'point' : ref.point
+                            }
+                            await userRef.update({
+                                'score' : admin.firestore.FieldValue.arrayRemove(remove)
+                            });
+                            break ;
+                        }
+                    }
+                }
+                let payload = {
+                    'uid' : name,
+                    'point' : score
+                }
+                console.log(payload);
+                await userRef.update({
+                    'score' : admin.firestore.FieldValue.arrayUnion(payload)
+                });
 
                 res.status(200).send({
                     'statusCode' : '200',
@@ -317,6 +368,7 @@ profileController.put('/answer', async (req, res) => {
                     'message' : 'SCORE UPDATE',
                     'score' : score
                 });
+                return ;
 
             } else {
                 res.status(404).send({
@@ -340,11 +392,30 @@ profileController.put('/answer', async (req, res) => {
                 let userRef = firestore.collection('secretfromuser').doc(ref);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
-                if (userData[name] != 0 && userData[name] != undefined) {
-                    score += userData[name];
-                }
 
-                await userRef.update({[name] : score});
+                for (let i = 0; i < userData.score.length; i++) {
+                    let path = userData.score[i];
+                    if (path.uid == name) {
+                        if (path.point != 0) {
+                            score += path.point;
+                            let remove = {
+                                'uid' : name,
+                                'point' : path.point
+                            }
+                            await userRef.update({
+                                'score' : admin.firestore.FieldValue.arrayRemove(remove)
+                            });
+                            break ;
+                        }
+                    }
+                }
+                let payload = {
+                    'uid' : name,
+                    'point' : score
+                }
+                await userRef.update({
+                    'score' : admin.firestore.FieldValue.arrayUnion(payload)
+                });
 
                 res.status(200).send({
                     'statusCode' : '200',
@@ -353,6 +424,7 @@ profileController.put('/answer', async (req, res) => {
                     'message' : 'SCORE UPDATE',
                     'score' : score
                 });
+                return
             } else {
                 res.status(404).send({
                     'statusCode' : '404',
@@ -371,6 +443,7 @@ profileController.put('/answer', async (req, res) => {
             'statusText' : 'Internal Server Error',
             'error' : true,
         });
+        return ;
     }
 });
 
@@ -386,7 +459,7 @@ profileController.put('/answer', async (req, res) => {
 
 //         for (let i = 63070001; i < 63070252; i++) {
 //             let ref = i.toString();
-//             batch.set(userRef.doc(ref), {'family' : '', 'uid':''});
+//             batch.set(userRef.doc(ref), {'family' : '', 'uid':'', 'score' : []});
 //         }
 //         await batch.commit();
 
