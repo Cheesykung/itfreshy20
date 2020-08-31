@@ -1,15 +1,16 @@
 const cors = require('cors');
 const express = require('express');
 const admin = require('../config/admin');
-//const { doc } = require('prettier');
 const firestore = admin.firestore();
 const profileController = express();
 const bunyan = require("bunyan");
 const e = require('express');
 const log = bunyan.createLogger({ name: "myapp" });
+const minify = require("express-minify");
 
+
+profileController.use(minify());
 profileController.use(cors({ origin: true }));
-
 profileController.post('/create', async (req, res) => {
     //Create users profile
     try {
@@ -18,7 +19,6 @@ profileController.post('/create', async (req, res) => {
         let userRef = firestore.collection('users').doc(uid);
         let haveUID = await userRef.get();
         let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like} = req.body;
-
         if (like.length != 5) {
             res.status(400).send({
                 'statusCode' : '400',
@@ -29,36 +29,15 @@ profileController.post('/create', async (req, res) => {
             return ;
         }
         if (year == 1){
-            let status = "sailor"
-        }
-        else if(year == 2){
             let status = "pirate"
         }
-        else{
-            let status = "npc"
+        else if(year == 2){
+            let status = "captain"
         }
-
-        let payload = {
-            'id' : id,
-            'fname' : fname,
-            'surname' : surname,
-            'nickname' : nickname,
-            'age' : age,
-            'sex' : sex,
-            'religion' : religion,
-            'branch' : branch,
-            'year' : year,
-            'contact' : contact,
-            'like' : {
-                '1' : like[0],
-                '2' : like[1],
-                '3' : like[2],
-                '4' : like[3],
-                '5' : like[4]
-            },
-            'status': status,
-        };
-        // let payload = {};
+        else{
+            let status = "captain"
+        }
+        let payload = {};
         if (year >= 3) {
             payload = {
                 'id' : id,
@@ -114,7 +93,8 @@ profileController.post('/create', async (req, res) => {
         scan.push(uid);
         batch.set(firestore.collection('scans').doc(uid), {
             'scan' : scan,
-            'uid' : uid
+            'uid' : uid,
+            'year': year,
         });
             
         // if input year = 1
