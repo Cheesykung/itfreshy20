@@ -2,11 +2,9 @@ const cors = require('cors');
 const express = require('express');
 const admin = require('../config/admin');
 const firestore = admin.firestore();
-
 const ldrBoardController = express();
 
 ldrBoardController.use(cors({ origin: true }));
-
 ldrBoardController.post('/ranking', async (req, res) => {
     try {
         const uid = req.body.uid;

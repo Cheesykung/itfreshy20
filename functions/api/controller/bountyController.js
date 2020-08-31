@@ -1,14 +1,11 @@
 const cors = require('cors');
 const express = require('express');
 const admin = require('../config/admin');
-//const { doc } = require('prettier');
 const { user } = require('firebase-functions/lib/providers/auth');
 const firestore = admin.firestore();
 const bunyan = require("bunyan");
 const log = bunyan.createLogger({ name: "myapp" });
-
 const bountyController = express();
-
 bountyController.use(cors({ origin: true }));
 
 // This API is now in cron-job.You can find it in index.js
