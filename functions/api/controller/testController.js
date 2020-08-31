@@ -74,7 +74,7 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
               }, { merge: true })
             })
             const getuser = USERSRef.doc(req.user.uid).get().then((getuser) => {
-              res.status(200).json({ data: "pass", year: getuser.data().year, status: getuser.data().status, count: getuser.data().count })
+              res.status(200).json({ data: "pass", year: getuser.data().year, status: getuser.data().status, count: getuser.data().count, gate: getuser.data().gate })
             })
             return;
           }
@@ -102,8 +102,22 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
         }
       })
   } catch (error) {
-    res.status(200).json({ data: error })
+    res.status(500).json({ data: error })
   };
+})
+testController.get("/gate", isLoggedIn, async (req, res) => {
+  try {
+    const getgate = SECRef.doc(req.body.id).get().then((getgate) => {
+      res.status(200).json({ data: getgate.data().gate })
+      const assigngate = USERSRef.doc(req.user.uid).set({
+        gate: getgate.data().gate
+      }, { merge: true })
+    })
+
+  }
+  catch (err) {
+    res.status(500).json({ data: err })
+  }
 })
 
 testController.get("/genqrcode", isLoggedIn, async function (req, res) {
