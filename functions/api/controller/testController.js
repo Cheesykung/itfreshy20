@@ -332,43 +332,36 @@ testController.get("/", (req, res) => {
 });
 //admin query tools
 testController.get("/ryutools/finddoc/:collection/:docname", (req, res) => {
-  try{
-  log.info(
-    "king querty doc " +
-    req.params.collection +
-    " doc name " +
-    req.params.docname
-  );
-  const all = db.collection(req.params.collection).doc(req.params.docname)
-    .get()
-    .then((all) => {
-      if (!all.exists) {
-        res.send("cannot find");
-        return "หาไม่เจอ";
-      } else {
-        res.send(all.data());
-      }
-    })
+  try {
+    log.info(
+      "king querty doc " +
+      req.params.collection +
+      " doc name " +
+      req.params.docname
+    );
+    const all = db.collection(req.params.collection).doc(req.params.docname)
+      .get()
+      .then((all) => {
+        if (!all.exists) {
+          res.send("cannot find");
+          return "หาไม่เจอ";
+        } else {
+          res.send(all.data());
+        }
+      })
   }
-  catch(err){
+  catch (err) {
     res.send('error');
   }
 }
 );
 testController.get("/ryutools/find/:id", async (req, res) => {
-  async function getMarkers(id) {
-    const markers = [];
-    await db
-      .collection(id)
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.docs.forEach((doc) => {
-          markers.push({ id: doc.id, data: doc.data() });
-        });
-      });
-    return res.send(markers);
-  }
-  getMarkers(req.params.id);
+  const snapshot = await firebase.firestore().collection(req.params.id).get()
+  const documents = [];
+  snapshot.forEach(doc => {
+    documents[doc.id] = doc.data();
+  });
+  res.json(documents);
 });
 
 testController.get("/help", async (req, res) => {

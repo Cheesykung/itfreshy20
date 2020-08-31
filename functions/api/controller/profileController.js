@@ -18,7 +18,7 @@ profileController.post('/create', async (req, res) => {
         let uid = req.headers.uid; //require front-end send uid to know where to update the info
         let userRef = firestore.collection('users').doc(uid);
         let haveUID = await userRef.get();
-        let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like} = req.body;
+        let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like ,player} = req.body;
         if (like.length != 5) {
             res.status(400).send({
                 'statusCode' : '400',
@@ -50,7 +50,8 @@ profileController.post('/create', async (req, res) => {
                 'branch' : branch,
                 'year' : year,
                 'contact' : contact,
-                'like' : null
+                'like' : null,
+                'player': player,
             }
         } else {
             if (like.length != 5) {
@@ -80,7 +81,8 @@ profileController.post('/create', async (req, res) => {
                     '3' : like[2],
                     '4' : like[3],
                     '5' : like[4]
-                }
+                },
+                'player': player,
             };
         }
         //Check that we have this uid in db or not?
