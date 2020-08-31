@@ -5,8 +5,8 @@ const admin = require('../config/admin');
 const firestore = admin.firestore();
 const profileController = express();
 const bunyan = require("bunyan");
+const e = require('express');
 const log = bunyan.createLogger({ name: "myapp" });
-
 
 profileController.use(cors({ origin: true }));
 
@@ -28,6 +28,15 @@ profileController.post('/create', async (req, res) => {
             });
             return ;
         }
+        if (year == 1){
+            let status = "sailor"
+        }
+        else if(year == 2){
+            let status = "pirate"
+        }
+        else{
+            let status = "npc"
+        }
 
         let payload = {
             'id' : id,
@@ -46,7 +55,8 @@ profileController.post('/create', async (req, res) => {
                 '3' : like[2],
                 '4' : like[3],
                 '5' : like[4]
-            }
+            },
+            'status': status,
         };
 
         //Check that we have this uid in db or not?
@@ -99,11 +109,6 @@ profileController.post('/create', async (req, res) => {
             'error': true
         });
     } return;
-});
-profileController.get("/checka", (req, res) => {
-    res.send({ data: req.user, session: req.session })
-    console.log(req.user)
-    return;
 });
 
 profileController.put('/edit', async (req, res) => {
