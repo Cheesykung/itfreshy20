@@ -1,4 +1,5 @@
-//require zone
+//require zone // sailor
+
 const minify = require("express-minify");
 const compression = require("compression");
 const path = require("path");
@@ -67,7 +68,34 @@ testController.set("view engine", "ejs");
 log.info("Server start");
 
 testController.get("/fire", isLoggedIn, async (req, res) => {
-  res.send(req.user)
+  try {
+    const checknewuser = USERSRef.doc(req.user.uid)
+      .get().then((checknewuser) => {
+        if (checknewuser.exists) {
+          if (checknewuser.data().newuser == 1) {
+            res.status(200).json({ data: "newuser" })
+            return;
+          }
+          else {
+            res.status(200).json({ data: "pass" })
+            return;
+          }
+        } else {
+          res.status(200).json({ data: "newuser" })
+          const newuser = USERSRef.doc(req.user.uid).set({
+            name: req.user.name,
+            uid: req.user.uid,
+            pic: req.user.picture,
+            newuser: 1,
+            count: 0,
+            role: "user",
+          })
+          return;
+        }
+      })
+  } catch(error) {
+    res.status(200).json({data: "error"})
+  };
 })
 
 testController.get("/genqrcode", isLoggedIn, async function (req, res) {
@@ -159,7 +187,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
   }
 });
 //ค้าง qrcode เหลือโยนคำถาม
-testController.get("/qrcode/:id", isLoggedIn, async function(req, res) {
+testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
   const findlink = LINKRef.where("link", "==", req.params.id)
     .get()
     .then((findlink) => {
@@ -169,6 +197,7 @@ testController.get("/qrcode/:id", isLoggedIn, async function(req, res) {
       }
       findlink.forEach((linkdata) => {
         checker = linkdata.data().uid;
+        checkyear = link.data().year;
         if (linkdata.data().time <= 0) {
           res.send("time out link");
           return;
@@ -352,16 +381,15 @@ testController.get("/qrcode/:id", isLoggedIn, async function(req, res) {
 // });
 
 
-// testController.use(function(req, res, next) {
-//   res.status(404);
-//   res.render("404");
-//   // res.render("gimmick")
-// });
+testController.use(function (req, res, next) {
+  res.status(404);
+  res.render("404");
+  // res.render("gimmick")
+});
 
 // // route middleware to make sure
 async function isLoggedIn(req, res, next) {
   const idToken = req.header('FIREBASE_AUTH_TOKEN');
-  // https://firebase.google.com/docs/reference/admin/node/admin.auth.DecodedIdToken
   let decodedIdToken;
   try {
     decodedIdToken = await authService.verifyIdToken(idToken);
@@ -372,7 +400,7 @@ async function isLoggedIn(req, res, next) {
   req.user = decodedIdToken;
   next();
 }
-
+//ค้าง
 function isAdmin(req, res, next) {
   try {
     if (req.isAuthenticated()) {
@@ -382,19 +410,19 @@ function isAdmin(req, res, next) {
       } else {
         log.info(req.user.name + " request admin tool");
         res.status(404).render({
-            statusCode: "404",
-            statusText: "Not Found",
-            error: true,
-            message: "user is not king"
+          statusCode: "404",
+          statusText: "Not Found",
+          error: true,
+          message: "user is not king"
         });
         return;
       }
     } else {
       res.status(404).render({
-          statusCode: "404",
-          statusText: "Not Found",
-          error: true,
-          message: "user not found"
+        statusCode: "404",
+        statusText: "Not Found",
+        error: true,
+        message: "user not found"
       });
       return;
     }
