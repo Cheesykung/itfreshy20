@@ -7,7 +7,6 @@ const cors = require("cors");
 const express = require("express");
 const admin = require("../config/admin");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
 const db = admin.firestore();
 const firestore = admin.firestore();
 const { v4: uuidv4 } = require("uuid");
@@ -27,22 +26,9 @@ const authService = auth();
 const bunyan = require("bunyan");
 const { link } = require("fs");
 const log = bunyan.createLogger({ name: "myapp" });
-const sessionConfig = {
-  secret: 'ilovescotchscotfchyscotchscotch"',
-  name: "session",
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    domain: "https://itfreshy2020.web.app",
-    sameSite: 'none'
-  }
-};
 if (process.env.NODE_ENV === 'production') {
   testController.set('trust proxy', 1); // trust first proxy
-  sessionConfig.cookie.secure = true;
-  sessionConfig.cookie.sameSite = "none"; // serve secure cookies
 }
-testController.use(session(sessionConfig));
 testController.use(minify());
 testController.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
