@@ -2,7 +2,7 @@
   <pageHFull>
     <template #headline>
       STEP <span class="text-primary-500 font-semibold">1</span>
-      <p class="text-sm text-primary-300">About you</p>
+      <p class="text-sm text-primary-300">About you  {{ getGender }} </p>
     </template>
     <template #body>
       <!--- Form area --->
@@ -72,7 +72,7 @@
   </pageHFull>
 </template>
 <script>
-//import { mapGetters } from "vuex"
+import { mapGetters } from "vuex"
 // import pageHFull from "../../util/pageHFull";
 // import formContain from "../../util/formContainer";
 
@@ -91,7 +91,10 @@ export default {
       contact: null
     };
   },
-  methods: {}
+  methods: {},
+  computed: {
+    ...mapGetters("register", ["getGender"])
+  }
 };
 </script>
 

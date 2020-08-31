@@ -189,14 +189,14 @@ router.beforeEach((to, from, next) => {
   const firstTime = localStorage.getItem("firstTime");
   const token = Cookies.get("user");
   const user = firebase.auth().currentUser;
-  
+
   if (to.matched.some((item) => item.meta.requiresAuth)) {
     if (!user && !token && to.matched.some(({ path }) => path !== "/signin")) {
       next({ path: "/signin" });
     } else if (to.matched.some((item) => item.meta.requiresFirstTime) && firstTime == 'false') {
       next({ path: '/profile'});
-    } else {
-      next();
+    } else  if (!to.matched.some((item) => item.meta.requiresFirstTime) && firstTime == 'true') {
+      next({ path: '/continue' });
     }
   } else {
     next();

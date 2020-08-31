@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import Cookies from "js-cookie";
-import router from "../../router"
+import router from "../../router";
 //import mutations from "./user";
 import axios from "axios";
 
@@ -35,8 +35,10 @@ const actions = {
           dispatch("setAuth", result.user.providerData[0]);
 
           if (result.additionalUserInfo.isNewUser === true)
-            router.replace("/continue");
-          else { router.replace("/profile"); }
+            router.push("/continue");
+          else {
+            router.push("/profile");
+          }
 
           resolve(result);
         })
