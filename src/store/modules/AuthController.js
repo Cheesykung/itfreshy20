@@ -1,10 +1,12 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
 import Cookies from "js-cookie";
+import router from "../../router";
 //import mutations from "./user";
 import axios from "axios";
 
 var provider = new firebase.auth.FacebookAuthProvider();
-provider.addScope("email");
+provider.addScope("public_profile");
 
 const API = "https://us-central1-itfreshy2020.cloudfunctions.net/test/";
 
@@ -24,15 +26,24 @@ const actions = {
             sameSite: "none",
             secure: true,
           });
+          //เก็บสถานะ user ว่าเข้าใช้งานครั้งแรกหรือไม่ไว้ใน localStorage
+          // localStorage.setItem(
+          //   "firstTime",
+          //   result.additionalUserInfo.isNewUser
+          // );
 
-          localStorage.setItem(
-            "firstTime",
-            result.additionalUserInfo.isNewUser
-          );
-
+          dispatch("sendToken");
           dispatch("setAuth", result.user.providerData[0]);
 
-          window.location.reload();
+          router.go();
+
+          setTimeout(() => {
+            if (localStorage.getItem("firstTime") === "true")
+              router.push("/continue");
+            else {
+              router.push("/profile");
+            }
+          }, 1000);
 
           resolve(result);
         })
@@ -64,7 +75,10 @@ const actions = {
           },
         })
         .then((res) => {
-          console.log(res.status);
+          localStorage.setItem(
+            "firstTime",
+            res.data.data === "newuser" ? true : false
+          );
         });
     } catch (e) {
       console.log(e);

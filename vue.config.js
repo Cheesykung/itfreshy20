@@ -2,6 +2,10 @@ const { path } = require("./functions/api/controller/testController");
 
 module.exports = {
   devServer: {
+    host: "localhost",
+    hot: true,
+    port: 8080,
+    https: true,
     proxy: {
       "/auth/*": {
         target: "https://us-central1-itfreshy2020.cloudfunctions.net/test",

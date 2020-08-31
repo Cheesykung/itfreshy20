@@ -1,14 +1,12 @@
 <template>
   <section class="w-screen min-h-screen profile-wrap">
-    <div
-      class="flex flex-col content-center justify-center items-center h-full py-12"
-      v-if="!this.$route.params.id"
-    >
+    <div class="flex flex-col content-center justify-center items-center h-full py-12">
       <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
-        <div class="img-wrap space-y-4">
+        <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
-           :src="getProfile.photoURL + '?width=500'"
-           class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center" />
+            :data-src="getProfile.photoURL + '?width=500'"
+            class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
+          />
           <div class="details space-y-2 items-center">
             <h1 class="text-3xl text-primary-100 font-thin">{{ getProfile.displayName }}</h1>
           </div>
@@ -24,13 +22,15 @@
           </div>
         </div>
         <!--- Profile Stats --->
-        <div class="stats">
+        <div class="stats items-stretch">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
             <span class="text-2xl font-semibold text-gray-200">1K</span>
             <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">2.5K</span>
+            <span class="text-3xl font-semibold text-gray-200 -m-1">
+              <ion-icon name="skull-outline"></ion-icon> 
+            </span>
             <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
           </div>
         </div>
@@ -38,15 +38,12 @@
         <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8">
           <button
             class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm animate-pulse"
+            @click="$router.push({ path: '/bounty' })"
           >ล่ารายชื่อเลย!</button>
           <button
             class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm"
             @click="genQr()"
           >สร้างลิงค์ใหม่</button>
-          <button
-            class="px-2 py-3 bg-complementary text-primary-200 rounded text-sm"
-            @click="logout()"
-          >Sign out</button>
         </div>
       </div>
     </div>
@@ -56,6 +53,7 @@
 import { mapGetters } from "vuex";
 import axios from "axios";
 import alertify from "alertifyjs";
+import Cookies from "js-cookie";
 
 export default {
   data() {
@@ -67,20 +65,14 @@ export default {
     goProfile(id) {
       this.$router.push({ path: "/profile/" + id });
     },
-    goBack() {
-      return this.$router.go(-1);
-    },
-    seeAll() {
-      return this.$router.push("/hunted");
-    },
     async genQr() {
       try {
         const setQr = await axios.get(
-          "https://us-central1-itfreshy2020.cloudfunctions.net/test/genqrcode/",
+          "https://us-central1-itfreshy2020.cloudfunctions.net/test/genqrcode/", Cookies.get("user"),
           {
             withCredentials: true,
             headers: {
-              "Content-Type": "XMLHttpRequest"
+              "Content-Type": "text/html"
             }
           }
         );

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-primary-1000 bg-opacity-75 flex flex-col justify-center py-16 md:py-24 space-y-16 md:space-y-20 flex-wrap px-6 md:px-24 md:mx-48 rounded-md"
+    class="bg-primary-1000 bg-opacity-75 flex flex-col justify-center py-16 md:py-24 space-y-16 md:space-y-20 flex-wrap px-6 md:px-24 lg:mx-48 rounded-md"
   >
     <slot name="content"></slot>
   </div>

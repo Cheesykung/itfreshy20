@@ -6,7 +6,7 @@
   </section>
 </template>
 <script>
-import LoginBox from "@/components/util/LoginBox.vue";
+//import LoginBox from "@/components/util/LoginBox.vue";
 
 export default {
   data() {
@@ -16,7 +16,7 @@ export default {
     
   },
   components: {
-    LoginBox
+    LoginBox: () => import("@/components/util/LoginBox")
   }
 };
 </script>

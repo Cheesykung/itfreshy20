@@ -58,7 +58,52 @@ profileController.post('/create', async (req, res) => {
             },
             'status': status,
         };
+        let payload = {};
+        if (year >= 3) {
+            payload = {
+                'id' : id,
+                'fname' : fname,
+                'surname' : surname,
+                'nickname' : nickname,
+                'age' : age,
+                'sex' : sex,
+                'religion' : religion,
+                'branch' : branch,
+                'year' : year,
+                'contact' : contact,
+                'like' : null
+            }
+        } else {
+            if (like.length != 5) {
+                res.status(400).send({
+                    'statusCode' : '400',
+                    'statusText' : 'Bad Request',
+                    'error' : true,
+                    'message' : 'INVALID PAYLOAD'
+                });
+                return ;
+            }
 
+            payload = {
+                'id' : id,
+                'fname' : fname,
+                'surname' : surname,
+                'nickname' : nickname,
+                'age' : age,
+                'sex' : sex,
+                'religion' : religion,
+                'branch' : branch,
+                'year' : year,
+                'contact' : contact,
+                'like' : {
+                    '1' : like[0],
+                    '2' : like[1],
+                    '3' : like[2],
+                    '4' : like[3],
+                    '5' : like[4]
+                }
+            };
+        }
         //Check that we have this uid in db or not?
         if (haveUID.exists){
         // upload payload that have all info to db
@@ -308,12 +353,31 @@ profileController.put('/answer', async (req, res) => {
                 let userRef = firestore.collection('secretfromuser').doc(id);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
-                console.log(userData[name]);
-                if (userData[name] != 0 && userData[name] != undefined) {
-                    score += userData[name];
-                }
 
-                await userRef.update({[name] : score});
+                for (let i = 0; i < userData.score.length; i++) {
+                    let ref = userData.score[i];
+                    if (ref.uid == name) {
+                        if (ref.point != 0) {
+                            score += ref.point;
+                            let remove = {
+                                'uid' : name,
+                                'point' : ref.point
+                            }
+                            await userRef.update({
+                                'score' : admin.firestore.FieldValue.arrayRemove(remove)
+                            });
+                            break ;
+                        }
+                    }
+                }
+                let payload = {
+                    'uid' : name,
+                    'point' : score
+                }
+                console.log(payload);
+                await userRef.update({
+                    'score' : admin.firestore.FieldValue.arrayUnion(payload)
+                });
 
                 res.status(200).send({
                     'statusCode' : '200',
@@ -322,6 +386,7 @@ profileController.put('/answer', async (req, res) => {
                     'message' : 'SCORE UPDATE',
                     'score' : score
                 });
+                return ;
 
             } else {
                 res.status(404).send({
@@ -345,11 +410,30 @@ profileController.put('/answer', async (req, res) => {
                 let userRef = firestore.collection('secretfromuser').doc(ref);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
-                if (userData[name] != 0 && userData[name] != undefined) {
-                    score += userData[name];
-                }
 
-                await userRef.update({[name] : score});
+                for (let i = 0; i < userData.score.length; i++) {
+                    let path = userData.score[i];
+                    if (path.uid == name) {
+                        if (path.point != 0) {
+                            score += path.point;
+                            let remove = {
+                                'uid' : name,
+                                'point' : path.point
+                            }
+                            await userRef.update({
+                                'score' : admin.firestore.FieldValue.arrayRemove(remove)
+                            });
+                            break ;
+                        }
+                    }
+                }
+                let payload = {
+                    'uid' : name,
+                    'point' : score
+                }
+                await userRef.update({
+                    'score' : admin.firestore.FieldValue.arrayUnion(payload)
+                });
 
                 res.status(200).send({
                     'statusCode' : '200',
@@ -358,6 +442,7 @@ profileController.put('/answer', async (req, res) => {
                     'message' : 'SCORE UPDATE',
                     'score' : score
                 });
+                return
             } else {
                 res.status(404).send({
                     'statusCode' : '404',
@@ -376,6 +461,7 @@ profileController.put('/answer', async (req, res) => {
             'statusText' : 'Internal Server Error',
             'error' : true,
         });
+        return ;
     }
 });
 
@@ -391,7 +477,7 @@ profileController.put('/answer', async (req, res) => {
 
 //         for (let i = 63070001; i < 63070252; i++) {
 //             let ref = i.toString();
-//             batch.set(userRef.doc(ref), {'family' : '', 'uid':''});
+//             batch.set(userRef.doc(ref), {'family' : '', 'uid':'', 'score' : []});
 //         }
 //         await batch.commit();
 
