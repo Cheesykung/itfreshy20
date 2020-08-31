@@ -9,7 +9,7 @@
     </div>
       <span class="flex justify-center space-x-6 px-2 md:px-4 lg:px-6">
         <button
-          class="fb-btn shadow-outline bg-primary-500 hover:bg-transparent hover:shadow-outline focus:outline-none text-xs px-8 md:px-12 lg:text-sm"
+          class="fb-btn shadow-outline bg-primary-500 hover:bg-transparent hover:scale-105 transform transition-all ease-linear delay-75 hover:shadow-outline focus:outline-none text-xs px-8 md:px-12 lg:text-sm"
           @click="loginSubmit"
         >SIGN IN WITH FACEBOOK</button>
       </span>

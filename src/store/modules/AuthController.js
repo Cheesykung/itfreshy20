@@ -6,7 +6,7 @@ import router from "../../router";
 import axios from "axios";
 
 var provider = new firebase.auth.FacebookAuthProvider();
-provider.addScope("email");
+provider.addScope("public_profile");
 
 const API = "https://us-central1-itfreshy2020.cloudfunctions.net/test/";
 
