@@ -125,7 +125,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
   let data = {}
   try {
     const getyear = USERSRef.doc(req.user.uid).get().then((getyear) => {
-      let data = { link: name, uid: req.user.uid, time: 10, year: getyear.data().year };
+      let data = { link: name, uid: req.user.uid, time: 10, year: getyear.data().year,player: getyear.data().player};
     })
     log.info("genQR: " + req.user.uid);
     const genqrsnapshot = await LINKRef.where("uid", "==", req.user.uid).get();
