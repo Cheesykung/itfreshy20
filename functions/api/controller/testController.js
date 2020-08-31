@@ -88,7 +88,7 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
               }, { merge: true })
             })
             const getuser = USERSRef.doc(req.user.uid).get().then((getuser) => {
-              res.status(200).json({ data: "pass", year: getuser.data().year, status: getuser.data().status })
+              res.status(200).json({ data: "pass", year: getuser.data().year, status: getuser.data().status, count: getuser.data().count })
             })
             return;
           }
