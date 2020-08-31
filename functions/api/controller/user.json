@@ -1,0 +1,17 @@
+{
+    "aud": "itfreshy2020",
+    "auth_time": 1598794734,
+    "exp": 1598798334,
+    "firebase": {
+        "identities": "facebook.com",
+        "0": "1016287832135195",
+        "sign_in_provider": "facebook.com"
+    },
+    "iat": 1598794734,
+    "iss": "https://securetoken.google.com/itfreshy2020",
+    "name": "Thaworn Nawapol",
+    "picture": "https://graph.facebook.com/1016287832135195/picture",
+    "sub": "sBi1GRGWXQTNKPMasBP84GU5A4O2",
+    "uid": "sBi1GRGWXQTNKPMasBP84GU5A4O2",
+    "user_id": "sBi1GRGWXQTNKPMasBP84GU5A4O2"
+}

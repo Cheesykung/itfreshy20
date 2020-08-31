@@ -1,10 +1,8 @@
 /* eslint-disable prettier/prettier */
 import Vue from "vue";
 import VueRouter from "vue-router";
-import store from "@/store/index.js";
+import firebase from "../middleware/services/AuthHeaders";
 import Cookies from "js-cookie";
-
-//import { urlencoded } from "express";
 
 /* Declare and import routes */
 const Dashboard = () => import("../views/Dashboard.vue");
@@ -23,10 +21,6 @@ const step4 = () => import("../components/pages/callBackForm/likesStep.vue");
 const step5 = () => import("../components/pages/callBackForm/lastStep.vue");
 
 Vue.use(VueRouter);
-
-const token = Cookies.get("session");
-const firstTime = store.getters["user/getFirstTime"];
-const signedIn = store.getters["user/signInCheck"];
 
 const routes = [
   {
@@ -52,29 +46,71 @@ const routes = [
     meta: {
       title: "To be a freshy | IT@KMITL FRESHY 2020",
       requiresAuth: true,
-      firstTimeAuth: null,
+      requiresFirstTime: true,
+      hideNavigation: true,
     },
     redirect: "continue/gender",
-    beforeEnter: (to, from, next) => {
-      if (to.matched.some((item) => item.path === "/continue")) {
-        if (token && firstTime === 0) {
-          next();
-        } else if (token && firstTime === 1) {
-          next({ path: "/profile" });
-        } else {
-          next({ path: "/signin" });
-        }
-      } else {
-        next();
-      }
-    },
     children: [
-      { path: "gender", component: gender, name: "Your Gender" },
-      { path: "step1", component: step1, name: "Step 1" },
-      { path: "step2", component: step2, name: "Step 2" },
-      { path: "step3", component: step3, name: "Step 3" },
-      { path: "step4", component: step4, name: "What you likes?" },
-      { path: "step5", component: step5, name: "Your Gate" },
+      {
+        path: "gender",
+        component: gender,
+        name: "Your Gender",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
+      {
+        path: "step1",
+        component: step1,
+        name: "Step 1",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
+      {
+        path: "step2",
+        component: step2,
+        name: "Step 2",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
+      {
+        path: "step3",
+        component: step3,
+        name: "Step 3",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
+      {
+        path: "step4",
+        component: step4,
+        name: "What you likes?",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
+      {
+        path: "step5",
+        component: step5,
+        name: "Your Gate",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
     ],
   },
   {
@@ -118,8 +154,17 @@ const routes = [
     path: "/signin",
     name: "Signin",
     component: Signin,
+    beforeEnter: (to, from, next) => {
+      if (firebase.auth().currentUser) {
+        next({ path: "/profile" });
+      } else {
+        next();
+      }
+    },
     meta: {
       title: "Sign in | IT@KMITL FRESHY 2020",
+      requiresAuth: false,
+      hideNavigation: true,
       metaTags: [
         {
           name: "description",
@@ -127,26 +172,10 @@ const routes = [
         },
       ],
     },
-    beforeEnter: (to, from, next) => {
-      if (token) {
-        next({ path: "/profile" });
-      } else {
-        next();
-      }
-    },
   },
   {
     path: "*",
-    redirect: "/signin",
-    beforeEnter: (to, from, next) => {
-      if (to.matched.some((item) => item.meta.requiresAuth)) {
-        if (!token) {
-          next({ path: "/signin" });
-        } else {
-          next();
-        }
-      }
-    },
+    redirect: "/",
   },
 ];
 
@@ -156,24 +185,20 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeResolve((to, from, next) => {
+router.beforeEach((to, from, next) => {
+  const firstTime = localStorage.getItem("firstTime");
+  const token = Cookies.get("user");
+  const user = firebase.auth().currentUser;
+
   if (to.matched.some((item) => item.meta.requiresAuth)) {
-    if (!signedIn && !token) {
-      next({ path: "/signin", query: { from: to.path } });
-    } else if (signedIn === true && token && to.name !== "Signin") {
-      if (firstTime === 0 && to.fullPath) {
-        next({ path: "/continue", query: { from: to.path } });
-      } else if (firstTime === 1) {
-        if (
-          to.matched.some(
-            (item) => item.path === "/continue" && item.path === "/signin"
-          )
-        ) {
-          next({ path: "/profile", query: { from: to.path } });
-        } else {
-          next();
-        }
-      }
+    if (!user && !token && to.matched.some(({ path }) => path !== "/signin")) {
+      next({ path: "/signin" });
+    } else if (to.matched.some((item) => item.meta.requiresFirstTime) && firstTime == 'false') {
+      next({ path: '/profile'});
+    } else  if (!to.matched.some((item) => item.meta.requiresFirstTime) && firstTime == 'true') {
+      next({ path: '/continue' });
+    } else {
+      next();
     }
   } else {
     next();
@@ -188,11 +213,6 @@ router.beforeResolve((to, from, next) => {
     .slice()
     .reverse()
     .find((r) => r.meta && r.meta.metaTags);
-
-  // const prevNearestMeta = from.matched
-  //   .slice()
-  //   .reverse()
-  //   .find((r) => r.meta && r.meta.metaTags);
 
   nearestTitle
     ? (document.title = nearestTitle.meta.title)

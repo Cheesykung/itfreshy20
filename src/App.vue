@@ -1,25 +1,39 @@
 <template>
-  <div id="app">
-    <Nav v-if="signInCheck && !$route.matched.some(({ path }) => path === '/continue')"/>
+  <div id="app" v-lazy:background-image="bgObj">
+    <Nav v-if="showNav" />
     <transition name="animated">
-      <router-view />
+      <keep-alive max="5">
+        <router-view :key="$route.fullPath" />
+      </keep-alive>
     </transition>
-    <!-- <Footer /> -->
   </div>
 </template>
 <script>
 //import Footer from "@/components/util/Footer.vue";
 import Nav from "@/components/util/Nav.vue";
-import { mapGetters } from "vuex";
 
 export default {
-  name: 'IT HUNTER GAME',
-  components: {
-    //  Footer,
-    Nav
+  data() {
+    return {
+      showNav: true,
+      bgObj: {
+        src: "/img/bg.jpg"
+      }
+    };
   },
-  computed: {
-    ...mapGetters('user', ["signInCheck"])
+  watch: {
+    "$route.meta.hideNavigation": function(hideNavigation) {
+      this.showNav = !hideNavigation;
+    }
+  },
+  methods: {
+    setNav(status) {
+      this.showNav = status;
+    }
+  },
+
+  components: {
+    Nav
   }
 };
 </script>
@@ -27,7 +41,8 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;300;400&family=Roboto:wght@300;400;600&display=swap");
 
-html, body {
+html,
+body {
   @apply h-full;
 }
 
@@ -37,15 +52,76 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   word-spacing: 1px;
-  letter-spacing: .8px;
+  letter-spacing: 0.8px;
   color: #2c3e50;
-  background-image: url("assets/images/bg.jpg");
-  background-size: cover;
   background-repeat: no-repeat;
   background-position: center top;
-  background-color: rgba(23, 35, 59, 0.9);
+  background: linear-gradient(270deg, #33deb2, #7295d3, #dc9b62);
+  background-size: 600% 600%;
+  -webkit-animation: bgTransition 3s ease infinite;
+  -moz-animation: bgTransition 3s ease infinite;
+  animation: bgTransition 3s ease infinite;
   overflow: hidden;
   @apply min-h-full;
+}
+
+#app[lazy="loading"] {
+  background: linear-gradient(119deg, #79c3c3, #524cb6, #ec920f);
+  background-size: 600% 600%;
+  -webkit-animation: bgTransition 3s ease infinite;
+  -o-animation: bgTransition 3s ease infinite;
+  -moz-animation: bgTransition 3s ease infinite;
+  animation: bgTransition 3s ease infinite;
+}
+
+#app[lazy="loaded"] {
+  background-size: cover !important;
+  animation: none !important;
+}
+
+@-webkit-keyframes bgTransition {
+  0% {
+    background-position: 97% 0%;
+  }
+  50% {
+    background-position: 4% 100%;
+  }
+  100% {
+    background-position: 97% 0%;
+  }
+}
+@-moz-keyframes bgTransition {
+  0% {
+    background-position: 97% 0%;
+  }
+  50% {
+    background-position: 4% 100%;
+  }
+  100% {
+    background-position: 97% 0%;
+  }
+}
+@-o-keyframes bgTransition {
+  0% {
+    background-position: 97% 0%;
+  }
+  50% {
+    background-position: 4% 100%;
+  }
+  100% {
+    background-position: 97% 0%;
+  }
+}
+@keyframes bgTransition {
+  0% {
+    background-position: 97% 0%;
+  }
+  50% {
+    background-position: 4% 100%;
+  }
+  100% {
+    background-position: 97% 0%;
+  }
 }
 
 .main-wrap {
@@ -61,7 +137,7 @@ button:focus {
 }
 
 ::-webkit-scrollbar {
-  width: .35rem;
+  width: 0.35rem;
 }
 
 ::-webkit-scrollbar-track {
@@ -73,7 +149,7 @@ button:focus {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary-700 ;
+  @apply bg-primary-700;
 }
 
 .lucky-font {
@@ -93,8 +169,8 @@ button:focus {
 }
 
 .alertify .ajs-dialog {
-    top: 50%;
-    transform: translateY(-50%);
-    margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: auto;
 }
 </style>

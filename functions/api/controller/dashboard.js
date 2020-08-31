@@ -18,13 +18,23 @@ dashboardController.get('/test', async (req, res) => {
         let userRef = firestore.collection('allstats').doc('stat');
         let snap = await userRef.get();
 
-        res.render('dashboard', {
-            stat: snap.data().allvisitor,
-            user: snap.data().alluser,
-            gen: snap.data().allgenerate,
-            bounty: snap.data().allbounty,
-            scan: snap.data().allscan
-        });
+        // res.render('dashboard', {
+        //     visit: snap.data().allvisitor,
+        //     user: snap.data().alluser,
+        //     gen: snap.data().allgenerate,
+        //     bounty: snap.data().allbounty,
+        //     scan: snap.data().allscan
+        // });
+
+        const observer = firestore.collection('allstats').onSnapshot(querySnapshot => {
+            querySnapshot.docChanges().forEach(change => {
+            var data = change.doc.data();
+            res.render('dashboard', {user:data});
+            console.log(data);
+            res.end();
+            
+            });
+    });
     }catch(e){
         res.status(500).send({
             'statusCode': '500',
@@ -33,10 +43,8 @@ dashboardController.get('/test', async (req, res) => {
             'message': 'FUCTION NOT FOUND'
         });
     }
-    
 
 })
-
 
 
 module.exports = dashboardController;
