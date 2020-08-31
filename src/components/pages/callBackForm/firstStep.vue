@@ -1,8 +1,9 @@
 <template>
   <pageHFull>
     <template #headline>
-      STEP <span class="text-primary-500 font-semibold">1</span>
-      <p class="text-sm text-primary-300">About you  {{ getGender }} </p>
+      STEP
+      <span class="text-primary-500 font-semibold">1</span>
+      <p class="text-sm text-primary-300">About you</p>
     </template>
     <template #body>
       <!--- Form area --->
@@ -13,28 +14,26 @@
               <label
                 for="branch"
                 class="text-left text-gray-100 text-opacity-100"
-              >Branch : {{ branch }}</label>
+              >Branch : {{ firstStep.branch }}</label>
               <select
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 name="branch"
-                v-model="branch"
+                v-model="firstStep.branch"
               >
-                <option>IT</option>
-                <option>DSBA</option>
-                <option>BIT</option>
+                <option v-for="(item, i) in branch" :key="i">{{ item }}</option>
               </select>
             </span>
             <span class="space-y-3 flex flex-col">
-              <label for="year" class="text-left text-gray-100 text-opacity-100">Year : {{ year }}</label>
+              <label
+                for="year"
+                class="text-left text-gray-100 text-opacity-100"
+              >Year : {{ firstStep.year }}</label>
               <select
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 name="year"
-                v-model="year"
+                v-model="firstStep.year"
               >
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
+                <option v-for="(item, i) in year" :key="i">{{ item }}</option>
               </select>
             </span>
             <span class="space-y-3 flex flex-col">
@@ -43,7 +42,8 @@
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 name="contact"
-                v-model="contact"
+                v-model="firstStep.contact"
+                placeholder="Facebook, Line, Tel, etc."
               />
             </span>
           </div>
@@ -52,7 +52,7 @@
             <button
               type="submit"
               class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
-              id="sub_button"
+              @click="nextStep()"
             >
               next step
               <ion-icon name="chevron-forward-outline"></ion-icon>
@@ -72,32 +72,61 @@
   </pageHFull>
 </template>
 <script>
-import { mapGetters } from "vuex"
-// import pageHFull from "../../util/pageHFull";
-// import formContain from "../../util/formContainer";
+import store from "../../../store";
+import alertify from "alertifyjs";
 
 export default {
   components: {
     pageHFull: () => import("../../util/pageHFull"),
     formContain: () => import("../../util/formContainer")
   },
-  mounted() {
-   
-  },
   data() {
     return {
-      branch: "",
-      year: "",
-      contact: null
+      firstStep: {
+        branch: "",
+        year: "",
+        contact: null
+      },
+      branch: ["IT", "DATA", "BIT"],
+      year: [1, 2, 3, 4]
     };
   },
-  methods: {},
-  computed: {
-    ...mapGetters("register", ["getGender"])
+  beforeRouteEnter(to, from, next) {
+    if (!store.getters["register/getGender"]) {
+      next({ path: "/gender", replace: true });
+    } else {
+      next();
+    }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (
+      to.path &&
+      !(this.firstStep.branch && this.firstStep.year && this.firstStep.contact)
+    ) {
+      alertify.notify("PLEASE FILLED OUT!", "warning", 3);
+      next(false);
+    } else {
+      next();
+    }
+  },
+  methods: {
+    nextStep() {
+      if (
+        !(
+          this.firstStep.branch &&
+          this.firstStep.year &&
+          this.firstStep.contact
+        )
+      ) {
+        alertify.notify("PLEASE FILLED OUT!", "warning", 3);
+      } else {
+        this.$store.dispatch("register/setFirstStep", this.firstStep);
+        this.$router.push({ name: "Step 2" });
+      }
+    }
   }
 };
 </script>
 
 <style scoped>
-
 </style>

@@ -19,7 +19,7 @@
               class="w-24 h-24 md:w-40 md:h-40 icon-prefix"
               :class="gender[0].gen === active ? 'active' : ''"
             >
-            <ion-icon :name="gender[0].ico" class="text-4xl md:text-6xl"></ion-icon>
+              <ion-icon :name="gender[0].ico" class="text-4xl md:text-6xl"></ion-icon>
             </div>
             <span
               class="text-lg md:text-xl text-gray-500 text-prefix capitalize"
@@ -58,7 +58,7 @@
           type="submit"
           class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
           :class="active ? 'animate-pulse' : ''"
-          @click="submitGen()"
+          @click="submitGen(active)"
           id="sub_button"
         >
           first step
@@ -78,6 +78,7 @@
 <script>
 import pageHFull from "../../util/pageHFull";
 import { mapActions } from "vuex";
+import alertify from "alertifyjs";
 
 export default {
   data() {
@@ -99,9 +100,13 @@ export default {
   methods: {
     ...mapActions("register", ["setGender"]),
     chkClick() {},
-    submitGen() {
-      this.setGender(this.active);
-      this.$router.push({ name: "Step 1" });
+    submitGen: function(value) {
+      if (value) {
+        this.setGender(value);
+        this.$router.push({ name: "Step 1" });
+      } else {
+        alertify.notify("PLEASE MAKE A CHOICE!", 'custom-warning', 3);
+      }
     }
   }
 };

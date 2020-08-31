@@ -1,8 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import Cookies from "js-cookie";
-//import router from "../../router";
-//import mutations from "./user";
 import axios from "axios";
 import router from "../../router";
 
@@ -27,17 +25,20 @@ const actions = {
             sameSite: "none",
             secure: true,
           });
-          //เก็บสถานะ user ว่าเข้าใช้งานครั้งแรกหรือไม่ไว้ใน localStorage
-          // localStorage.setItem(
-          //   "firstTime",
-          //   result.additionalUserInfo.isNewUser
-          // );
 
           dispatch("setAuth", result.user.providerData[0]);
           dispatch("sendToken");
-          
-          if(result.credential.accessToken) {
-            router.push({ path: '/profile' }).then(router.go());
+
+          if (result.credential.accessToken) {
+            router.replace({ path: "/continue" }).then(
+              setTimeout(() => {
+                if (localStorage.getItem("firstTIme") === "true") {
+                  router.forward();
+                } else {
+                  router.push({ path: "/profile" }).then(router.go());
+                }
+              }, 500)
+            );
           }
           resolve(result);
         })
