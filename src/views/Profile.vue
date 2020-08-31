@@ -22,13 +22,15 @@
           </div>
         </div>
         <!--- Profile Stats --->
-        <div class="stats">
+        <div class="stats items-stretch">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
             <span class="text-2xl font-semibold text-gray-200">1K</span>
             <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">2.5K</span>
+            <span class="text-3xl font-semibold text-gray-200 -m-1">
+              <ion-icon name="skull-outline"></ion-icon> 
+            </span>
             <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
           </div>
         </div>
