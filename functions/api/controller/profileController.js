@@ -58,7 +58,7 @@ profileController.post('/create', async (req, res) => {
             },
             'status': status,
         };
-        let payload = {};
+        // let payload = {};
         if (year >= 3) {
             payload = {
                 'id' : id,

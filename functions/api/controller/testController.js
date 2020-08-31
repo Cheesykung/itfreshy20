@@ -73,15 +73,37 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
       .get().then((checknewuser) => {
         if (checknewuser.exists) {
           if (checknewuser.data().newuser == 1) {
+            const allvisitorget = ALLRef.doc('stat').get().then((allvisitorget) => {
+              const allvisitorupdate = ALLRef.doc('stat').set({
+                allvisitor: allvisitorget.data().allvisitor + 1
+              }, { merge: true })
+            })
             res.status(200).json({ data: "newuser" })
             return;
           }
           else {
-            res.status(200).json({ data: "pass" })
+            const allvisitorget = ALLRef.doc('stat').get().then((allvisitorget) => {
+              const allvisitorupdate = ALLRef.doc('stat').set({
+                allvisitor: allvisitorget.data().allvisitor + 1
+              }, { merge: true })
+            })
+            const getuser = USERSRef.doc(req.user.uid).get().then((getuser) => {
+              res.status(200).json({ data: "pass", year: getuser.data().year, status: getuser.data().status })
+            })
             return;
           }
         } else {
+          const allvisitorget = ALLRef.doc('stat').get().then((allvisitorget) => {
+            const allvisitorupdate = ALLRef.doc('stat').set({
+              allvisitor: allvisitorget.data().allvisitor + 1
+            }, { merge: true })
+          })
           res.status(200).json({ data: "newuser" })
+          const alluserget = ALLRef.doc('stat').get().then((alluserget) => {
+            const alluserupdate = ALLRef.doc('stat').set({
+              alluser: alluserget.data().alluser + 1
+            }, { merge: true })
+          })
           const newuser = USERSRef.doc(req.user.uid).set({
             name: req.user.name,
             uid: req.user.uid,
@@ -93,8 +115,8 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
           return;
         }
       })
-  } catch(error) {
-    res.status(200).json({data: "error"})
+  } catch (error) {
+    res.status(200).json({ data: error })
   };
 })
 
