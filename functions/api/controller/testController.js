@@ -25,7 +25,7 @@ const { auth } = require('firebase-admin');
 const authService = auth();
 const bunyan = require("bunyan");
 const { link } = require("fs");
-const { get } = require("core-js/fn/dict");
+// const { get } = require("core-js/fn/dict");
 const log = bunyan.createLogger({ name: "myapp" });
 if (process.env.NODE_ENV === 'production') {
   testController.set('trust proxy', 1); // trust first proxy
