@@ -125,7 +125,7 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
   let data = {}
   try {
     const getyear = USERSRef.doc(req.user.uid).get().then((getyear) => {
-      let data = { link: name, uid: req.user.uid, time: 10, year: getyear.data().year};
+      let data = { link: name, uid: req.user.uid, time: 10, year: getyear.data().year };
     })
     log.info("genQR: " + req.user.uid);
     const genqrsnapshot = await LINKRef.where("uid", "==", req.user.uid).get();
@@ -330,70 +330,50 @@ testController.get("/", (req, res) => {
     });
   }
 });
-// //admin query tools
-// testController.get(
-//   "/ryutools/finddoc/:collection/:docname",
-//   isAdmin,
-//   async (req, res) => {
-//     log.info(
-//       "king querty doc " +
-//         req.params.collection +
-//         " doc name " +
-//         req.params.docname
-//     );
-//     const all = await db
-//       .collection(req.params.collection)
-//       .doc(req.params.docname)
-//       .get();
-//     // const all = await db.collection('bountys').doc('bounty').get();
-//     if (!all.exists) {
-//       res.send("cannot find");
-//       return "หาไม่เจอ";
-//     } else {
-//       res.send(all.data());
-//     }
-//   }
-// );
-// testController.get("/ryutools/find/:id", isAdmin, async (req, res) => {
-//   async function getMarkers(id) {
-//     const markers = [];
-//     await db
-//       .collection(id)
-//       .get()
-//       .then((querySnapshot) => {
-//         querySnapshot.docs.forEach((doc) => {
-//           markers.push({ id: doc.id, data: doc.data() });
-//         });
-//       });
-//     return res.send(markers);
-//   }
-//   getMarkers(req.params.id);
-// });
+//admin query tools
+testController.get("/ryutools/finddoc/:collection/:docname", (req, res) => {
+  try{
+  log.info(
+    "king querty doc " +
+    req.params.collection +
+    " doc name " +
+    req.params.docname
+  );
+  const all = db.collection(req.params.collection).doc(req.params.docname)
+    .get()
+    .then((all) => {
+      if (!all.exists) {
+        res.send("cannot find");
+        return "หาไม่เจอ";
+      } else {
+        res.send(all.data());
+      }
+    })
+  }
+  catch(err){
+    res.send('error');
+  }
+}
+);
+testController.get("/ryutools/find/:id", async (req, res) => {
+  async function getMarkers(id) {
+    const markers = [];
+    await db
+      .collection(id)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.docs.forEach((doc) => {
+          markers.push({ id: doc.id, data: doc.data() });
+        });
+      });
+    return res.send(markers);
+  }
+  getMarkers(req.params.id);
+});
 
-// testController.get("/help", async (req, res) => {
-//   res.render("help");
-// });
-
-// testController.get("/logout", (req, res) => {
-//   try {
-//     log.info("----------> Logout");
-
-//     req.logout();
-//     res.status(200).send({
-//       statusCode: "200",
-//       statusText: "Request Success",
-//       error: false,
-//       message: "logout succesful  ",
-//     });
-//   } catch (err) {
-//     res.status(500).send({
-//       statusCode: "500",
-//       statusText: "Internal Server Error",
-//       error: true,
-//       message: "Internal Server Error",
-//     });
-//   }
-// });
+testController.get("/help", async (req, res) => {
+  res.render("help");
+});
 
 // testController.get("/checka", (req, res) => {
 //   // res.json({ data: req.user, session: req.session });
