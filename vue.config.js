@@ -3,6 +3,7 @@ module.exports = {
     host: "localhost",
     hot: true,
     port: 8080,
+    https: true,
     proxy: {
       "/auth/*": {
         target: "http://localhost:5001/itfreshy2020/us-central1/test",

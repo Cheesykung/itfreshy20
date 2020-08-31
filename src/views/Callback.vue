@@ -1,20 +1,14 @@
 <template>
   <transition name="animated-form">
-    <router-view></router-view>
+    <keep-alive max="6">
+      <router-view :key="$route.fullPath" />
+    </keep-alive>
   </transition>
 </template>
 <script>
-
 export default {
   data() {
     return {};
-  },
-  beforeRouteEnter: (to, from, next) => {
-    if (localStorage.getItem("firstTime") === false) {
-      next({ path: "/profile" });
-    } else {
-      next();
-    }
   }
 };
 </script>

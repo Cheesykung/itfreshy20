@@ -74,13 +74,13 @@
 </template>
 <script>
 //import { mapGetters } from "vuex"
-import pageHFull from "../../util/pageHFull";
-import formContain from "../../util/formContainer";
+// import pageHFull from "../../util/pageHFull";
+// import formContain from "../../util/formContainer";
 
 export default {
   components: {
-    pageHFull,
-    formContain
+    pageHFull: () => import("../../util/pageHFull"),
+    formContain: () => import("../../util/formContainer")
   },
   mounted() {
    

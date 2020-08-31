@@ -156,9 +156,7 @@ export default {
     },
     submitGen() {
       this.setGender(this.active);
-      setInterval(() => {
-        this.$router.push({ name: "Step 1" });
-      }, 1000);
+      this.$router.push({ name: "Step 1" });
     }
   }
 };
@@ -185,8 +183,8 @@ export default {
 }
 
 .icon-prefix.active {
-  border: 0.2rem #2720A4 solid;
-  
+  border: 0.2rem #2720a4 solid;
+
   @apply text-primary relative opacity-100;
 }
 

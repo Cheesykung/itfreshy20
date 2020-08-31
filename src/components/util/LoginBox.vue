@@ -1,9 +1,12 @@
 <template>
   <div class="grid lg:grid-flow-col grid-flow-row-dense grid-cols-4 gap-12 container">
     <div
-      class="flex content-center justify-center flex-col col-start-1 col-end-5 bg-primary-1100 bg-opacity-75 xl:mx-16 py-16 space-y-24"
+      class="flex content-center justify-center flex-col col-start-1 col-end-5 bg-primary-1100 bg-opacity-75 xl:mx-16 py-16 space-y-16"
     >
+    <div class="flex flex-col self-center justify-center content-center items-center space-y-8" v-lazy-container="{ selector: 'img' }">
+      <img data-src="/img/logo.png" alt="IT HUNTER GAME" class="object-cover w-48">
       <h1 class="lucky-font text-primary-100 text-6xl">SIGN IN</h1>
+    </div>
       <span class="flex justify-center space-x-6 px-2 md:px-4 lg:px-6">
         <button
           class="fb-btn shadow-outline bg-primary-500 hover:bg-transparent hover:shadow-outline focus:outline-none text-xs px-8 md:px-12 lg:text-sm"

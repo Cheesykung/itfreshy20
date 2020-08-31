@@ -32,7 +32,7 @@ const getters = {
     return state.profile.year;
   },
   getFirstTime: (state) => {
-    return state.profile.newuser;
+    return state.firstTime;
   },
 };
 

@@ -1,5 +1,7 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
 import Cookies from "js-cookie";
+import router from "../../router"
 //import mutations from "./user";
 import axios from "axios";
 
@@ -24,7 +26,7 @@ const actions = {
             sameSite: "none",
             secure: true,
           });
-
+          //เก็บสถานะ user ว่าเข้าใช้งานครั้งแรกหรือไม่ไว้ใน localStorage
           localStorage.setItem(
             "firstTime",
             result.additionalUserInfo.isNewUser
@@ -32,7 +34,9 @@ const actions = {
 
           dispatch("setAuth", result.user.providerData[0]);
 
-          window.location.reload();
+          if (result.additionalUserInfo.isNewUser === true)
+            router.replace("/continue");
+          else { router.replace("/profile"); }
 
           resolve(result);
         })

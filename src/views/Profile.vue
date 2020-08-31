@@ -2,12 +2,11 @@
   <section class="w-screen min-h-screen profile-wrap">
     <div
       class="flex flex-col content-center justify-center items-center h-full py-12"
-      v-if="!this.$route.params.id"
     >
       <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
-        <div class="img-wrap space-y-4">
+        <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
-           :src="getProfile.photoURL + '?width=500'"
+           :data-src="getProfile.photoURL + '?width=500'"
            class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center" />
           <div class="details space-y-2 items-center">
             <h1 class="text-3xl text-primary-100 font-thin">{{ getProfile.displayName }}</h1>
@@ -41,7 +40,6 @@
           >ล่ารายชื่อเลย!</button>
           <button
             class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm"
-            @click="genQr()"
           >สร้างลิงค์ใหม่</button>
           <button
             class="px-2 py-3 bg-complementary text-primary-200 rounded text-sm"
@@ -54,8 +52,8 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import axios from "axios";
-import alertify from "alertifyjs";
+// import axios from "axios";
+// import alertify from "alertifyjs";
 
 export default {
   data() {
@@ -67,36 +65,30 @@ export default {
     goProfile(id) {
       this.$router.push({ path: "/profile/" + id });
     },
-    goBack() {
-      return this.$router.go(-1);
-    },
-    seeAll() {
-      return this.$router.push("/hunted");
-    },
-    async genQr() {
-      try {
-        const setQr = await axios.get(
-          "https://us-central1-itfreshy2020.cloudfunctions.net/test/genqrcode/",
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "XMLHttpRequest"
-            }
-          }
-        );
+    // async genQr() {
+    //   try {
+    //     const setQr = await axios.get(
+    //       "https://us-central1-itfreshy2020.cloudfunctions.net/test/genqrcode/",
+    //       {
+    //         withCredentials: true,
+    //         headers: {
+    //           "Content-Type": "XMLHttpRequest"
+    //         }
+    //       }
+    //     );
 
-        if (setQr.status === 200) {
-          let data = await setQr.data;
-          alertify.success("สร้างลิงค์สำเร็จ!");
-          alertify.alert("QR Code ของคุณ", data.qrcode);
-          this.$store.commit("user/setLink", data.qrcode);
-        } else {
-          console.log("Something went wrong.");
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    },
+    //     if (setQr.status === 200) {
+    //       let data = await setQr.data;
+    //       alertify.success("สร้างลิงค์สำเร็จ!");
+    //       alertify.alert("QR Code ของคุณ", data.qrcode);
+    //       this.$store.commit("user/setLink", data.qrcode);
+    //     } else {
+    //       console.log("Something went wrong.");
+    //     }
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
+    // },
     logout() {
       this.$store.dispatch("user/signOut");
     }

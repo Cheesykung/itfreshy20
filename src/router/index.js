@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import Vue from "vue";
 import VueRouter from "vue-router";
-import store from "../store";
 import firebase from "../middleware/services/AuthHeaders";
 import Cookies from "js-cookie";
 
@@ -47,16 +46,71 @@ const routes = [
     meta: {
       title: "To be a freshy | IT@KMITL FRESHY 2020",
       requiresAuth: true,
-      firstTimeAuth: null,
+      requiresFirstTime: true,
+      hideNavigation: true,
     },
     redirect: "continue/gender",
     children: [
-      { path: "gender", component: gender, name: "Your Gender" },
-      { path: "step1", component: step1, name: "Step 1" },
-      { path: "step2", component: step2, name: "Step 2" },
-      { path: "step3", component: step3, name: "Step 3" },
-      { path: "step4", component: step4, name: "What you likes?" },
-      { path: "step5", component: step5, name: "Your Gate" },
+      {
+        path: "gender",
+        component: gender,
+        name: "Your Gender",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
+      {
+        path: "step1",
+        component: step1,
+        name: "Step 1",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
+      {
+        path: "step2",
+        component: step2,
+        name: "Step 2",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
+      {
+        path: "step3",
+        component: step3,
+        name: "Step 3",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
+      {
+        path: "step4",
+        component: step4,
+        name: "What you likes?",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
+      {
+        path: "step5",
+        component: step5,
+        name: "Your Gate",
+        meta: {
+          requiresAuth: true,
+          requiresFirstTime: true,
+          hideNavigation: true,
+        },
+      },
     ],
   },
   {
@@ -110,6 +164,7 @@ const routes = [
     meta: {
       title: "Sign in | IT@KMITL FRESHY 2020",
       requiresAuth: false,
+      hideNavigation: true,
       metaTags: [
         {
           name: "description",
@@ -130,31 +185,18 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeResolve((to, from, next) => {
-  const user = firebase.auth().currentUser;
-  const firstTime = store.getters["user/getFirstTime"];
+router.beforeEach((to, from, next) => {
+  const firstTime = localStorage.getItem("firstTime");
   const token = Cookies.get("user");
-
+  const user = firebase.auth().currentUser;
+  
   if (to.matched.some((item) => item.meta.requiresAuth)) {
-    if (!user && !token && to.matched.some((item) => item.path !== "/signin")) {
+    if (!user && !token && to.matched.some(({ path }) => path !== "/signin")) {
       next({ path: "/signin" });
-    } else if (user && token) {
-      if (
-        firstTime &&
-        to.matched.some((item) => {
-          item.path !== "/continue";
-        })
-      ) {
-        next({
-          path: "/continue",
-        });
-      } else if (!firstTime) {
-        if (to.matched.some((item) => item.path === "/continue")) {
-          next({ path: "/profile" });
-        } else {
-          next();
-        }
-      }
+    } else if (to.matched.some((item) => item.meta.requiresFirstTime) && firstTime == 'false') {
+      next({ path: '/profile'});
+    } else {
+      next();
     }
   } else {
     next();
