@@ -30,7 +30,7 @@ firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     store.dispatch("user/sendToken");
     store.dispatch("user/setAuth", user.providerData[0]);
-  }
+  } 
 
   if (!app) {
     app = new Vue({

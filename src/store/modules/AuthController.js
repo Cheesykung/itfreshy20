@@ -1,9 +1,10 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import Cookies from "js-cookie";
-import router from "../../router";
+//import router from "../../router";
 //import mutations from "./user";
 import axios from "axios";
+import router from "../../router";
 
 var provider = new firebase.auth.FacebookAuthProvider();
 provider.addScope("public_profile");
@@ -32,19 +33,12 @@ const actions = {
           //   result.additionalUserInfo.isNewUser
           // );
 
-          dispatch("sendToken");
           dispatch("setAuth", result.user.providerData[0]);
-
-          router.go();
-
-          setTimeout(() => {
-            if (localStorage.getItem("firstTime") === "true")
-              router.push("/continue");
-            else {
-              router.push("/profile");
-            }
-          }, 1000);
-
+          dispatch("sendToken");
+          
+          if(result.credential.accessToken) {
+            router.push({ path: '/profile' }).then(router.go());
+          }
           resolve(result);
         })
         .catch((e) => {
@@ -65,7 +59,7 @@ const actions = {
     });
   },
 
-  async sendToken() {
+  async sendToken(context) {
     try {
       const idToken = await firebase.auth().currentUser.getIdToken();
       await axios
@@ -79,13 +73,18 @@ const actions = {
             "firstTime",
             res.data.data === "newuser" ? true : false
           );
+
+          context.dispatch(
+            "setNewUser",
+            res.data.data === "newuser" ? "true" : "false"
+          );
         });
     } catch (e) {
       console.log(e);
     }
   },
 
-  async signOut({ commit }) {
+  async signOut(context) {
     return new Promise((resolve, reject) => {
       firebase
         .auth()
@@ -93,8 +92,8 @@ const actions = {
         .then((res) => {
           Cookies.remove("user");
           localStorage.removeItem("firstTime");
-          commit("user/clearProfile", { root: true });
-          window.location.replace("/signin");
+          context.commit("clearProfile", { root: false });
+          router.push({ path: "/signin" }).then(router.go());
           resolve(res);
         })
         .catch((e) => {
