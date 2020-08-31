@@ -36,6 +36,9 @@
         <li v-for="(item, i) in navLinks" :key="i" class="capitalize">
           <router-link :to="item.link">{{ item.name }}</router-link>
         </li>
+        <li @click="signOut">
+          Sign out
+        </li>
       </ul>
     </aside>
   </section>
@@ -46,6 +49,8 @@
 }
 </style>
 <script>
+import { mapActions } from "vuex"
+
 export default {
   data() {
     return {
@@ -60,6 +65,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions("user", ["signOut"]),
     goProfile() {
       return this.$route.path !== "/profile"
         ? this.$router.push({ path: "/profile" })
@@ -78,7 +84,7 @@ export default {
   min-height: 100vh;
   max-height: 100%;
   z-index: 99999999;
-  @apply bg-primary-1000 bg-opacity-100 py-6 px-6 text-primary-250 flex-col justify-start content-center items-stretch;
+  @apply bg-primary-1100 bg-opacity-100 py-6 px-6 text-primary-250 flex-col justify-start content-center items-stretch;
 }
 
 .nav-content span {
@@ -93,6 +99,10 @@ export default {
 .nav-content ul li {
   flex: 0;
   width: 100%;
-  @apply py-4 px-6 text-lg;
+  @apply py-4 px-6 text-lg cursor-pointer;
+}
+
+.nav-content ul li:hover {
+  @apply text-secondary_a;
 }
 </style>
