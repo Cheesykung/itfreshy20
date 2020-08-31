@@ -7,6 +7,8 @@ const profileController = express();
 const bunyan = require("bunyan");
 const log = bunyan.createLogger({ name: "myapp" });
 const passport = require("passport");
+const { user } = require('firebase-functions/lib/providers/auth');
+const { ref } = require('firebase-functions/lib/providers/database');
 
 profileController.use(passport.initialize());
 profileController.use(passport.session());
@@ -305,12 +307,31 @@ profileController.put('/answer', async (req, res) => {
                 let userRef = firestore.collection('secretfromuser').doc(id);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
-                console.log(userData[name]);
-                if (userData[name] != 0 && userData[name] != undefined) {
-                    score += userData[name];
-                }
 
-                await userRef.update({[name] : score});
+                for (let i = 0; i < userData.score.length; i++) {
+                    let ref = userData.score[i];
+                    if (ref.uid == name) {
+                        if (ref.point != 0) {
+                            score += ref.point;
+                            let remove = {
+                                'uid' : name,
+                                'point' : ref.point
+                            }
+                            await userRef.update({
+                                'score' : admin.firestore.FieldValue.arrayRemove(remove)
+                            });
+                            break ;
+                        }
+                    }
+                }
+                let payload = {
+                    'uid' : name,
+                    'point' : score
+                }
+                console.log(payload);
+                await userRef.update({
+                    'score' : admin.firestore.FieldValue.arrayUnion(payload)
+                });
 
                 res.status(200).send({
                     'statusCode' : '200',
@@ -319,6 +340,7 @@ profileController.put('/answer', async (req, res) => {
                     'message' : 'SCORE UPDATE',
                     'score' : score
                 });
+                return ;
 
             } else {
                 res.status(404).send({
@@ -342,11 +364,30 @@ profileController.put('/answer', async (req, res) => {
                 let userRef = firestore.collection('secretfromuser').doc(ref);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
-                if (userData[name] != 0 && userData[name] != undefined) {
-                    score += userData[name];
-                }
 
-                await userRef.update({[name] : score});
+                for (let i = 0; i < userData.score.length; i++) {
+                    let path = userData.score[i];
+                    if (path.uid == name) {
+                        if (path.point != 0) {
+                            score += path.point;
+                            let remove = {
+                                'uid' : name,
+                                'point' : path.point
+                            }
+                            await userRef.update({
+                                'score' : admin.firestore.FieldValue.arrayRemove(remove)
+                            });
+                            break ;
+                        }
+                    }
+                }
+                let payload = {
+                    'uid' : name,
+                    'point' : score
+                }
+                await userRef.update({
+                    'score' : admin.firestore.FieldValue.arrayUnion(payload)
+                });
 
                 res.status(200).send({
                     'statusCode' : '200',
@@ -355,6 +396,7 @@ profileController.put('/answer', async (req, res) => {
                     'message' : 'SCORE UPDATE',
                     'score' : score
                 });
+                return
             } else {
                 res.status(404).send({
                     'statusCode' : '404',
@@ -373,6 +415,7 @@ profileController.put('/answer', async (req, res) => {
             'statusText' : 'Internal Server Error',
             'error' : true,
         });
+        return ;
     }
 });
 
@@ -388,7 +431,7 @@ profileController.put('/answer', async (req, res) => {
 
 //         for (let i = 63070001; i < 63070252; i++) {
 //             let ref = i.toString();
-//             batch.set(userRef.doc(ref), {'family' : '', 'uid':''});
+//             batch.set(userRef.doc(ref), {'family' : '', 'uid':'', 'score' : []});
 //         }
 //         await batch.commit();
 
