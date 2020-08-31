@@ -317,19 +317,19 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
     });
 });
 
-// // testController.get("/", (req, res) => {
-// //   try {
-// //     log.info("----------->Index");
-// //     res.status(200).render("index");
-// //   } catch (err) {
-// //     res.status(500).send({
-// //       statusCode: "500",
-// //       statusText: "Internal Server Error",
-// //       error: true,
-// //       message: "Internal Server Error",
-// //     });
-// //   }
-// // });
+testController.get("/", (req, res) => {
+  try {
+    log.info("----------->Index");
+    res.status(200).render("index");
+  } catch (err) {
+    res.status(500).send({
+      statusCode: "500",
+      statusText: "Internal Server Error",
+      error: true,
+      message: "Internal Server Error",
+    });
+  }
+});
 // //admin query tools
 // testController.get(
 //   "/ryutools/finddoc/:collection/:docname",
