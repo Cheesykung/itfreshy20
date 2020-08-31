@@ -27,18 +27,23 @@ const actions = {
             secure: true,
           });
           //เก็บสถานะ user ว่าเข้าใช้งานครั้งแรกหรือไม่ไว้ใน localStorage
-          localStorage.setItem(
-            "firstTime",
-            result.additionalUserInfo.isNewUser
-          );
+          // localStorage.setItem(
+          //   "firstTime",
+          //   result.additionalUserInfo.isNewUser
+          // );
 
+          dispatch("sendToken");
           dispatch("setAuth", result.user.providerData[0]);
 
-          if (result.additionalUserInfo.isNewUser === true)
-            router.push("/continue");
-          else {
-            router.push("/profile");
-          }
+          router.go();
+
+          setTimeout(() => {
+            if (localStorage.getItem("firstTime") === "true")
+              router.push("/continue");
+            else {
+              router.push("/profile");
+            }
+          }, 1000);
 
           resolve(result);
         })
@@ -70,7 +75,10 @@ const actions = {
           },
         })
         .then((res) => {
-          console.log(res.status);
+          localStorage.setItem(
+            "firstTime",
+            res.data.data === "newuser" ? true : false
+          );
         });
     } catch (e) {
       console.log(e);

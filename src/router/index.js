@@ -197,6 +197,8 @@ router.beforeEach((to, from, next) => {
       next({ path: '/profile'});
     } else  if (!to.matched.some((item) => item.meta.requiresFirstTime) && firstTime == 'true') {
       next({ path: '/continue' });
+    } else {
+      next();
     }
   } else {
     next();
