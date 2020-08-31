@@ -25,6 +25,7 @@ const { auth } = require('firebase-admin');
 const authService = auth();
 const bunyan = require("bunyan");
 const { link } = require("fs");
+const { get } = require("core-js/fn/dict");
 const log = bunyan.createLogger({ name: "myapp" });
 if (process.env.NODE_ENV === 'production') {
   testController.set('trust proxy', 1); // trust first proxy
@@ -121,11 +122,14 @@ testController.get("/gate", isLoggedIn, async (req, res) => {
 })
 
 testController.get("/genqrcode", isLoggedIn, async function (req, res) {
+  let data = {}
   try {
+    const getyear = USERSRef.doc(req.user.uid).get().then((getyear) => {
+      let data = { link: name, uid: req.user.uid, time: 10, year: getyear.data().year};
+    })
     log.info("genQR: " + req.user.uid);
     const genqrsnapshot = await LINKRef.where("uid", "==", req.user.uid).get();
     const name = uuidv4();
-    const data = { link: name, uid: req.user.uid, time: 10, year: parseInt(req.user.year), };
     if (genqrsnapshot.empty) {
       log.info("create qr " + req.user.uid);
       const newDoc = await db
