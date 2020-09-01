@@ -124,6 +124,39 @@ body {
   }
 }
 
+.loading {
+  font-size: 1.1rem;
+  font-weight: 500;
+  font-family: Kanit;
+}
+
+.loading:after {
+  content: " .";
+  animation: dots 1s steps(5, end) infinite;
+}
+
+@keyframes dots {
+  0%,
+  20% {
+    color: rgba(23, 19, 98);
+    text-shadow: 0.25em 0 0 rgba(23, 19, 98), 0.5em 0 0 rgba(23, 19, 98);
+  }
+
+  40% {
+    color: #a8a5da;
+    text-shadow: 0.25em 0 0 rgba(23, 19, 98), 0.5em 0 0 rgba(23, 19, 98);
+  }
+
+  60% {
+    text-shadow: 0.25em 0 0 #a8a5da, 0.5em 0 0 rgba(23, 19, 98);
+  }
+
+  80%,
+  100% {
+    text-shadow: 0.25em 0 0 #a8a5da, 0.5em 0 0 #a8a5da;
+  }
+}
+
 .main-wrap {
   background-image: linear-gradient(
     to top,

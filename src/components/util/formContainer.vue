@@ -24,4 +24,12 @@ export default {
   outline: 0;
   box-shadow: none;
 }
+
+option {
+  @apply bg-primary-900 text-primary-300;
+}
+
+select {
+  @apply border-0;
+}
 </style>

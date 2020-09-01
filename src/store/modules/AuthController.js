@@ -1,11 +1,9 @@
+/* eslint-disable */
 import firebase from "firebase/app";
 import "firebase/auth";
 import Cookies from "js-cookie";
 import axios from "axios";
 import router from "../../router";
-
-var provider = new firebase.auth.FacebookAuthProvider();
-provider.addScope("public_profile");
 
 const API = "https://us-central1-itfreshy2020.cloudfunctions.net/test/";
 
@@ -14,31 +12,28 @@ const actions = {
     commit("user/setLink", payload, { root: true });
   },
 
-  async signInWithFB({ dispatch }) {
+  signInWithFB({ dispatch }) {
+    let provider = new firebase.auth.FacebookAuthProvider();
+    provider.addScope("public_profile");
     return new Promise((resolve, reject) => {
       firebase
         .auth()
         .signInWithPopup(provider)
         .then((result) => {
-          var token = result.credential.accessToken;
+          let token = result.credential.accessToken;
           Cookies.set("user", token, {
             sameSite: "none",
             secure: true,
           });
-
-          dispatch("setAuth", result.user.providerData[0]);
-          dispatch("sendToken");
-
           if (result.credential.accessToken) {
-            router.replace({ path: "/continue" }).then(
-              setTimeout(() => {
-                if (localStorage.getItem("firstTIme") === "true") {
-                  router.forward();
-                } else {
-                  router.push({ path: "/profile" }).then(router.go());
-                }
-              }, 500)
-            );
+          dispatch("setAuth", result.user.providerData[0]);
+          dispatch("sendToken").then((res) => {
+            if (res.data.data === 'newuser') {
+              router.push('/continue')
+            } else {
+              router.push('/profile')
+            }}
+          );
           }
           resolve(result);
         })
@@ -54,35 +49,43 @@ const actions = {
     });
   },
 
-  setNewUser({ commit }, payload) {
-    commit("user/setFirstTime", payload, {
-      root: true,
+  setNewUser({ state, commit }, payload) {
+    commit("setFirstTime", payload, {
+      root: false,
     });
   },
 
-  async sendToken(context) {
-    try {
-      const idToken = await firebase.auth().currentUser.getIdToken();
-      await axios
-        .get(API + "fire", {
-          headers: {
-            "FIREBASE_AUTH_TOKEN": idToken,
-          },
-        })
+  sendToken(context) {
+    return new Promise((resolve, reject) => {
+      firebase
+        .auth()
+        .currentUser.getIdToken()
         .then((res) => {
-          localStorage.setItem(
-            "firstTime",
-            res.data.data === "newuser" ? true : false
-          );
+          axios
+            .get(API + "fire", {
+              headers: {
+                "FIREBASE_AUTH_TOKEN": res,
+              },
+            })
+            .then((result) => {
+              localStorage.setItem(
+                "firstTime",
+                result.data.data === "newuser" ? true : false
+              );
 
-          context.dispatch(
-            "setNewUser",
-            res.data.data === "newuser" ? "true" : "false"
-          );
+              context.dispatch(
+                "setNewUser",
+                result.data.data === "newuser" ? "true" : "false",
+                { root: false }
+              );
+
+              resolve(result);
+            })
+            .catch((e) => {
+              reject(e);
+            })
         });
-    } catch (e) {
-      console.log(e);
-    }
+    });
   },
 
   async signOut(context) {

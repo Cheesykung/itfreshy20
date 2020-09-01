@@ -29,11 +29,13 @@ Vue.use(VueLazyLoad, {
 
 let app;
 
-firebase.auth().onAuthStateChanged((user) => {
+firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     store.dispatch("user/sendToken");
     store.dispatch("user/setAuth", user.providerData[0]);
   }
+
+  console.log("Sorry, if you have any problems please contact staff.")
 
   if (!app) {
     app = new Vue({
