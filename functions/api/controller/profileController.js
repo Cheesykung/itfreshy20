@@ -11,7 +11,7 @@ const minify = require("express-minify");
 
 profileController.use(minify());
 profileController.use(cors({ origin: true }));
-profileController.post('/create', async (req, res) => {
+profileController.put('/create', async (req, res) => {
     //Create users profile
     try {
         let batch = firestore.batch();
@@ -19,24 +19,18 @@ profileController.post('/create', async (req, res) => {
         let userRef = firestore.collection('users').doc(uid);
         let haveUID = await userRef.get();
         let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like ,player} = req.body;
-        if (like.length != 5) {
-            res.status(400).send({
-                'statusCode' : '400',
-                'statusText' : 'Bad Request',
-                'error' : true,
-                'message' : 'INVALID PAYLOAD'
-            });
-            return ;
-        }
+        
+        let status;
         if (year == 1){
-            let status = "pirate"
+            status = "pirate"
         }
         else if(year == 2){
-            let status = "captain"
+            status = "captain"
         }
         else{
-            let status = "captain"
+            status = "captain"
         }
+
         let payload = {};
         if (year >= 3) {
             payload = {
@@ -52,6 +46,7 @@ profileController.post('/create', async (req, res) => {
                 'contact' : contact,
                 'like' : null,
                 'player': player,
+                'status' : status
             }
         } else {
             if (like.length != 5) {
@@ -83,6 +78,7 @@ profileController.post('/create', async (req, res) => {
                     '5' : like[4]
                 },
                 'player': player,
+                'status' : status
             };
         }
         //Check that we have this uid in db or not?
