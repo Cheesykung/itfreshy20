@@ -12,7 +12,7 @@ const firestore = admin.firestore();
 const { v4: uuidv4 } = require("uuid");
 const { S_IFBLK } = require("constants");
 const testController = express();
-const SECRef = db.collection("secertfromuser");
+const SECRef = db.collection("secretfromuser");
 const BOUNTYRef = db.collection("bountys");
 const SBOUNTYRef = db.collection("bountyscan");
 const SCANSRef = db.collection("scans");
@@ -25,7 +25,6 @@ const { auth } = require('firebase-admin');
 const authService = auth();
 const bunyan = require("bunyan");
 const { link } = require("fs");
-// const { get } = require("core-js/fn/dict");
 const log = bunyan.createLogger({ name: "myapp" });
 if (process.env.NODE_ENV === 'production') {
   testController.set('trust proxy', 1); // trust first proxy
@@ -106,15 +105,14 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
     res.status(500).json({ data: error })
   };
 })
-testController.get("/gate", isLoggedIn, async (req, res) => {
+testController.post("/gate", isLoggedIn, async (req, res) => {
   try {
-    const getgate = SECRef.doc(req.body.id).get().then((getgate) => {
-      res.status(200).json({ data: getgate.data().gate })
+    const getgate = SECRef.doc(req.body.stdid).get().then((getgate) => {
+      res.status(200).json({ key: req.body.stdid,data: getgate.data().gate })
       const assigngate = USERSRef.doc(req.user.uid).set({
         gate: getgate.data().gate
       }, { merge: true })
     })
-
   }
   catch (err) {
     res.status(500).json({ data: err })
