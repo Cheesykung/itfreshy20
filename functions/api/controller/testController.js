@@ -64,7 +64,7 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
                 allvisitor: allvisitorget.data().allvisitor + 1
               }, { merge: true })
             })
-            res.status(200).json({ data: "pass" })
+            res.status(200).json({ data: "newuser" })
             return;
           }
           else {

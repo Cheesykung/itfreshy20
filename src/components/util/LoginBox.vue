@@ -43,6 +43,9 @@ export default {
         .then(res => {
           if (res) {
             this.loading = true;
+          } else {
+            alertify.notify("เกิดข้อผิดพลาด", "warning", 3);
+            this.loading = false;
           }
         })
         .catch(e => {

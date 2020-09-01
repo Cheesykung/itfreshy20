@@ -78,7 +78,7 @@
             <button
               type="submit"
               class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
-              @click="nextStep();"
+              @click="nextStep()"
             >
               go!
               <ion-icon name="chevron-forward-outline"></ion-icon>
@@ -98,7 +98,7 @@
 <script>
 import store from "../../../store";
 import alertify from "alertifyjs";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: {
@@ -114,7 +114,7 @@ export default {
         id: "",
         player: ""
       },
-      confirm: "",
+      confirm: ""
     };
   },
   beforeRouteEnter(to, from, next) {
@@ -141,6 +141,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions("register", ["sendForm"]),
     nextStep() {
       if (
         !(
@@ -156,17 +157,17 @@ export default {
         if (this.checkStdId) {
           if (parseInt(this.getYear) === 2 && this.confirm) {
             if (this.confirm === "yes") {
-               this.secondStep.player = 1;
-               this.$store.dispatch("register/setSecond", this.secondStep);
+              this.secondStep.player = 1;
             } else if (this.confirm === "no") {
               this.secondStep.player = 0;
-              this.$store.dispatch("register/setSecond", this.secondStep);
             } else if (!this.confirm) {
               alertify.notify("PLEASE MAKE A CHOICE!", "warning", 3);
+              return;
             }
-          } else {
-            this.$store.dispatch("register/setSecond", this.secondStep).then(res => console.log(res))
           }
+
+          this.$store.dispatch("register/setSecond", this.secondStep);
+          this.sendForm().then((res) => { console.log(res) })
         }
       }
     }

@@ -39,15 +39,12 @@
           </div>
         </div>
         <!--- Profile button --->
-        <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8">
-          <button
+        <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8 py-6">
+          <!-- <button
             class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm animate-pulse"
-           
           >ล่ารายชื่อเลย!</button>
-          <button
-            class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm"
-            
-          >สร้างลิงค์ใหม่</button>
+          <button class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm">สร้างลิงค์ใหม่</button> -->
+          <h3 class="text-2xl animate-pulse text-primary-200 font-semibold">เตรียมออกล่าเร็วๆนี้!</h3>
         </div>
       </div>
     </div>
@@ -151,7 +148,7 @@ export default {
 }
 
 .button-gp {
-  @apply flex flex-row justify-center content-center flex-wrap px-4;
+  @apply flex flex-row items-center justify-center content-center flex-wrap px-4;
 }
 
 .button-gp button {

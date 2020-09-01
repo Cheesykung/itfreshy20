@@ -94,8 +94,8 @@
             <span class="flex flex-row flex-no-wrap space-x-3">
               <span class="bullet active"></span>
               <span class="bullet"></span>
-              <span class="bullet"></span>
-              <span class="bullet"></span>
+              <!-- <span class="bullet"></span>
+              <span class="bullet"></span> -->
             </span>
           </div>
           <!--- End step zone --->
