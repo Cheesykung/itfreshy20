@@ -1,15 +1,16 @@
 const cors = require('cors');
 const express = require('express');
 const admin = require('../config/admin');
-//const { doc } = require('prettier');
 const firestore = admin.firestore();
 const profileController = express();
 const bunyan = require("bunyan");
+const e = require('express');
 const log = bunyan.createLogger({ name: "myapp" });
+const minify = require("express-minify");
 
 
+profileController.use(minify());
 profileController.use(cors({ origin: true }));
-
 profileController.post('/create', async (req, res) => {
     //Create users profile
     try {
@@ -17,8 +18,25 @@ profileController.post('/create', async (req, res) => {
         let uid = req.headers.uid; //require front-end send uid to know where to update the info
         let userRef = firestore.collection('users').doc(uid);
         let haveUID = await userRef.get();
-        let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like} = req.body;
-
+        let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like ,player} = req.body;
+        if (like.length != 5) {
+            res.status(400).send({
+                'statusCode' : '400',
+                'statusText' : 'Bad Request',
+                'error' : true,
+                'message' : 'INVALID PAYLOAD'
+            });
+            return ;
+        }
+        if (year == 1){
+            let status = "pirate"
+        }
+        else if(year == 2){
+            let status = "captain"
+        }
+        else{
+            let status = "captain"
+        }
         let payload = {};
         if (year >= 3) {
             payload = {
@@ -32,7 +50,8 @@ profileController.post('/create', async (req, res) => {
                 'branch' : branch,
                 'year' : year,
                 'contact' : contact,
-                'like' : null
+                'like' : null,
+                'player': player,
             }
         } else {
             if (like.length != 5) {
@@ -62,7 +81,8 @@ profileController.post('/create', async (req, res) => {
                     '3' : like[2],
                     '4' : like[3],
                     '5' : like[4]
-                }
+                },
+                'player': player,
             };
         }
         //Check that we have this uid in db or not?
@@ -75,7 +95,8 @@ profileController.post('/create', async (req, res) => {
         scan.push(uid);
         batch.set(firestore.collection('scans').doc(uid), {
             'scan' : scan,
-            'uid' : uid
+            'uid' : uid,
+            'year': year,
         });
             
         // if input year = 1
@@ -115,11 +136,6 @@ profileController.post('/create', async (req, res) => {
             'error': true
         });
     } return;
-});
-profileController.get("/checka", (req, res) => {
-    res.send({ data: req.user, session: req.session })
-    console.log(req.user)
-    return;
 });
 
 profileController.put('/edit', async (req, res) => {

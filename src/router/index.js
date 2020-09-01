@@ -3,6 +3,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import firebase from "../middleware/services/AuthHeaders";
 import Cookies from "js-cookie";
+//import store from "../store"
 
 /* Declare and import routes */
 const Dashboard = () => import("../views/Dashboard.vue");
@@ -27,7 +28,7 @@ const routes = [
     path: "/",
     name: "Dashboard",
     component: Dashboard,
-    redirect: "/signin",
+    redirect: firebase.auth().currentUser ? '/dashboard' : '/signin',
     meta: {
       title: "IT@KMITL FRESHY 2020",
       requiresAuth: true,
@@ -139,6 +140,17 @@ const routes = [
       title: "Your profile | IT@KMITL FRESHY 2020",
       requiresAuth: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (
+        localStorage.getItem("firstTime") === "true" &&
+        firebase.auth().currentUser &&
+        !to.matched.some(({ path }) => path === "/continue")
+      ) {
+        next({ path: "/continue" });
+      } else {
+        next();
+      }
+    },
     children: [{ path: ":id", component: Profile, name: "Profile" }],
   },
   {
@@ -155,8 +167,12 @@ const routes = [
     name: "Signin",
     component: Signin,
     beforeEnter: (to, from, next) => {
-      if (firebase.auth().currentUser) {
-        next({ path: "/profile" });
+      if (
+        firebase.auth().currentUser &&
+        localStorage.getItem("firstTime") === "true" &&
+        to.matched.some(({ path }) => path !== "/continue")
+      ) {
+        next({ path: "/continue" });
       } else {
         next();
       }
@@ -185,7 +201,7 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeResolve((to, from, next) => {
   const firstTime = localStorage.getItem("firstTime");
   const token = Cookies.get("user");
   const user = firebase.auth().currentUser;
@@ -193,10 +209,16 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some((item) => item.meta.requiresAuth)) {
     if (!user && !token && to.matched.some(({ path }) => path !== "/signin")) {
       next({ path: "/signin" });
-    } else if (to.matched.some((item) => item.meta.requiresFirstTime) && firstTime == 'false') {
-      next({ path: '/profile'});
-    } else  if (!to.matched.some((item) => item.meta.requiresFirstTime) && firstTime == 'true') {
-      next({ path: '/continue' });
+    } else if (
+      !to.matched.some((item) => item.meta.requiresFirstTime) &&
+      firstTime == "true"
+    ) {
+      next({ path: "/continue" });
+    } else if (
+      to.matched.some((item) => item.meta.requiresFirstTime) &&
+      firstTime == "false"
+    ) {
+      next({ path: "/profile" });
     } else {
       next();
     }

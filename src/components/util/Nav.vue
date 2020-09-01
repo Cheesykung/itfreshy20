@@ -80,7 +80,7 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  max-width: 350px;
+  min-width: 350px;
   min-height: 100vh;
   max-height: 100%;
   z-index: 99999999;

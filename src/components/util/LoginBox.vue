@@ -17,10 +17,21 @@
   </div>
 </template>
 <script>
+import firebase from 'firebase/app'
+import 'firebase/auth'
+
 export default {
   methods: {
     loginSubmit() {
       this.$store.dispatch("user/signInWithFB");
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    this.$router.go();
+    if(firebase.auth().currentUser && localStorage.getItem("firstTime") === 'true' && !to.matched.some(({path}) => path === '/continue')) {
+      next({ path: '/continue', query: to.path, replace: true })
+    } else {
+      next();
     }
   }
 };

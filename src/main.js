@@ -10,6 +10,9 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import "@fortawesome/fontawesome-free/js/all.js";
 import layzyLoad from "./directives/layzyLoad";
 import VueLazyLoad from "vue-lazyload";
+import VueAlertify from 'vue-alertify';
+
+Vue.use(VueAlertify);
 
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/^ion-/];
