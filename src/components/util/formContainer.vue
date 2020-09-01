@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-primary-1000 bg-opacity-75 flex flex-col justify-center py-16 md:py-24 space-y-16 md:space-y-20 flex-wrap px-10 md:px-24 lg:mx-48"
+    class="bg-primary-1000 bg-opacity-75 flex flex-col justify-center py-24 md:py-32 space-y-16 md:space-y-20 flex-wrap px-10 md:px-24 lg:mx-32 xl:mx-48"
   >
     <slot name="content"></slot>
   </div>
@@ -32,4 +32,5 @@ option {
 select {
   @apply border-0;
 }
+
 </style>

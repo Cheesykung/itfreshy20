@@ -125,7 +125,7 @@ body {
 }
 
 .loading {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 500;
   font-family: Kanit;
 }

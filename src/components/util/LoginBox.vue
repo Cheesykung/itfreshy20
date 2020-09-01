@@ -25,6 +25,7 @@
 <script>
 import firebase from "firebase/app";
 import "firebase/auth";
+import alertify from "alertifyjs";
 
 export default {
   data() {
@@ -36,6 +37,7 @@ export default {
   methods: {
     loginSubmit() {
       this.isClick = true;
+      this.loading = true;
       this.$store
         .dispatch("user/signInWithFB")
         .then(res => {
@@ -43,7 +45,11 @@ export default {
             this.loading = true;
           }
         })
-        .catch(e => console.log(e));
+        .catch(e => {
+          console.log(e);
+          this.loading = false;
+          alertify.error("เกิดข้อผิดพลาด");
+        });
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -61,6 +67,17 @@ export default {
 };
 </script>
 <style scoped>
+[v-lazy="loading"] {
+  font-size: 1.3rem;
+  font-weight: 500;
+  font-family: Kanit;
+}
+
+[v-lazy="loading"]::after {
+  content: " .";
+  animation: dots 1s steps(5, end) infinite;
+}
+
 .fb-btn {
   @apply block py-5 font-semibold text-primary-200 rounded-full transition-all duration-150 ease-linear animate-pulse;
 }
