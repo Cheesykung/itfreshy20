@@ -10,7 +10,6 @@
         <div @click="hidden = false" :class="hidden === true ? 'block' : 'hidden'">
           <i
             class="fas fa-bars text-gray-300 basic-icon ease delay-50 duration-200 hover:scale-125"
-            
           ></i>
         </div>
       </div>
@@ -30,16 +29,29 @@
         </div>
       </div>
     </nav>
-    <aside class="nav-content transition-all duration-200 delay-75 ease-linear transform" :class="hidden ? 'hidden' : 'flex'">
-      <span @click="hidden = true" class="cursor-pointer basic-icon ease delay-50 duration-200 hover:scale-125 hover:rotate-90">&times;</span>
-      <ul>
-        <li v-for="(item, i) in navLinks" :key="i" class="capitalize">
+    <aside
+      class="flex nav-content transition-all duration-300 ease-in-out transform"
+     
+      :style="hidden ? 'margin-left: -9999px' : 'margin-left: 0;'"
+    >
+      <span
+        @click="hidden = true"
+        class="cursor-pointer basic-icon ease delay-50 duration-200 hover:scale-125 hover:rotate-90"
+      >&times;</span>
+      <ul class="lucky-font">
+        <li
+          v-for="(item, i) in navLinks"
+          :key="i"
+          class="capitalize transform duration-150 delay-50 hover:scale-125"
+        >
           <router-link :to="item.link">{{ item.name }}</router-link>
         </li>
-        <li @click="signOut">
-          Sign out
-        </li>
+        <li
+          @click="signOut"
+          class="capitalize transform duration-150 delay-50 hover:scale-125"
+        >Sign out</li>
       </ul>
+      <div class="overlay bg-primary-1000 bg-opacity-75"></div>
     </aside>
   </section>
 </template>
@@ -49,18 +61,18 @@
 }
 </style>
 <script>
-import { mapActions } from "vuex"
+import { mapActions } from "vuex";
 
 export default {
   data() {
     return {
       hidden: true,
       navLinks: [
-        { name: "Dashboard", link: "/dashboard", icon: "" },
+        { name: "Dashboard", link: "#", icon: "" },
         { name: "Profile", link: "/profile", icon: "" },
-        { name: "Bounty", link: "/bounty", icon: "" },
-        { name: "Hunted", link: "/Hunted", icon: "" },
-        { name: "Leaderboard", link: "/leaderboard", icon: "" }
+        { name: "Bounty", link: "#", icon: "" },
+        { name: "Hunted", link: "#", icon: "" },
+        { name: "Leaderboard", link: "#", icon: "" }
       ]
     };
   },
@@ -75,12 +87,21 @@ export default {
 };
 </script>
 <style scoped>
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 424.98px;
+  width: 100vw;
+  height: 100vh;
+  z-index: 95;
+}
+
 .nav-content {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  min-width: 350px;
+  max-width: 425px;
   min-height: 100vh;
   max-height: 100%;
   z-index: 99999999;
@@ -99,10 +120,10 @@ export default {
 .nav-content ul li {
   flex: 0;
   width: 100%;
-  @apply py-4 px-6 text-lg cursor-pointer;
+  @apply py-4 px-6 text-xl cursor-pointer transition-all ease-linear;
 }
 
 .nav-content ul li:hover {
-  @apply text-secondary_a;
+  @apply text-primary-500;
 }
 </style>

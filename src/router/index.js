@@ -1,9 +1,9 @@
-/* eslint-disable prettier/prettier */
+/* eslint-disable */
 import Vue from "vue";
 import VueRouter from "vue-router";
 import firebase from "../middleware/services/AuthHeaders";
 import Cookies from "js-cookie";
-//import store from "../store"
+import store from "../store";
 
 /* Declare and import routes */
 const Dashboard = () => import("../views/Dashboard.vue");
@@ -28,7 +28,7 @@ const routes = [
     path: "/",
     name: "Dashboard",
     component: Dashboard,
-    redirect: firebase.auth().currentUser ? '/dashboard' : '/signin',
+    redirect: firebase.auth().currentUser ? "/dashboard" : "/signin",
     meta: {
       title: "IT@KMITL FRESHY 2020",
       requiresAuth: true,
@@ -201,8 +201,9 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeResolve((to, from, next) => {
+router.beforeEach((to, from, next) => {
   const firstTime = localStorage.getItem("firstTime");
+  //const firstTime = store.getters["user/getFirstTime"];
   const token = Cookies.get("user");
   const user = firebase.auth().currentUser;
 
@@ -216,14 +217,26 @@ router.beforeResolve((to, from, next) => {
       next({ path: "/continue" });
     } else if (
       to.matched.some((item) => item.meta.requiresFirstTime) &&
+      firstTime == "true"
+    ) {
+      next();
+    } else if (
+      to.matched.some((item) => item.meta.requiresFirstTime) &&
       firstTime == "false"
     ) {
-      next({ path: "/profile" });
+      next({ path: '/profile' });
     } else {
       next();
     }
   } else {
-    next();
+    if (user && token) {
+      if (
+        to.matched.some((item) => item.meta.requiresFirstTime) &&
+        firstTime == "true"
+      )
+        next();
+      else next({ path: "/profile" });
+    } else next();
   }
 
   const nearestTitle = to.matched
