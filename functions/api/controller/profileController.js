@@ -468,7 +468,7 @@ profileController.put('/answer', async (req, res) => {
 
 // Another One-Used function
 // To rnadom gate of year1 users
-// profileController.post('/gate/random', async (req, res) => {
+// profileController.put('/gate/random', async (req, res) => {
 //     try {
 //         let gate = ['AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND',
 //         'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND', 'AND',
@@ -519,5 +519,5 @@ profileController.put('/answer', async (req, res) => {
 //     }
 // });
 
-//exports this function index.js
+//exports this function to index.js
 module.exports = profileController;
