@@ -20,6 +20,7 @@ profileController.put('/create', async (req, res) => {
         let haveUID = await userRef.get();
         let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like ,player} = req.body;
         
+        
         let status;
         if (year == 1){
             status = "pirate"
@@ -31,9 +32,7 @@ profileController.put('/create', async (req, res) => {
             status = "captain"
         }
 
-        let payload = {};
-        if (year >= 3) {
-            payload = {
+        let payload = {
                 'id' : id,
                 'fname' : fname,
                 'surname' : surname,
@@ -48,39 +47,38 @@ profileController.put('/create', async (req, res) => {
                 'player': player,
                 'status' : status
             }
-        } else {
-            if (like.length != 5) {
-                res.status(400).send({
-                    'statusCode' : '400',
-                    'statusText' : 'Bad Request',
-                    'error' : true,
-                    'message' : 'INVALID PAYLOAD'
-                });
-                return ;
-            }
+        // } else {
+        //     if (like.length != 5) {
+        //         res.status(400).send({
+        //             'statusCode' : '400',
+        //             'statusText' : 'Bad Request',
+        //             'error' : true,
+        //             'message' : 'INVALID PAYLOAD'
+        //         });
+        //         return ;
+        //     }
 
-            payload = {
-                'id' : id,
-                'fname' : fname,
-                'surname' : surname,
-                'nickname' : nickname,
-                'age' : age,
-                'sex' : sex,
-                'religion' : religion,
-                'branch' : branch,
-                'year' : year,
-                'contact' : contact,
-                'like' : {
-                    '1' : like[0],
-                    '2' : like[1],
-                    '3' : like[2],
-                    '4' : like[3],
-                    '5' : like[4]
-                },
-                'player': player,
-                'status' : status
-            };
-        }
+            // payload = {
+            //     'id' : id,
+            //     'fname' : fname,
+            //     'surname' : surname,
+            //     'nickname' : nickname,
+            //     'age' : age,
+            //     'sex' : sex,
+            //     'religion' : religion,
+            //     'branch' : branch,
+            //     'year' : year,
+            //     'contact' : contact,
+            //     'like' : {
+            //         '1' : like[0],
+            //         '2' : like[1],
+            //         '3' : like[2],
+            //         '4' : like[3],
+            //         '5' : like[4]
+            //     },
+            //     'player': player,
+            //     'status' : status
+            // };
         //Check that we have this uid in db or not?
         if (haveUID.exists){
         // upload payload that have all info to db
