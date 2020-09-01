@@ -65,7 +65,7 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
                 allvisitor: allvisitorget.data().allvisitor + 1
               }, { merge: true })
             })
-            res.status(200).json({ data: "newuser" })
+            res.status(200).json({ data: "pass" })
             return;
           }
           else {
@@ -85,7 +85,7 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
               allvisitor: allvisitorget.data().allvisitor + 1
             }, { merge: true })
           })
-          res.status(200).json({ data: "newuser" })
+          res.status(200).json({ data: "pass" })
           const alluserget = ALLRef.doc('stat').get().then((alluserget) => {
             const alluserupdate = ALLRef.doc('stat').set({
               alluser: alluserget.data().alluser + 1
@@ -120,89 +120,92 @@ testController.get("/gate", isLoggedIn, async (req, res) => {
     res.status(500).json({ data: err })
   }
 })
-
+//marks ขาด middle ware
 testController.get("/genqrcode", isLoggedIn, async function (req, res) {
+  // res.status(200).send("kuyyyy")
   let data = {}
+  const name = uuidv4();
   try {
     const getyear = USERSRef.doc(req.user.uid).get().then((getyear) => {
-      let data = { link: name, uid: req.user.uid, time: 10, year: getyear.data().year,player: getyear.data().player};
-    })
-    log.info("genQR: " + req.user.uid);
-    const genqrsnapshot = await LINKRef.where("uid", "==", req.user.uid).get();
-    const name = uuidv4();
-    if (genqrsnapshot.empty) {
-      log.info("create qr " + req.user.uid);
-      const newDoc = await db
-        .collection("links")
-        .doc(req.user.uid)
-        .set(data)
-        .then(() => {
-          res.status(200).send({
-            statusCode: "201",
-            statusText: "Created",
-            error: false,
-            message: "Successfully generated qr code",
-            qrcode:
-              "https://itfreshy2020.web.app/qrcode/" +
-              name,
-          });
-        })
-        .catch((err) => {
-          res.status(400).send({
-            statusCode: "400",
-            statusText: "Bad Request",
-            error: true,
-            message: "QR code generate fail.",
-          });
-        });
-    } else {
-      genqrsnapshot.forEach((doc) => {
-        if (doc.data().time <= 0) {
-          log.info("Delete qr " + req.user.uid);
-          const qrDel = db
-            .collection("links")
-            .doc(doc.id)
-            .delete()
-            .then(() => {
-              log.info(name + req.user.uid);
-              const newDoc = db
-                .collection("links")
-                .doc(req.user.uid)
-                .set(data)
-                .then(() => {
-                  res.status(200).send({
-                    statusCode: "201",
-                    statusText: "Created",
-                    error: false,
-                    message: "Successfully generated new qr code",
-                    qrcode:
-                      "https://itfreshy2020.web.app/qrcode/" +
-                      name,
-                  });
-                })
-                .catch((err) => {
-                  res.status(400).send({
-                    statusCode: "400",
-                    statusText: "Bad Request",
-                    error: true,
-                    message: "QR code generate fail.",
-                  });
-                });
+      return data = { link: name, uid: req.user.uid, time: 10, year: getyear.data().year, player: getyear.data().player };
+    }).then(async (getyear) => {
+      log.info("genQR: " + req.user.uid);
+      const genqrsnapshot = await LINKRef.where("uid", "==", req.user.uid).get();
+      if (genqrsnapshot.empty) {
+        log.info("create qr " + req.user.uid);
+        const newDoc = await db
+          .collection("links")
+          .doc(req.user.uid)
+          .set(data)
+          .then(() => {
+            res.status(200).send({
+              statusCode: "201",
+              statusText: "Created",
+              error: false,
+              message: "Successfully generated qr code",
+              qrcode:
+                "https://itfreshy2020.web.app/qrcode/" +
+                name,
             });
-        } else {
-          log.info("normal qR" + req.user.uid);
-          res.status(200).send({
-            statusCode: "200",
-            statusText: "Request Success",
-            error: false,
-            message: "Successfully request qr",
-            qrcode:
-              "https://itfreshy2020.web.app/qrcode/" +
-              doc.data().link,
+          })
+          .catch((err) => {
+            res.status(400).send({
+              statusCode: "400",
+              statusText: "Bad Request",
+              error: true,
+              message: "QR code generate fail.",
+            });
           });
-        }
-      });
-    }
+      } else {
+        genqrsnapshot.forEach((doc) => {
+          if (doc.data().time <= 0) {
+            log.info("Delete qr " + req.user.uid);
+            const qrDel = db
+              .collection("links")
+              .doc(doc.id)
+              .delete()
+              .then(() => {
+                log.info(name + req.user.uid);
+                const newDoc = db
+                  .collection("links")
+                  .doc(req.user.uid)
+                  .set(data)
+                  .then(() => {
+                    res.status(200).send({
+                      statusCode: "201",
+                      statusText: "Created",
+                      error: false,
+                      message: "Successfully generated new qr code",
+                      qrcode:
+                        "https://itfreshy2020.web.app/qrcode/" +
+                        name,
+                    });
+                  })
+                  .catch((err) => {
+                    res.status(400).send({
+                      statusCode: "400",
+                      statusText: "Bad Request",
+                      error: true,
+                      message: "QR code generate fail.",
+                    });
+                  });
+              });
+          } else {
+            log.info("normal qR" + req.user.uid);
+            res.status(200).send({
+              statusCode: "200",
+              statusText: "Request Success",
+              error: false,
+              message: "Successfully request qr",
+              qrcode:
+                "https://itfreshy2020.web.app/qrcode/" +
+                doc.data().link,
+            });
+          }
+        });
+      }
+    })
+
   } catch (err) {
     res.status(500).send({
       statusCode: "500",
