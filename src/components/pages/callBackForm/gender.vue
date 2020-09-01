@@ -28,7 +28,7 @@
           </span>
         </div>
         <!---- Second grid row --->
-        <div
+        <div 
           class="row-start-2 col-start-1 col-end-4 lg:col-start-2 lg:col-end-3 flex flex-row justify-center space-x-24 md:space-x-64"
         >
           <!--- Male & Female --->
