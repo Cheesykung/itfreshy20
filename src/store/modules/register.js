@@ -1,9 +1,11 @@
+/* eslint-disable */
 import axios from "axios";
 import firebase from "firebase/app";
 import "firebase/auth";
 //import { reject } from "core-js/fn/promise";
+//import { reject } from "core-js/fn/promise";
 
-const API = "https://us-central1-itfreshy2020.cloudfunctions.net/";
+const API = "https://us-central1-itfreshy2020.cloudfunctions.net";
 
 const state = () => ({
   profileField: {
@@ -83,67 +85,81 @@ const actions = {
   setGender({ commit }, gender) {
     commit("setGender", gender);
   },
+
   setFirstStep({ commit }, payload) {
     commit("setFirstStep", payload);
   },
-  setSecond(context, payload) {
-    return new Promise((resolve, reject) => {
-      context.commit("setSecondStep", payload, { root: false });
-       context
-      .dispatch("sendForm")
-      .then((res) => resolve(res))
-      .catch(e => reject(e))
-    })
-    
-  },
-  sendForm({ state }) {
-    let form = new FormData();
 
-    if (parseInt(state.year) !== 2) {
-      form.append("id", state.stdId);
-      form.append("fname", state.firstName);
-      form.append("surname", state.surname);
-      form.append("nickname", state.nickname);
-      form.append("age", state.age);
-      form.append("sex", state.gender);
-      form.append("religion", state.religion);
-      form.append("branch", state.branch);
-      form.append("year", state.year);
-      form.append("contact", state.contact);
-      form.append("like", null);
+  setSecond({ commit }, payload) {
+    commit("setSecondStep", payload);
+  },
+
+  setProfile({ commit }, payload) {
+    commit("setProfile", payload);
+  },
+
+  sendForm({ commit, getters, dispatch }) {
+    let data = new Array();
+
+    if (parseInt(getters.getProfile.year) !== 2) {
+      data = {
+        id: getters.getProfile.stdId,
+        fname: getters.getProfile.firstName,
+        surname: getters.getProfile.surname,
+        nickname: getters.getProfile.nickname,
+        age: getters.getProfile.age,
+        sex: getters.getProfile.gender,
+        religion: getters.getProfile.religion,
+        branch: getters.getProfile.branch,
+        year: getters.getProfile.year,
+       // player: null,
+        contact: getters.getProfile.contact,
+        like: [null, null, null, null, null],
+      };
     } else {
-      form.append("id", state.stdId);
-      form.append("fname", state.firstName);
-      form.append("surname", state.surname);
-      form.append("nickname", state.nickname);
-      form.append("age", state.age);
-      form.append("sex", state.gender);
-      form.append("religion", state.religion);
-      form.append("branch", state.branch);
-      form.append("year", state.year);
-      form.append("contact", state.contact);
-      form.append("player", state.player);
-      form.append("like", null);
+      data = {
+        id: getters.getProfile.stdId,
+        fname: getters.getProfile.firstName,
+        surname: getters.getProfile.surname,
+        nickname: getters.getProfile.nickname,
+        age: getters.getProfile.age,
+        sex: getters.getProfile.gender,
+        religion: getters.getProfile.religion,
+        branch: getters.getProfile.branch,
+        year: getters.getProfile.year,
+        contact: getters.getProfile.contact,
+        player: getters.getProfile.player,
+        like: [null, null, null, null, null],
+      };
     }
 
     return new Promise((resolve, reject) => {
-      axios
-        .post(API + "profile/create", form, {
-          headers: {
-            "FIREBASE_AUTH_TOKEN": firebase.auth().currentUser.getIdToken(),
-          },
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            console.log("success");
-          }
-        })
-        .catch((e) => {
-          reject(e);
-          console.log(e);
-        }).finally(
-          resolve('success+++')
-        )
+      try {
+        firebase
+          .auth()
+          .currentUser.getIdToken()
+          .then((res) => {
+            axios
+              .post(API + "/profile/create", data, {
+                headers: {
+                  'uid': firebase.auth().currentUser.uid
+                  
+                },
+              })
+              .then((result) => {
+                if (result) {
+                  dispatch("setProfile", result);
+                  resolve(result);
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+                reject(e);
+              });
+          });
+      } catch (e) {
+        console.log(e);
+      }
     });
   },
 };
