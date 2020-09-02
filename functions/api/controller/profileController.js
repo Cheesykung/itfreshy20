@@ -10,7 +10,19 @@ const minify = require("express-minify");
 const { auth } = require('firebase-admin');
 const authService = auth(); 
 
-
+profileController.use(function (req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "X-Requested-With,Content-Type,Authorization"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    next();
+  });
 profileController.use(minify());
 profileController.use(cors({ origin: true }));
 profileController.post('/create',isLoggedIn, async (req, res) => {
