@@ -7,32 +7,43 @@ const bunyan = require("bunyan");
 const e = require('express');
 const log = bunyan.createLogger({ name: "myapp" });
 const minify = require("express-minify");
+const { auth } = require('firebase-admin');
+const authService = auth(); 
 
-
+profileController.use(function (req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "X-Requested-With,Content-Type,Authorization"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    next();
+  });
 profileController.use(minify());
 profileController.use(cors({ origin: true }));
-profileController.put('/create', async (req, res) => {
+profileController.post('/create', isLoggedIn, async (req, res) => {
     //Create users profile
-    try {
+    //try {
         let batch = firestore.batch();
-        let uid = req.headers.uid; //require front-end send uid to know where to update the info
+        let uid = req.user.uid; //require front-end send uid to know where to update the info
         let userRef = firestore.collection('users').doc(uid);
         let haveUID = await userRef.get();
-        let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like ,player} = req.body;
-        
+        let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like ,player,gate} = req.body;
         
         let status;
         if (year == 1){
             status = "pirate"
-        }
-        else if(year == 2){
-            status = "captain"
-        }
-        else{
+        } else {
             status = "captain"
         }
 
-        let payload = {
+        let payload = {};
+        if (year >= 3) {
+            payload = {
                 'id' : id,
                 'fname' : fname,
                 'surname' : surname,
@@ -44,41 +55,74 @@ profileController.put('/create', async (req, res) => {
                 'year' : year,
                 'contact' : contact,
                 'like' : null,
+                'newuser': 0,
+                'point': 0,
                 'player': player,
                 'status' : status
             }
-        // } else {
-        //     if (like.length != 5) {
-        //         res.status(400).send({
-        //             'statusCode' : '400',
-        //             'statusText' : 'Bad Request',
-        //             'error' : true,
-        //             'message' : 'INVALID PAYLOAD'
-        //         });
-        //         return ;
-        //     }
+        } else {
+            if (like.length != 5) {
+                res.status(400).send({
+                    'statusCode' : '400',
+                    'statusText' : 'Bad Request',
+                    'error' : true,
+                    'message' : 'INVALID PAYLOAD'
+                });
+                return ;
+            }
+            else if (year == 1) {
+            payload = {
+                'id' : id,
+                'fname' : fname,
+                'surname' : surname,
+                'nickname' : nickname,
+                'age' : age,
+                'sex' : sex,
+                'religion' : religion,
+                'branch' : branch,
+                'year' : year,
+                'contact' : contact,
+                'like' : {
+                    '1' : like[0],
+                    '2' : like[1],
+                    '3' : like[2],
+                    '4' : like[3],
+                    '5' : like[4]
+                },
+                'newuser': 0,
+                'point': 0,
+                'player': player,
+                'status' : status,
+                'gate': gate
+            }}
+            else{
+                payload = {
+                    'id' : id,
+                    'fname' : fname,
+                    'surname' : surname,
+                    'nickname' : nickname,
+                    'age' : age,
+                    'sex' : sex,
+                    'religion' : religion,
+                    'branch' : branch,
+                    'year' : year,
+                    'contact' : contact,
+                    'like' : {
+                        '1' : like[0],
+                        '2' : like[1],
+                        '3' : like[2],
+                        '4' : like[3],
+                        '5' : like[4]
+                    },
+                    'newuser': 0,
+                    'point': 0,
+                    'player': player,
+                    'status' : status,
+                    'gate': gate
+                }
 
-            // payload = {
-            //     'id' : id,
-            //     'fname' : fname,
-            //     'surname' : surname,
-            //     'nickname' : nickname,
-            //     'age' : age,
-            //     'sex' : sex,
-            //     'religion' : religion,
-            //     'branch' : branch,
-            //     'year' : year,
-            //     'contact' : contact,
-            //     'like' : {
-            //         '1' : like[0],
-            //         '2' : like[1],
-            //         '3' : like[2],
-            //         '4' : like[3],
-            //         '5' : like[4]
-            //     },
-            //     'player': player,
-            //     'status' : status
-            // };
+            }
+        }
         //Check that we have this uid in db or not?
         if (haveUID.exists){
         // upload payload that have all info to db
@@ -122,14 +166,16 @@ profileController.put('/create', async (req, res) => {
         }); 
         return ;
 
-    } catch (e) {
-        log.info(e);
-        res.status(500).send({
-            'statusCode': '500',
-            'statusText': 'Internal Server Error',
-            'error': true
-        });
-    } return;
+    //} 
+    // catch (e) {
+    //     log.info(e);
+    //     res.status(500).send({
+    //         'statusCode': '500',
+    //         'statusText': 'Internal Server Error',
+    //         'error': true
+    //     });
+    // } 
+    return;
 });
 
 profileController.put('/edit', async (req, res) => {
@@ -300,8 +346,10 @@ profileController.put('/scaned', async (req, res) => {
 
 });
 
+// แก้!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 profileController.put('/answer', async (req, res) => {
     try {
+        
         // นายต้องส่งกลับมาเป็น object นะ เเล้วก็บอกด้วยว่าอันไหนคือคำตอบของข้อไหน
         // let answer = {
         // first : 1-5 (number)
@@ -530,4 +578,16 @@ profileController.put('/answer', async (req, res) => {
 // });
 
 //exports this function to index.js
+async function isLoggedIn(req, res, next) {
+    const idToken = req.header('FIREBASE_AUTH_TOKEN');
+    let decodedIdToken;
+    try {
+      decodedIdToken = await authService.verifyIdToken(idToken);
+    } catch (error) {
+      next(error);
+      return;
+    }
+    req.user = decodedIdToken;
+    next();
+  }
 module.exports = profileController;

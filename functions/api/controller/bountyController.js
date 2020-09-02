@@ -10,21 +10,26 @@ bountyController.use(cors({ origin: true }));
 
 // This API is now in cron-job.You can find it in index.js
 // bountyController.post('/random', async(req, res) => {
-//     //Random 10 users to push in 'bounty' in db
+// //     //Random 10 users to push in 'bounty' in db
 //     try {
 //         let userRef = await firestore.collection('users').get();
 //         let users = [];
-//         userRef.forEach(function (data) {
-//             let user = data.data();
-//             users.push(data.id);
+
+//         // forEach to .data() in each item in array users
+//         userRef.forEach(function (element) {
+//             let user = element.data();
+//             users.push(user.uid);
 //         });
+//         console.log(users);
 
 //         let bounty_id = [];
 //         for (let i = 0; i < 10; i++) {
 //             //random number between 0 - 9 for array[index]
-//             let x = Math.floor(Math.random() * users.length);
+//             let x = Math.floor(Math.random() * users.length); //math.random will return number between 0 -> 1
 //             bounty_id.push(users[x]);
+//             users.splice(x, 1);
 //         }
+//         console.log(bounty_id);
 
 //         // update ref of bounty to 'bounty' in db
 //         await firestore.collection('bounty').doc('list').set({
