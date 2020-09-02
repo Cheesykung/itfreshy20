@@ -7,16 +7,21 @@ const bunyan = require("bunyan");
 const e = require('express');
 const log = bunyan.createLogger({ name: "myapp" });
 const minify = require("express-minify");
+const { auth } = require('firebase-admin');
+
+const authService = auth();
+
 
 
 profileController.use(minify());
 profileController.use(cors({ origin: true }));
-profileController.put('/create', async (req, res) => {
+profileController.post('/create',isLoggedIn, async (req, res) => {
     //Create users profile
-    try {
+    // try {
+        console.log(req.user.uid)
         let batch = firestore.batch();
-        let uid = req.headers.uid; //require front-end send uid to know where to update the info
-        let userRef = firestore.collection('users').doc(uid);
+        let uid = req.user.uid; //require front-end send uid to know where to update the info
+        let userRef = firestore.collection('users').doc(req.user.uid);
         let haveUID = await userRef.get();
         let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like ,player} = req.body;
         
@@ -45,7 +50,8 @@ profileController.put('/create', async (req, res) => {
                 'contact' : contact,
                 'like' : null,
                 'player': player,
-                'status' : status
+                'status' : status,
+                'newuser': 0,
             }
         // } else {
         //     if (like.length != 5) {
@@ -122,14 +128,15 @@ profileController.put('/create', async (req, res) => {
         }); 
         return ;
 
-    } catch (e) {
-        log.info(e);
-        res.status(500).send({
-            'statusCode': '500',
-            'statusText': 'Internal Server Error',
-            'error': true
-        });
-    } return;
+    // } catch (e) {
+    //     log.info(e);
+    //     res.status(500).send({
+    //         'statusCode': '500',
+    //         'statusText': 'Internal Server Error',
+    //         'error': true
+    //     });
+    // } 
+    return;
 });
 
 profileController.put('/edit', async (req, res) => {
@@ -528,6 +535,17 @@ profileController.put('/answer', async (req, res) => {
 //         return ;
 //     }
 // });
-
+async function isLoggedIn(req, res, next) {
+    const idToken = req.header('FIREBASE_AUTH_TOKEN');
+    let decodedIdToken;
+    try {
+      decodedIdToken = await authService.verifyIdToken(idToken);
+    } catch (error) {
+      next(error);
+      return;
+    }
+    req.user = decodedIdToken;
+    next();
+  }
 //exports this function to index.js
 module.exports = profileController;
