@@ -18,8 +18,7 @@ const gender = () => import("../components/pages/callBackForm/gender.vue");
 const step1 = () => import("../components/pages/callBackForm/firstStep.vue");
 const step2 = () => import("../components/pages/callBackForm/secondStep.vue");
 const step3 = () => import("../components/pages/callBackForm/thStep.vue");
-const step4 = () => import("../components/pages/callBackForm/likesStep.vue");
-const step5 = () => import("../components/pages/callBackForm/lastStep.vue");
+const step4 = () => import("../components/pages/callBackForm/lastStep.vue");
 
 Vue.use(VueRouter);
 
@@ -95,16 +94,6 @@ const routes = [
       {
         path: "step4",
         component: step4,
-        name: "What you likes?",
-        meta: {
-          requiresAuth: true,
-          requiresFirstTime: true,
-          hideNavigation: true,
-        },
-      },
-      {
-        path: "step5",
-        component: step5,
         name: "Your Gate",
         meta: {
           requiresAuth: true,
@@ -151,7 +140,7 @@ const routes = [
         next();
       }
     },
-    children: [{ path: ":id", component: Profile, name: "Profile" }],
+    children: [{ path: ":id", component: Profile }],
   },
   {
     path: "/hunted",
@@ -198,6 +187,9 @@ const routes = [
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
+  scrollBehavior (to, from, savedPosition) {
+    return { x: 0, y: 0 };
+  },
   routes,
 });
 

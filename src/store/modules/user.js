@@ -8,6 +8,7 @@ import actions from "./AuthController";
 
 const state = () => ({
   profile: {},
+  baseProfile: {},
   status: Boolean,
   link: null,
   firstTime: localStorage.getItem("firstTime")
@@ -24,9 +25,6 @@ const getters = {
   },
   getProfile: (state) => {
     return state.profile;
-  },
-  getHuntedCount: (state) => {
-    return state.profile.count;
   },
   getYear: (state) => {
     return state.profile.year;

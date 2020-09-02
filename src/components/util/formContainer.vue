@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-primary-1000 bg-opacity-75 flex flex-col justify-center py-24 md:py-32 space-y-16 md:space-y-20 flex-wrap px-10 md:px-24 lg:mx-32 xl:mx-48"
+    class="bg-primary-1000 bg-opacity-75 flex flex-col justify-center py-20 md:py-32 space-y-16 md:space-y-20 flex-wrap px-10 md:px-24 lg:mx-32 xl:mx-48"
   >
     <slot name="content"></slot>
   </div>
@@ -23,6 +23,32 @@ export default {
 .base-input:focus {
   outline: 0;
   box-shadow: none;
+}
+
+input,
+select { 
+  transition: all ease .2s;
+ }
+
+select {
+  cursor: pointer;
+}
+
+input:focus,
+input:active,
+select:focus,
+select:active {
+  border-bottom: 1px solid rgb(60, 54, 173) !important;
+  box-shadow: 0 1px 0 0 rgb(60, 54, 173) !important;
+}
+
+input[type="radio"],
+label {
+  cursor: pointer;
+}
+
+input[type="radio"] {
+  fill: rgb(60, 54, 173) !important;
 }
 
 option {

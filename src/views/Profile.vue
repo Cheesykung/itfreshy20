@@ -4,15 +4,15 @@
       <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
-            :data-src="getProfile.photoURL + '?width=500'"
+            :data-src="getProfile.photoURL? getProfile.photoURL + '?width=500' : getProfile.pic + '?width=500'"
             class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
           />
           <div class="details space-y-2 items-center">
-            <h1 class="text-3xl text-primary-100 font-thin">{{ getProfile.displayName }}</h1>
+            <h1 class="text-3xl text-primary-100 font-thin">{{ getProfile.displayName ? getProfile.displayName : getProfile.name }}</h1>
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
             <i class="fas fa-map-marked-alt"></i>
-            <span>IT KMITL</span>
+            <span>IT KMITL{{ getProfile.branch ? ", " + getProfile.branch : '' }}{{ getProfile.year ? " ปี " + getProfile.year : '' }}</span>
           </div>
           <div class="like space-x-4">
             <i class="fas fa-pizza-slice text-gray-400"></i>
@@ -41,9 +41,10 @@
         <!--- Profile button --->
         <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8 py-6">
           <!-- <button
+            v-if="getProfile.uid"
             class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm animate-pulse"
           >ล่ารายชื่อเลย!</button>
-          <button class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm">สร้างลิงค์ใหม่</button> -->
+          <button v-if="getProfile.uid" class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm">สร้างลิงค์ใหม่</button> -->
           <h3 class="text-2xl animate-pulse text-primary-200 font-semibold">เตรียมออกล่าเร็วๆนี้!</h3>
         </div>
       </div>

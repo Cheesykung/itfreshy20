@@ -23,7 +23,10 @@
               />
             </span>
             <span class="space-y-3 flex flex-col">
-              <label for="religion" class="text-left text-primary-200 text-opacity-100">What's your religion?</label>
+              <label
+                for="religion"
+                class="text-left text-primary-200 text-opacity-100"
+              >What's your religion?</label>
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -46,7 +49,10 @@
               </select>
             </span>
             <span class="space-y-3 flex flex-col">
-              <label for="year" class="text-left text-primary-200 text-opacity-100">Your College Years</label>
+              <label
+                for="year"
+                class="text-left text-primary-200 text-opacity-100"
+              >Your College Years</label>
               <select
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 name="year"
@@ -86,6 +92,7 @@
               :class="loading ? 'animate-bounce' : ''"
             >
               <span class="bullet active" :class="!loading ? 'animate-bounce' : ''"></span>
+              <span class="bullet"></span>
               <span class="bullet"></span>
             </span>
             <span class="flex flex-row flex-no-wrap">
@@ -145,7 +152,7 @@ export default {
         this.firstStep.religion
       )
     ) {
-      alertify.notify("PLEASE FILLED OUT!", "warning", 3);
+      alertify.notify("PLEASE FILLED UP THE FORM!", "warning", 3);
       next(false);
     } else {
       next();
@@ -164,7 +171,7 @@ export default {
         )
       ) {
         this.loading = false;
-        alertify.notify("PLEASE FILLED OUT!", "warning", 3);
+        alertify.notify("PLEASE FILLED UP THE FORM!", "warning", 3);
       } else {
         if (this.checkLength()) {
           this.$store.dispatch("register/setFirstStep", this.firstStep);
@@ -174,7 +181,13 @@ export default {
       }
     },
     checkLength() {
-      if (this.firstStep.age.length !== 2 || !parseInt(this.firstStep.age)) {
+      let intAge = parseInt(this.firstStep.age);
+
+      if (
+        this.firstStep.age.length !== 2 ||
+        !intAge ||
+        intAge > 26 || intAge < 17
+      ) {
         alertify.notify("กรอกอายุที่ถูกต้อง", "error", 3);
         return false;
       } else {

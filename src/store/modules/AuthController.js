@@ -55,14 +55,14 @@ const actions = {
     });
   },
 
-  sendToken(context) {
+  sendToken({commit, dispatch}) {
     return new Promise((resolve, reject) => {
       firebase
         .auth()
         .currentUser.getIdToken()
         .then((res) => {
           axios
-            .get(API + "test/fire", {
+            .get(API + "/test/fire", {
               headers: {
                 "FIREBASE_AUTH_TOKEN": res,
               },
@@ -70,14 +70,22 @@ const actions = {
             .then((result) => {
               localStorage.setItem(
                 "firstTime",
-                result.data.data === "newuser" ? true : false
+                result.data.data === "pass" ? true : false
               );
 
-              context.dispatch(
+              dispatch(
                 "setNewUser",
-                result.data.data === "newuser" ? "true" : "false",
+                result.data.data === "pass" ? "true" : "false",
                 { root: false }
               );
+
+              if(result.data.data == "newuser")
+                {
+                  dispatch("setAuth", firebase.auth().currentUser.providerData[0], { root: false });
+                } else {
+                  dispatch("setAuth", result.data.user, { root: false })
+                }
+              console.log(result.data);
 
               resolve(result);
             })
@@ -86,6 +94,10 @@ const actions = {
             })
         });
     });
+  },
+
+  setProfile(context, payload) {
+    context.commit("setProfile", payload , { root: false })
   },
 
   async signOut(context) {

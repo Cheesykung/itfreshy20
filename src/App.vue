@@ -6,11 +6,13 @@
         <router-view :key="$route.fullPath" />
       </keep-alive>
     </transition>
+    <div v-if="!online" @change="alertThis()"></div>
   </div>
 </template>
 <script>
 //import Footer from "@/components/util/Footer.vue";
 import Nav from "@/components/util/Nav.vue";
+import alertify from "alertifyjs";
 
 export default {
   data() {
@@ -18,17 +20,42 @@ export default {
       showNav: true,
       bgObj: {
         src: "/img/bg.jpg"
-      }
+      },
+      online: navigator.onLine,
+      showOnline: false
     };
+  },
+  mounted() {
+    window.addEventListener("online", this.updateNwStatus);
+    window.addEventListener("offline", this.updateNwStatus);
+  },
+  beforeDestroy() {
+    window.removeEventListener("online", this.updateNwStatus);
+    window.removeEventListener("offline", this.updateNwStatus);
   },
   watch: {
     "$route.meta.hideNavigation": function(hideNavigation) {
       this.showNav = !hideNavigation;
+    },
+    online(v) {
+      if (v) {
+        this.showOnline = true;
+        setTimeout(() => {
+          this.showOnline = false;
+        }, 1000);
+      }
     }
   },
   methods: {
     setNav(status) {
       this.showNav = status;
+    },
+    updateNwStatus(e) {
+      const { type } = e;
+      this.online = type === "online";
+    },
+    alertThis() {
+      return alertify.notify("ขาดการเชื่อมต่อ, Network Error", "error", 3);
     }
   },
 
@@ -47,7 +74,7 @@ body {
 }
 
 #app {
-  font-family: Roboto, Helvetica, Arial, Prompt;
+  font-family: Helvetica, Arial, Prompt;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

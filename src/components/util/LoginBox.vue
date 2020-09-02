@@ -43,7 +43,6 @@ export default {
         .then(res => {
           if (res) {
             this.loading = true;
-            this.$router.go();
           }
         })
         .catch(e => {

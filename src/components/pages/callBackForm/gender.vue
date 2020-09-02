@@ -67,6 +67,7 @@
         <span class="flex flex-row flex-no-wrap space-x-3 animate-bounce">
           <span class="bullet"></span>
           <span class="bullet"></span>
+          <span class="bullet"></span>
         </span>
       </div>
       <!--- End step zone --->
