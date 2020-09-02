@@ -25,23 +25,19 @@ profileController.use(function (req, res, next) {
   });
 profileController.use(minify());
 profileController.use(cors({ origin: true }));
-profileController.post('/create',isLoggedIn, async (req, res) => {
+profileController.put('/create', isLoggedIn, async (req, res) => {
     //Create users profile
     //try {
         let batch = firestore.batch();
         let uid = req.user.uid; //require front-end send uid to know where to update the info
-        let userRef = firestore.collection('users').doc(req.user.uid);
+        let userRef = firestore.collection('users').doc(uid);
         let haveUID = await userRef.get();
         let {id, fname, surname, nickname, age, sex, religion, branch, year, contact, like ,player,gate} = req.body;
         
         let status;
         if (year == 1){
             status = "pirate"
-        }
-        else if(year == 2){
-            status = "captain"
-        }
-        else{
+        } else {
             status = "captain"
         }
 
@@ -350,8 +346,10 @@ profileController.put('/scaned', async (req, res) => {
 
 });
 
+// แก้!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 profileController.put('/answer', async (req, res) => {
     try {
+        
         // นายต้องส่งกลับมาเป็น object นะ เเล้วก็บอกด้วยว่าอันไหนคือคำตอบของข้อไหน
         // let answer = {
         // first : 1-5 (number)
