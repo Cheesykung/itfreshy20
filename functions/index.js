@@ -28,7 +28,7 @@ exports.scheduledFunction = functions.pubsub.schedule("* * * * *").timeZone('Asi
     // forEach to .data() in each item in array users
     userRef.forEach(function (data) {
         let user = data.data();
-        users.push(data.id);
+        users.push(data.uid);
     });
 
     let bounty_id = [];

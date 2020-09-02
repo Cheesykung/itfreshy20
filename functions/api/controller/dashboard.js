@@ -6,12 +6,15 @@ const path = require("path");
 
 
 
+
 const dashboardController = express();
 
 dashboardController.use(cors({ origin: true }));
 
 dashboardController.set("views", path.join(__dirname, "views"));
 dashboardController.set("view engine", "ejs");
+
+
 
 dashboardController.get('/test', async (req, res) => {
     try{
@@ -26,15 +29,17 @@ dashboardController.get('/test', async (req, res) => {
         //     scan: snap.data().allscan
         // });
 
+
         const observer = firestore.collection('allstats').onSnapshot(querySnapshot => {
             querySnapshot.docChanges().forEach(change => {
-            var data = change.doc.data();
+            let data = change.doc.data();
+            //console.log(data);
             res.render('dashboard', {user:data});
-            console.log(data);
-            res.end();
-            
+
             });
-    });
+        });
+        return;
+
     }catch(e){
         res.status(500).send({
             'statusCode': '500',
@@ -45,6 +50,7 @@ dashboardController.get('/test', async (req, res) => {
     }
 
 })
+
 
 
 module.exports = dashboardController;

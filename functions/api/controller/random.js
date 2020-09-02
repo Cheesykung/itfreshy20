@@ -164,4 +164,56 @@ randomController.get('/random', async (req, res) => {
     }
 })
 
+randomController.post('/scan/:id',async (req, res) => {
+    try {
+        //เราไปสแกนเค้า
+        const scanID = req.params.id;
+        const userUID = req.body.uid;
+        const userRef = firestore.collection('users');
+        const linkRef = firestore.collection('links');
+        const scanRef = firestore.collection('scans');
+        let findLink = await linkRef.where('link', "==", scanID).get();
+        if (!findLink.empty) {
+            await findLink.forEach( doc => {
+                let linkUID = doc.data().uid;
+                let linkYear = doc.data().year;
+                let linkTime = doc.data().time;
+                if (linkTime <= 0) {
+                    res.send('time out link');
+                } else {
+                    scanRef.doc(userUID).get().then(async scanUserData => {
+                        //หา link ใน collection scans ตรวจว่าสแกนยัง
+                        if (scanUserData.data().scan.indexOf(linkUID) != '-1') {
+                            console.log('have scan');
+                        } else {
+                            console.log('mai mee scan');
+                            //year 1 scan year2 or year 2 scan year1 return
+                            //ถ้ามีใน bounty =>
+                            //1 ให้ res name, year, pic, point ของ linnkUID
+                            //2 ให้เรา update point + 6 และ count + 1 ให้ตัวเอง
+
+                            //else ถ้าไม่มีใน bounty =>
+                            //1 ให้ res name, year, pic, point ของ linnkUID
+                            //2 ให้เรา update point + 3 และ count + 1 ให้ตัวเอง
+
+                            //then time - 1 ของ linkUID
+                            //อัพเดทใน scan ของตัวเอง เพิ่ม uid ที่เราไปสแกน
+                            // scan: admin.firestore.FieldValue.arrayUnion(
+                            //     linkdata.data().uid
+                            // )
+                        }
+                    })
+                }
+            })
+        } else {
+            res.send('mai mee naa jaaaa')
+        }
+
+        console.log(scanID)
+        res.status(200).send('ok jaaaaa');
+    } catch(e) {
+        res.status(500).send('mai dai jaaaa')
+    }
+})
+
 module.exports = randomController;
