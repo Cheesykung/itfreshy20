@@ -25,7 +25,7 @@ profileController.use(function (req, res, next) {
   });
 profileController.use(minify());
 profileController.use(cors({ origin: true }));
-profileController.put('/create', isLoggedIn, async (req, res) => {
+profileController.post('/create', isLoggedIn, async (req, res) => {
     //Create users profile
     //try {
         let batch = firestore.batch();
