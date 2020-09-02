@@ -6,6 +6,7 @@ const path = require("path");
 
 
 
+
 const dashboardController = express();
 
 dashboardController.use(cors({ origin: true }));
@@ -28,6 +29,7 @@ dashboardController.get('/test', async (req, res) => {
             scan: snap.data().allscan
         });
 
+
         const observer = firestore.collection('allstats').onSnapshot(querySnapshot => {
             querySnapshot.docChanges().forEach(change => {
             var data = change.doc.data();
@@ -37,7 +39,9 @@ dashboardController.get('/test', async (req, res) => {
             console.log(data);
             // res.end();
             });
-    });
+        });
+        return;
+
     }catch(e){
         res.status(500).send({
             'statusCode': '500',

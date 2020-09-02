@@ -1,8 +1,17 @@
 <template>
   <transition name="animated-form">
-    <router-view></router-view> 
+    <keep-alive max="6">
+      <router-view :key="$route.fullPath" />
+    </keep-alive>
   </transition>
 </template>
+<script>
+export default {
+  data() {
+    return {};
+  }
+};
+</script>
 <style scoped>
 .animated-form-enter-active {
   transition: all 0.3s ease;
@@ -24,7 +33,6 @@
   );
 }
 
-
 * >>> .bullet {
   @apply w-2 h-2 bg-primary-700 block rounded-full;
 }
@@ -36,5 +44,4 @@
 * >>> ::placeholder {
   @apply text-primary-400 opacity-75 text-sm;
 }
-
 </style>
