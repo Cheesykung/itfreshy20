@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import router from "../../router";
 
-const API = "http://localhost:5001/itfreshy2020/us-central1/test/";
+const API = "https://us-central1-itfreshy2020.cloudfunctions.net/";
 
 const actions = {
   linkActions({ commit }, payload) {
@@ -62,7 +62,7 @@ const actions = {
         .currentUser.getIdToken()
         .then((res) => {
           axios
-            .get(API + "fire", {
+            .get(API + "test/fire", {
               headers: {
                 "FIREBASE_AUTH_TOKEN": res,
               },
