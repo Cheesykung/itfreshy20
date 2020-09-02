@@ -11,10 +11,7 @@
         <template #content>
           <div class="flex flex-col flex-wrap space-y-8">
             <span class="space-y-3 flex flex-col">
-              <label
-                for="age"
-                class="text-left text-gray-100 text-opacity-100"
-              >Age {{ firstStep.age ? ': ' + firstStep.age + ' Years old' : "" }}</label>
+              <label for="age" class="text-left text-primary-200 text-opacity-100">How old are you?</label>
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -26,10 +23,7 @@
               />
             </span>
             <span class="space-y-3 flex flex-col">
-              <label
-                for="religion"
-                class="text-left text-gray-100 text-opacity-100"
-              >Religion {{ firstStep.religion ? ': ' + firstStep.religion : "" }}</label>
+              <label for="religion" class="text-left text-primary-200 text-opacity-100">What's your religion?</label>
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -40,10 +34,7 @@
               />
             </span>
             <span class="space-y-3 flex flex-col">
-              <label
-                for="branch"
-                class="text-left text-gray-100 text-opacity-100"
-              >Branch {{ firstStep.branch ? ': ' + firstStep.branch : "" }}</label>
+              <label for="branch" class="text-left text-primary-200 text-opacity-100">Your Branch</label>
               <select
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 name="branch"
@@ -55,10 +46,7 @@
               </select>
             </span>
             <span class="space-y-3 flex flex-col">
-              <label
-                for="year"
-                class="text-left text-gray-100 text-opacity-100"
-              >Year {{ firstStep.year ? ': ' + firstStep.year : "" }}</label>
+              <label for="year" class="text-left text-primary-200 text-opacity-100">Your College Years</label>
               <select
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 name="year"
@@ -70,7 +58,7 @@
               </select>
             </span>
             <span class="space-y-3 flex flex-col">
-              <label for="contact" class="text-left text-gray-100 text-opacity-100">Contact</label>
+              <label for="contact" class="text-left text-primary-200 text-opacity-100">Contact</label>
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -87,15 +75,26 @@
               type="submit"
               class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               @click="nextStep()"
+              v-if="!loading"
             >
               next step
               <ion-icon name="chevron-forward-outline"></ion-icon>
             </button>
-            <span class="flex flex-row flex-no-wrap space-x-3">
-              <span class="bullet active"></span>
+            <span class="loading" v-if="loading"></span>
+            <span
+              class="flex flex-row flex-no-wrap space-x-3"
+              :class="loading ? 'animate-bounce' : ''"
+            >
+              <span class="bullet active" :class="!loading ? 'animate-bounce' : ''"></span>
               <span class="bullet"></span>
+            </span>
+            <span class="flex flex-row flex-no-wrap">
+              <p
+                class="text-primary-300 underline capitalize cursor-pointer text-sm"
+                @click="$router.go(-1)"
+              >Back</p>
               <!-- <span class="bullet"></span>
-              <span class="bullet"></span> -->
+              <span class="bullet"></span>-->
             </span>
           </div>
           <!--- End step zone --->
@@ -124,7 +123,8 @@ export default {
         contact: null
       },
       branch: ["IT", "DATA", "BIT"],
-      year: [1, 2, 3, 4]
+      year: [1, 2, 3, 4],
+      loading: false
     };
   },
   beforeRouteEnter(to, from, next) {
@@ -153,6 +153,7 @@ export default {
   },
   methods: {
     nextStep() {
+      this.loading = true;
       if (
         !(
           this.firstStep.branch &&
@@ -162,17 +163,16 @@ export default {
           this.firstStep.religion
         )
       ) {
+        this.loading = false;
         alertify.notify("PLEASE FILLED OUT!", "warning", 3);
       } else {
-        this.checkLength;
-        if (this.checkLength) {
+        if (this.checkLength()) {
           this.$store.dispatch("register/setFirstStep", this.firstStep);
           this.$router.push({ name: "Step 2" });
         }
+        this.loading = false;
       }
-    }
-  },
-  computed: {
+    },
     checkLength() {
       if (this.firstStep.age.length !== 2 || !parseInt(this.firstStep.age)) {
         alertify.notify("กรอกอายุที่ถูกต้อง", "error", 3);
@@ -181,7 +181,8 @@ export default {
         return true;
       }
     }
-  }
+  },
+  computed: {}
 };
 </script>
 

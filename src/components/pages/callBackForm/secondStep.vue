@@ -11,7 +11,7 @@
         <template #content>
           <div class="flex flex-col flex-wrap space-y-8">
             <span class="space-y-3 flex flex-col">
-              <p class="text-left text-gray-100 text-opacity-100">First name</p>
+              <p class="text-left text-primary-200 text-opacity-100">First name</p>
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -21,7 +21,7 @@
               />
             </span>
             <span class="space-y-3 flex flex-col">
-              <p class="text-left text-gray-100 text-opacity-100">Surname</p>
+              <p class="text-left text-primary-200 text-opacity-100">Surname</p>
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -30,7 +30,7 @@
               />
             </span>
             <span class="space-y-3 flex flex-col">
-              <p class="text-left text-gray-100 text-opacity-100">Nickname</p>
+              <p class="text-left text-primary-200 text-opacity-100">Nickname</p>
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -39,7 +39,7 @@
               />
             </span>
             <span class="space-y-3 flex flex-col">
-              <p class="text-left text-gray-100 text-opacity-100">Student ID</p>
+              <p class="text-left text-primary-200 text-opacity-100">Student ID</p>
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -48,28 +48,28 @@
               />
             </span>
             <span class="space-y-3 flex flex-col" v-if="getYear === '2'">
-              <p class="text-left text-gray-100 text-opacity-100">คุณต้องการมีน้องรหัสใช่หรือไม่</p>
+              <p class="text-left text-primary-200 text-opacity-100">คุณต้องการมีน้องรหัสใช่หรือไม่</p>
               <div
-                class="flex flex-row space-x-2 text-gray-100 py-2 items-center justify-start flex-no-wrap content-center"
+                class="flex flex-row space-x-2 text-primary-250 py-2 items-center justify-start flex-no-wrap content-center"
               >
-                <label for="yes">ใช่</label>
                 <input
                   type="radio"
                   id="yes"
                   name="confirm"
                   value="yes"
                   v-model="confirm"
-                  class="px-2"
+                  class="px-1"
                 />
-                <label for="no">ไม่ใช่</label>
+                <label for="yes" class="mx-1">ใช่</label>
                 <input
                   type="radio"
                   id="no"
                   name="confirm"
                   value="no"
                   v-model="confirm"
-                  class="px-2"
+                  class="px-1"
                 />
+                <label for="no" class="mx-1">ไม่ใช่</label>
               </div>
             </span>
           </div>
@@ -79,13 +79,18 @@
               type="submit"
               class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               @click="nextStep()"
+              v-if="!loading"
             >
               go!
               <ion-icon name="chevron-forward-outline"></ion-icon>
             </button>
-            <span class="flex flex-row flex-no-wrap space-x-3">
+            <span class="loading" v-if="loading"></span>
+            <span class="flex flex-row flex-no-wrap space-x-3"  :class="loading ? 'animate-bounce' : ''">
               <span class="bullet"></span>
-              <span class="bullet active"></span>
+              <span class="bullet active" :class="!loading ? 'animate-bounce' : ''"></span>
+            </span>
+            <span class="flex flex-row flex-no-wrap ">
+              <p class=" text-primary-300 underline cursor-pointer text-sm" @click="$router.go(-1)">BACK</p>
             </span>
           </div>
           <!--- End step zone --->
@@ -114,7 +119,8 @@ export default {
         id: "",
         player: ""
       },
-      confirm: ""
+      confirm: "",
+      loading: false
     };
   },
   beforeRouteEnter(to, from, next) {
@@ -143,6 +149,7 @@ export default {
   methods: {
     ...mapActions("register", ["sendForm"]),
     nextStep() {
+      this.loading = true;
       if (
         !(
           this.secondStep.firstName &&
@@ -152,9 +159,9 @@ export default {
         )
       ) {
         alertify.notify("PLEASE FILLED OUT!", "warning", 3);
+        this.loading = false;
       } else {
-        this.checkStdId;
-        if (this.checkStdId) {
+        if (this.checkStdId()) {
           if (parseInt(this.getYear) === 2 && this.confirm) {
             if (this.confirm === "yes") {
               this.secondStep.player = 1;
@@ -162,18 +169,29 @@ export default {
               this.secondStep.player = 0;
             } else if (!this.confirm) {
               alertify.notify("PLEASE MAKE A CHOICE!", "warning", 3);
+              this.loading = false
               return;
             }
           }
 
           this.$store.dispatch("register/setSecond", this.secondStep);
-          this.sendForm().then((res) => { console.log(res) })
-        }
+          this.sendForm()
+            .then(res => {
+              if (res) {
+                console.log(res);
+                alertify.notify("สำเร็จ!", "success", 3);
+              }
+            })
+            .catch(e => {
+              console.log(e);
+              alertify.notify("พบข้อผิดพลาด :(", "error", 3);
+              this.loading = false;
+            });
+        } else {
+            this.loading = false;
+          }
       }
-    }
-  },
-  computed: {
-    ...mapGetters("register", ["getYear"]),
+    },
     checkStdId() {
       if (this.secondStep.id.length !== 8) {
         alertify.notify("รหัสนักศึกษาต้องมี 8 หลัก", "warning", 3);
@@ -194,6 +212,29 @@ export default {
         }
       }
     }
+  },
+  computed: {
+    ...mapGetters("register", ["getYear"]),
+    // checkStdId() {
+    //   if (this.secondStep.id.length !== 8) {
+    //     alertify.notify("รหัสนักศึกษาต้องมี 8 หลัก", "warning", 3);
+    //     return false;
+    //   } else {
+    //     //62070102
+    //     let id = parseInt(this.secondStep.id);
+    //     let idScope = id % 1000000;
+    //     if (Math.floor((idScope / 1000) % 10000) !== 70) {
+    //       alertify.notify(
+    //         "กรุณากรอกรหัสนักศึกษาของคณะไอทีเท่านั้น!",
+    //         "error",
+    //         3
+    //       );
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   }
+    // }
   }
 };
 </script>

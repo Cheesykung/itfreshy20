@@ -5,7 +5,7 @@ import "firebase/auth";
 //import { reject } from "core-js/fn/promise";
 //import { reject } from "core-js/fn/promise";
 
-const API = "https://us-central1-itfreshy2020.cloudfunctions.net/";
+const API = "https://us-central1-itfreshy2020.cloudfunctions.net";
 
 const state = () => ({
   profileField: {
@@ -99,7 +99,6 @@ const actions = {
   },
 
   sendForm({ commit, getters, dispatch }) {
-    //let form = new FormData();
     let data = new Array();
 
     if (parseInt(getters.getProfile.year) !== 2) {
@@ -113,8 +112,9 @@ const actions = {
         religion: getters.getProfile.religion,
         branch: getters.getProfile.branch,
         year: getters.getProfile.year,
+       // player: null,
         contact: getters.getProfile.contact,
-        like: null,
+        like: [null, null, null, null, null],
       };
     } else {
       data = {
@@ -129,36 +129,9 @@ const actions = {
         year: getters.getProfile.year,
         contact: getters.getProfile.contact,
         player: getters.getProfile.player,
-        like: null,
+        like: [null, null, null, null, null],
       };
     }
-
-    // if (parseInt(getters.getProfile.year) !== 2) {
-    //   form.append("id", getters.getProfile.stdId);
-    //   form.append("fname", getters.getProfile.firstName);
-    //   form.append("surname", getters.getProfile.surname);
-    //   form.append("nickname", getters.getProfile.nickname);
-    //   form.append("age", getters.getProfile.age);
-    //   form.append("sex", getters.getProfile.gender);
-    //   form.append("religion", getters.getProfile.religion);
-    //   form.append("branch", getters.getProfile.branch);
-    //   form.append("year", getters.getProfile.year);
-    //   form.append("contact", getters.getProfile.contact);
-    //   form.append("like", null);
-    // } else {
-    //   form.append("id", getters.getProfile.stdId);
-    //   form.append("fname", getters.getProfile.firstName);
-    //   form.append("surname", getters.getProfile.surname);
-    //   form.append("nickname", getters.getProfile.nickname);
-    //   form.append("age", getters.getProfile.age);
-    //   form.append("sex", getters.getProfile.gender);
-    //   form.append("religion", getters.getProfile.religion);
-    //   form.append("branch", getters.getProfile.branch);
-    //   form.append("year", getters.getProfile.year);
-    //   form.append("contact", getters.getProfile.contact);
-    //   form.append("player", getters.getProfile.player);
-    //   form.append("like", null);
-    // }
 
     return new Promise((resolve, reject) => {
       try {
@@ -167,11 +140,10 @@ const actions = {
           .currentUser.getIdToken()
           .then((res) => {
             axios
-              .post("/profile/create", data, {
+              .post(API + "/profile/create", data, {
                 headers: {
-                  'uid': firebase.auth().currentUser.uid,
-                  'FIREBASE_AUTH_TOKEN': res,
-                  'Content-Type': 'application/json'
+                  'uid': firebase.auth().currentUser.uid
+                  
                 },
               })
               .then((result) => {

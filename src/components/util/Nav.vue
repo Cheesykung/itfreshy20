@@ -51,7 +51,7 @@
           class="capitalize transform duration-150 delay-50 hover:scale-125"
         >Sign out</li>
       </ul>
-      <div class="overlay bg-primary-1000 bg-opacity-75"></div>
+      <div class="overlay bg-primary-1000 bg-opacity-75" @click="hidden = true"></div>
     </aside>
   </section>
 </template>
