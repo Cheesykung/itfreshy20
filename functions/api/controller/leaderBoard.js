@@ -16,7 +16,7 @@ ldrBoardController.post('/ranking', async (req, res) => {
         console.log(haveUID.exists)
 
         if (haveUID.exists) {
-            let snapshot = await userRef.orderBy('count', 'desc').get(); //sort users
+            let snapshot = await userRef.orderBy('point', 'desc').get(); //sort users
             let arrayScoreY1 = []; // Create array to store the sequence
             let arrayScoreY2 = []; //year2
             //console.log(snapshot)
@@ -61,7 +61,9 @@ ldrBoardController.post('/ranking', async (req, res) => {
             // Create data for the response.
             let rankingY1 = setRanking(arrayScoreY1, indexY1);
             console.log(rankingY1)
+
             let rankingY2 = setRanking(arrayScoreY2, indexY2);
+            console.log(indexY2)
             let rankMe = {};
             if (year == 1) {
                 rankMe = {
@@ -71,6 +73,7 @@ ldrBoardController.post('/ranking', async (req, res) => {
                 };
             }
             else if (year == 2) {
+                console.log('pass')
                 rankMe = {
                     "name": arrayScoreY2[indexY2].name,
                     "point": arrayScoreY2[indexY2].point,
@@ -86,6 +89,8 @@ ldrBoardController.post('/ranking', async (req, res) => {
                     };
                 });
             }
+
+            //console.log('rankeme-->'+rankMe)
 
             res.status(200).send({
                     'year1': rankingY1,
@@ -124,7 +129,6 @@ function setRanking(array, index) {
             }
         }
         else {
-            console.log(i);
             data["rank"+(i+1)] = (i < array.length) ? {
                 "name": array[i].name,
                 "point": array[i].point,
