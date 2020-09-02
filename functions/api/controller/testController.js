@@ -224,7 +224,7 @@ testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
       }
       findlink.forEach((linkdata) => {
         checker = linkdata.data().uid;
-        checkyear = link.data().year;
+        checkyear = linkdata.data().year;
         if (linkdata.data().time <= 0) {
           res.send("time out link");
           return;

@@ -172,6 +172,7 @@ randomController.post('/scan/:id',async (req, res) => {
         const userRef = firestore.collection('users');
         const linkRef = firestore.collection('links');
         const scanRef = firestore.collection('scans');
+        let test = scanRef.doc(userUID).get()
         let findLink = await linkRef.where('link', "==", scanID).get();
         if (!findLink.empty) {
             await findLink.forEach( doc => {
@@ -183,11 +184,15 @@ randomController.post('/scan/:id',async (req, res) => {
                 } else {
                     scanRef.doc(userUID).get().then(async scanUserData => {
                         //หา link ใน collection scans ตรวจว่าสแกนยัง
-                        if (scanUserData.data().scan.indexOf(linkUID) != '-1') {
+                        if (scanUserData.data().scan.indexOf(linkUID) != -1) {
                             console.log('have scan');
                         } else {
                             console.log('mai mee scan');
                             //year 1 scan year2 or year 2 scan year1 return
+                            const bounty = firestore.collection('bounty').doc('list')
+                            if (bounty.get().data().list.indexOf(linkUID) != -1) {
+
+                            }
                             //ถ้ามีใน bounty =>
                             //1 ให้ res name, year, pic, point ของ linnkUID
                             //2 ให้เรา update point + 6 และ count + 1 ให้ตัวเอง
