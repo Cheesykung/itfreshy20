@@ -4,23 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-</head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+      .centerText{
+        text-align: center;
+      }
+
+      #headSmall{
+        text-align: right;
+        margin-right: 5px;
+      }
+
+      .menuBox{
+        display: block;
+        padding: 0px;
+        float: left;
+        border: none;
+        width: 19%;
+        padding: 5px 0px;
+        margin-top: 20px;
+        color: white;
+        font-size: 4vw;
+        outline: none;
+        border: none;
+        text-decoration: none;
+        text-shadow: 1px 1px 20px black;
+        /* background: linear-gradient(180deg, rgba(132, 132, 132, 0%) 0%, rgba(132, 132, 132, 100%) 100%); */
+        background: rgba(132, 132, 132, 0.62);
+      }
+
+      .num{
+        font-size: 90px;
+      }
+
+      .nameFile{
+        font-size: 28px;
+        transform: translateY(-25px);
+      }
+
+      .lineT{
+        width: 20px;
+        height: 10px;
+        background-color: white;
+      }
+
+      body{
+        background-image: url(https://www.img.in.th/images/292b5b1be077185b9654c7a4635a3f0d.jpg);
+        color: white;
+        background-size: cover;
+        background-attachment: fixed;
+        
+      }
+
+      .detail{
+        top: 50%;
+        left: 50%;
+        position: fixed;
+        transform: translate(-50%, -50%);
+      }
+
+      @media screen and (min-width: 601px) {
+          div.menuBox {
+          font-size: 30px;
+        }
+        div#headSmall {
+          font-size: 30px;
+        }
+      }
+
+      .tap{
+        margin: 20px;
+      }
+
+      .select{
+        background: rgba(0, 0, 0, 0%);
+      }
+
+    </style>
+  </head>
 <body>
+  <div id="headSmall">Visitor</div>
+  <div class="container">
+      <div class="centerText">
+        <div class="tap">
 
-    
-
-    <h2 id="test1">allvisitor: <%= user.allvisitor %></h2>
-    <h2>alluser: <%= user.alluser %></h2>
-    <h2>allgenerate: <%= user.allgenerate %></h2>
-    <h2>allbounty: <%= user.allbounty %></h2>
-    <h2>allscan: <%= user.allscan %></h2>
-
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
-
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-         https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-analytics.js"></script>
-
+        </div>
+        <h2>DASHBOARD</h2>
+      </div>
+      <div class="centerText">
+        <button class="menuBox select" id="visit" onclick="changeData('visit')">Visitor<br><%= visit %></button>
+        <button class="menuBox" id="user" onclick="changeData('user')">User<br><%= user %></button>
+        <button class="menuBox" id="scan" onclick="changeData('scan')">Scan<br><%= scan %></button>
+        <button class="menuBox" id="bounty" onclick="changeData('bounty')">Bounty<br><%= bounty %></button>
+        <button class="menuBox" id="gen" onclick="changeData('gen')">Qr<br><%= gen %></button>
+      </div>
+      <div class="detail">
+        <div class="num centerText" id="number"><%= visit %></div>
+        <div class="nameFile centerText" id="texter">Total Visitor</div>
+      </div>
+  </div>
+    <!-- <div class="fade" id="getVisit"><%= visit %></div>
+      <div class="fade" id="getUser"></div>
+      <div class="fade" id="getScan"></div>
+      <div class="fade" id="getBounty"></div>
+      <div class="fade" id="getGen"></div> -->
 </body>
+
+<script>
+  function changeData(topic){
+    var text = {"visit":"Visitors", "user":"Users", "scan":"Scans", "bounty":"Bounties", "gen":"Qr Codes"}
+    let menu = document.getElementsByClassName("menuBox");
+    for (i = 0; i < menu.length; i++)
+    {
+      menu[i].classList = "menuBox";
+    }
+    document.getElementById("texter").innerText = "Total "+text[topic];
+    document.getElementById("headSmall").innerText = text[topic];
+    document.getElementById(topic).classList += " select";
+  }
+</script>
+
+
+<script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-analytics.js"></script>
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyBNDNp-DItNaKY3MmrJzvi-pv5boYpZAxI",
+    authDomain: "itfreshy2020.firebaseapp.com",
+    databaseURL: "https://itfreshy2020.firebaseio.com",
+    projectId: "itfreshy2020",
+    storageBucket: "itfreshy2020.appspot.com",
+    messagingSenderId: "894830602574",
+    appId: "1:894830602574:web:d5a4c8ffeaafc212fd561f",
+    measurementId: "G-Y6ENHV2GTN"
+  };
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
 </html>

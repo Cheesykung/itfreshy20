@@ -14,28 +14,30 @@ dashboardController.use(cors({ origin: true }));
 dashboardController.set("views", path.join(__dirname, "views"));
 dashboardController.set("view engine", "ejs");
 
-
+// var listData;
 
 dashboardController.get('/test', async (req, res) => {
     try{
         let userRef = firestore.collection('allstats').doc('stat');
         let snap = await userRef.get();
 
-        // res.render('dashboard', {
-        //     visit: snap.data().allvisitor,
-        //     user: snap.data().alluser,
-        //     gen: snap.data().allgenerate,
-        //     bounty: snap.data().allbounty,
-        //     scan: snap.data().allscan
-        // });
+        res.render('dashboard', {
+            visit: snap.data().allvisitor,
+            user: snap.data().alluser,
+            gen: snap.data().allgenerate,
+            bounty: snap.data().allbounty,
+            scan: snap.data().allscan
+        });
 
 
         const observer = firestore.collection('allstats').onSnapshot(querySnapshot => {
             querySnapshot.docChanges().forEach(change => {
-            let data = change.doc.data();
-            //console.log(data);
-            res.render('dashboard', {user:data});
-
+            var data = change.doc.data();
+            // res.render('dashboard', {user:data});
+            // changeData();
+            // listData = data;
+            console.log(data);
+            // res.end();
             });
         });
         return;
@@ -48,9 +50,6 @@ dashboardController.get('/test', async (req, res) => {
             'message': 'FUCTION NOT FOUND'
         });
     }
-
 })
-
-
 
 module.exports = dashboardController;
