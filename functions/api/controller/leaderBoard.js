@@ -3,11 +3,31 @@ const express = require('express');
 const admin = require('../config/admin');
 const firestore = admin.firestore();
 const ldrBoardController = express();
+const bunyan = require("bunyan");
+const log = bunyan.createLogger({ name: "myapp" });
+const minify = require("express-minify");
+const { auth } = require('firebase-admin');
+const authService = auth();
 
+ldrBoardController.use(function (req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+    );
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "X-Requested-With,Content-Type,Authorization"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    next();
+});
+
+ldrBoardController.use(minify());
 ldrBoardController.use(cors({ origin: true }));
-ldrBoardController.post('/ranking', async (req, res) => {
+ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
     try {
-        const uid = req.body.uid;
+        const uid = req.user.uid;
         const year = parseInt(req.body.year);
 
         const ranksRef = await firestore.collection('ranks');
@@ -141,6 +161,19 @@ function setRanking(array, index) {
         }
     }
     return data;
+}
+
+async function isLoggedIn(req, res, next) {
+    const idToken = req.header('FIREBASE_AUTH_TOKEN');
+    let decodedIdToken;
+    try {
+        decodedIdToken = await authService.verifyIdToken(idToken);
+    } catch (error) {
+        next(error);
+        return;
+    }
+    req.user = decodedIdToken;
+    next();
 }
 
 module.exports = ldrBoardController;
