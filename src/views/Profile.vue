@@ -15,10 +15,14 @@
             <span>IT KMITL{{ getProfile.branch ? ", " + getProfile.branch : '' }}{{ getProfile.year ? " ปี " + getProfile.year : '' }}</span>
           </div>
           <div class="like space-x-4">
-            <i class="fas fa-pizza-slice text-gray-400" v-if="getProfile.gate !== null"></i>
-            <i class="fas fa-football-ball text-gray-400" v-if="getProfile.gate !== null"></i>
-            <i class="fab fa-spotify text-gray-400" v-if="getProfile.gate !== null"></i>
-            <i class="fas fa-film text-gray-400" v-if="getProfile.gate !== null"></i>
+            <i class="fas fa-pizza-slice text-gray-400" v-if="getProfile.gate === '' || getProfile.year !== '1'"></i>
+            <i class="fas fa-football-ball text-gray-400" v-if="getProfile.gate === '' || getProfile.year !== '1'"></i>
+            <i class="fab fa-spotify text-gray-400" v-if="getProfile.gate === '' || getProfile.year !== '1'"></i>
+            <i class="fas fa-film text-gray-400" v-if="getProfile.gate === '' || getProfile.year !== '1'"></i>
+            <span v-if="!getProfile.gate === ''" class="flex flex-row space-x-4 justify-center items-center content-center text-primary-200">
+              <img class="object-cover w-full" :data-src="gateInfo[0].src">
+              <p>{{ getProfile.status }}</p>
+            </span>
           </div>
         </div>
         <!--- Profile Stats --->
@@ -58,12 +62,16 @@ import { mapGetters } from "vuex";
 import axios from "axios";
 import alertify from "alertifyjs";
 import Cookies from "js-cookie";
+import gate from "../store/modules/gateModule";
+import store from "../store"
 
 export default {
   data() {
     return {};
   },
-  mounted() {},
+  mounted() {
+    this.gatePic();
+  },
   beforeRouteEnter(to, from, next) {
     next();
   },
@@ -98,6 +106,11 @@ export default {
     },
     logout() {
       this.$store.dispatch("user/signOut");
+    },
+    gatePic() {
+      this.gateInfo = gate.filter(item => {
+        return item.name === store.getters["user/getGate"];
+      });
     }
   },
   computed: {
