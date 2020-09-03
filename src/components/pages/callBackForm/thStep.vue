@@ -30,7 +30,7 @@
           <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
             <button
               type="submit"
-              class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+              class="btn bg-primary hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               @click="submit()"
               v-if="!loading"
             >
@@ -49,7 +49,7 @@
             <span class="flex flex-row flex-no-wrap">
               <p
                 class="text-primary-300 underline cursor-pointer text-sm"
-                @click="$router.go(-1)"
+                @click="$router.push({ path: prevRoute.path })"
               >BACK</p>
             </span>
           </div>
@@ -74,10 +74,14 @@ export default {
   data() {
     return {
       likes: new Array(5),
-      loading: false
+      loading: false,
+      prevRoute: null
     };
   },
   beforeRouteEnter(to, from, next) {
+     next(vm => {
+      vm.prevRoute = from;
+    });
     if (
       !store.getters["register/getSecondStep"] &&
       store.getters["register/getYear"] === 3 &&
@@ -113,8 +117,10 @@ export default {
           this.sendForm()
             .then(res => {
               this.loading = false;
+              alertify.notify("สำเร็จ!", "success", 3);
               if (res) {
                 this.sendToken().then((res) => {
+                  localStorage.setItem("firstTime", "false");
                   this.$router.push({ path: "/profile" });
                 })
               }

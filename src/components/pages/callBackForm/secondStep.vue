@@ -77,11 +77,11 @@
           <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
             <button
               type="submit"
-              class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+              class="btn bg-primary hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               @click="nextStep()"
               v-if="!loading"
             >
-             {{ getYear !== 1 && getYear !== 2 ? "Let's Go!" : 'Next Step'}}
+              {{ getYear !== 1 && getYear !== 2 ? "Let's Go!" : 'Next Step'}}
               <ion-icon name="chevron-forward-outline"></ion-icon>
             </button>
             <span class="loading" v-if="loading"></span>
@@ -96,7 +96,7 @@
             <span class="flex flex-row flex-no-wrap">
               <p
                 class="text-primary-300 underline cursor-pointer text-sm"
-                @click="$router.go(-1)"
+                @click="$router.push({ path: prevRoute.path })"
               >BACK</p>
             </span>
           </div>
@@ -127,10 +127,14 @@ export default {
         player: ""
       },
       confirm: "",
-      loading: false
+      loading: false,
+      prevRoute: null
     };
   },
   beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.prevRoute = from;
+    });
     if (!store.getters["register/getFirstStep"]) {
       next({ name: "Step 1", replace: true });
     } else {
@@ -184,15 +188,13 @@ export default {
 
           this.$store.dispatch("register/setSecond", this.secondStep);
 
-          if (this.getYear === 3 && this.getYear === 4) {
+          if (this.getYear === 3 || this.getYear === 4) {
             this.sendForm()
               .then(res => {
-                alertify.notify("สำเร็จ!", "success", 3);
                 if (res) {
-                  console.log(res);
-                  this.sendToken().then(result => {
+                  localStorage.setItem("firstTime", "false");
+                  alertify.notify("สำเร็จ!", "success", 3)
                     this.$router.push("/profile");
-                  });
                 }
               })
               .catch(e => {

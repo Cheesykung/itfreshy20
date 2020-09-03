@@ -14,8 +14,8 @@ export default {
 /*** Form base styles ***/
 .base-input {
   caret-color: #524cb6;
-  border-bottom: 1px solid #1f1983;
-  padding: 0.25rem;
+  border-bottom: 1px solid rgb(31, 25, 131);
+  padding: 0.5rem .25rem;
   font-size: .9rem;
   @apply bg-transparent text-primary-250 bg-opacity-25 rounded-none border-t-0 border-l-0 border-r-0;
 }
@@ -38,8 +38,8 @@ input:focus,
 input:active,
 select:focus,
 select:active {
-  border-bottom: 1px solid rgb(60, 54, 173) !important;
-  box-shadow: 0 1px 0 0 rgb(60, 54, 173) !important;
+  border-bottom: 1px solid rgba(49,40,207, 0.8) !important;
+  box-shadow: 0 1px 0 0 rgba(49,40,207, 0.8) !important;
 }
 
 input[type="radio"],
@@ -57,6 +57,10 @@ option {
 
 select {
   @apply border-0;
+}
+
+label {
+  font-size: 1.125rem !important;
 }
 
 </style>

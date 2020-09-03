@@ -8,7 +8,7 @@
         <span
           :class="'text-' + gateInfo[0].color"
           class="font-semibold"
-        >{{ getProfile.fname }}</span>
+        >{{ getProfile.nickname }}</span>
       </span>
     </template>
     <template #body>
@@ -27,7 +27,7 @@
 
             <span
               v-lazy-container="{ selector: 'img' }"
-              class="img flex flex-col content-center justify-center items-center bg-primary-1100 bg-opacity-75 px-4 sm:px-0 py-8 sm:py-12"
+              class="img flex flex-col content-center justify-center items-center px-4 sm:px-0 py-5 sm:py-10"
             >
               <img
                 :data-src="gateInfo[0].src"
@@ -47,13 +47,13 @@
             <button
               type="submit"
               :class="'bg-' + gateInfo[0].color"
-              class="btn hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+              class="btn hover:bg-opacity-75 text-primary-100 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               @click="submit()"
             >Finish</button>
             <span class="flex flex-row flex-no-wrap space-x-3 animate-bounce">
-              <span class="bullet"></span>
-              <span class="bullet"></span>
-              <span class="bullet"></span>
+              <span class="bullet" :class="'bg-' + gateInfo[0].color"></span>
+              <span class="bullet" :class="'bg-' + gateInfo[0].color"></span>
+              <span class="bullet" :class="'bg-' + gateInfo[0].color"></span>
             </span>
           </div>
         </template>
@@ -90,7 +90,6 @@ export default {
   },
   methods: {
     submit() {
-      
       this.$router.replace({ path: "/profile" });
     },
     gatePic() {
@@ -108,4 +107,5 @@ export default {
 .img {
   flex: 0 1;
 }
+
 </style>
