@@ -15,10 +15,10 @@
             <span>IT KMITL{{ getProfile.branch ? ", " + getProfile.branch : '' }}{{ getProfile.year ? " ปี " + getProfile.year : '' }}</span>
           </div>
           <div class="like space-x-4">
-            <i class="fas fa-pizza-slice text-gray-400"></i>
-            <i class="fas fa-football-ball text-gray-400"></i>
-            <i class="fab fa-spotify text-gray-400"></i>
-            <i class="fas fa-film text-gray-400"></i>
+            <i class="fas fa-pizza-slice text-gray-400" v-if="getProfile.gate !== null"></i>
+            <i class="fas fa-football-ball text-gray-400" v-if="getProfile.gate !== null"></i>
+            <i class="fab fa-spotify text-gray-400" v-if="getProfile.gate !== null"></i>
+            <i class="fas fa-film text-gray-400" v-if="getProfile.gate !== null"></i>
           </div>
         </div>
         <!--- Profile Stats --->
@@ -64,6 +64,9 @@ export default {
     return {};
   },
   mounted() {},
+  beforeRouteEnter(to, from, next) {
+    next();
+  },
   methods: {
     goProfile(id) {
       this.$router.push({ path: "/profile/" + id });

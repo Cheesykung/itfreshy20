@@ -79,7 +79,7 @@
           <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
             <button
               type="submit"
-              class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+              class="btn bg-primary hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               @click="nextStep()"
               v-if="!loading"
             >
@@ -98,7 +98,7 @@
             <span class="flex flex-row flex-no-wrap">
               <p
                 class="text-primary-300 underline capitalize cursor-pointer text-sm"
-                @click="$router.go(-1)"
+                @click="$router.push({ path: prevRoute.path })"
               >Back</p>
               <!-- <span class="bullet"></span>
               <span class="bullet"></span>-->
@@ -131,10 +131,14 @@ export default {
       },
       branch: ["IT", "DATA", "BIT"],
       year: [1, 2, 3, 4],
-      loading: false
+      loading: false,
+      prevRoute: null
     };
   },
   beforeRouteEnter(to, from, next) {
+     next(vm => {
+        vm.prevRoute = from
+      });
     if (!store.getters["register/getGender"]) {
       next({ path: "/gender", replace: true });
     } else {
