@@ -22,7 +22,7 @@
         </div>
     </div>
     </div>
-  
+
     <div class="overflow-y-auto h-64">
       <span class="flex flex-col items-center justify-center space-y-10 py-5">
       <div class="rounded-full py-2 px-1 bg-gray-700 justify-center items-center w-56">
@@ -68,6 +68,7 @@
         </div>
     </span>
     </div>
+  
     <span class="flex flex-col items-center justify-center space-y-10 py-10">
       <div class="rounded-full py-2 px-1 bg-gray-700 justify-center items-center w-64">
               <div class="grid grid-cols-3 grid-rows-1 flex">
@@ -77,7 +78,6 @@
               </div>
       </div>
     </span>
-      
   </section>
 </template>
 
