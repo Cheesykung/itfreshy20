@@ -40,6 +40,7 @@ module.exports = {
         },
         complementary: {
           default: "#EC920F",
+          treda: '#ec0f69'
         },
         green_blue: {
           default: "#0d1d1d",

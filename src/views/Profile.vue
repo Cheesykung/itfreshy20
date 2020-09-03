@@ -25,15 +25,17 @@
         <div class="stats items-stretch">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
             <span class="text-2xl font-semibold text-gray-200">
-              <span class="text-3xl font-semibold text-gray-200 -m-1">
+              {{ getProfile.count ? getProfile.count : 0 }}
+              <!-- <span class="text-3xl font-semibold text-gray-200 -m-1">
                 <ion-icon name="skull-outline"></ion-icon>
-              </span>
+              </span> -->
             </span>
             <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-3xl font-semibold text-gray-200 -m-1">
-              <ion-icon name="skull-outline"></ion-icon>
+            <span class="text-2xl font-semibold text-gray-200">
+               {{ getProfile.count ? 146 - getProfile.count : 146 }}
+              <!-- <ion-icon name="skull-outline"></ion-icon> -->
             </span>
             <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
           </div>

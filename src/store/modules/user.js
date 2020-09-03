@@ -5,6 +5,7 @@
 //import passport from "passport"
 
 import actions from "./AuthController";
+import gate from "../modules/gateModule";
 
 const state = () => ({
   profile: {},
@@ -19,6 +20,14 @@ const state = () => ({
 const getters = {
   getLink: (state) => {
     return state.link;
+  },
+  getGate: (state) => {
+    return state.profile.gate;
+  },
+  getGateInfo: (state) => {
+    return gate.filter((item) => {
+      item.name === state.profile.gate;
+    });
   },
   getProfileById: (state) => (proId) => {
     return state.broMock.find(({ id }) => id === proId);

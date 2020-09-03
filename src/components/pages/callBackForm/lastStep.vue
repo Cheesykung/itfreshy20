@@ -5,7 +5,10 @@
       <br />
       <span class="text-2xl">
         WELCOME
-        <span class="text-primary-500 font-semibold">{{ getProfile.fname }}</span>
+        <span
+          :class="'text-' + gateInfo[0].color"
+          class="font-semibold"
+        >{{ getProfile.fname }}</span>
       </span>
     </template>
     <template #body>
@@ -14,27 +17,40 @@
         <template #content>
           <div class="flex flex-col flex-wrap space-y-8">
             <span class="space-y-3 flex flex-col content-center justify-center items-center">
-              <p class="text-xl md:text-2xl text-primary-250 font-normal">IT HUNTER GAME</p>
+              <p class="text-2xl text-primary-250 font-normal">IT HUNTER GAME</p>
               <span class="text-xs text-primary-300 font-thin">X</span>
-              <h4 class="text-4xl md:text-5xl text-secondary_b font-semibold">Gate ที่คุณได้</h4>
+              <h4 class="text-4xl md:text-5xl font-semibold" :class="'text-' + gateInfo[0].color">
+                Gate
+                <span class="text-primary-200">ที่คุณได้</span>
+              </h4>
             </span>
+
             <span
-              class="flex flex-col content-center justify-center items-center bg-primary-1100 bg-opacity-75 h-64"
-            ></span>
-            <span class="flex flex-col content-center justify-center items-center">
-              <span class="text-4xl md:text-5xl text-secondary_b font-bold animate-pulse">{{ getProfile.gate }}</span>
+              v-lazy-container="{ selector: 'img' }"
+              class="img flex flex-col content-center justify-center items-center bg-primary-1100 bg-opacity-75 px-4 sm:px-0 py-8 sm:py-12"
+            >
+              <img
+                :data-src="gateInfo[0].src"
+                :alt="getProfile.gate"
+                class="object-cover w-56 animate-pulse"
+              />
             </span>
+
           </div>
+            <span class="flex flex-col content-center justify-center items-center">
+              <span
+                :class="'text-' + gateInfo[0].color"
+                class="text-4xl md:text-5xl md:text-5xl font-bold"
+              >{{ gateInfo[0].name }}</span>
+            </span>
           <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
             <button
               type="submit"
-              class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+              :class="'bg-' + gateInfo[0].color"
+              class="btn hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               @click="submit()"
-            >Finish
-            </button>
-            <span
-              class="flex flex-row flex-no-wrap space-x-3 animate-bounce"
-            >
+            >Finish</button>
+            <span class="flex flex-row flex-no-wrap space-x-3 animate-bounce">
               <span class="bullet"></span>
               <span class="bullet"></span>
               <span class="bullet"></span>
@@ -45,10 +61,11 @@
       <!--- End of form area --->
     </template>
   </pageHFull>
-</template>
+</template>h
 <script>
 import { mapGetters } from "vuex";
 import store from "../../../store";
+import gate from "../../../store/modules/gateModule";
 
 export default {
   components: {
@@ -56,23 +73,39 @@ export default {
     formContain: () => import("../../util/formContainer")
   },
   data() {
-    return {};
+    return {
+      gateInfo: null
+    };
   },
   beforeRouteEnter(to, from, next) {
-    if(store.getters["register/getYear"] !== 1) {
-      next({ path: '/profile' })
+    if (store.getters["register/getYear"] !== 1) {
+      next({ path: "/profile" });
     } else {
       next();
     }
-   },
+  },
+  mounted() {
+    this.gatePic();
+    localStorage.setItem("firstTime", "false");
+  },
   methods: {
     submit() {
-      localStorage.setItem("firstTime", "false");
+      
       this.$router.replace({ path: "/profile" });
+    },
+    gatePic() {
+      this.gateInfo = gate.filter(item => {
+        return item.name === store.getters["user/getGate"];
+      });
     }
   },
   computed: {
-    ...mapGetters("user", ["getProfile"])
+    ...mapGetters("user", ["getProfile", "getGate"])
   }
 };
 </script>
+<style scoped>
+.img {
+  flex: 0 1;
+}
+</style>

@@ -67,6 +67,7 @@ export default {
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;300;400&family=Roboto:wght@300;400;600&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
 
 html,
 body {
@@ -74,7 +75,7 @@ body {
 }
 
 #app {
-  font-family: Helvetica, Arial, Prompt;
+  font-family: 'Righteous', Helvetica, cursive, 'Prompt';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

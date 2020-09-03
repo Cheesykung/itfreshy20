@@ -70,12 +70,12 @@ const actions = {
             .then((result) => {
               localStorage.setItem(
                 "firstTime",
-                result.data.data === "pass" ? true : false
+                result.data.data === "newuser" ? true : false
               );
 
               dispatch(
                 "setNewUser",
-                result.data.data === "pass" ? "true" : "false",
+                result.data.data === "newuser" ? "true" : "false",
                 { root: false }
               );
 
