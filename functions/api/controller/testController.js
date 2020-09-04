@@ -214,108 +214,232 @@ testController.get("/genqrcode", isLoggedIn, async function (req, res) {
   }
 });
 //ค้าง qrcode เหลือโยนคำถาม
-testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
-  const findlink = LINKRef.where("link", "==", req.params.id)
-    .get()
-    .then((findlink) => {
-      if (findlink.empty) {
-        res.send("link not found");
-        return;
-      }
-      findlink.forEach((linkdata) => {
-        checker = linkdata.data().uid;
-        checkyear = linkdata.data().year;
-        if (linkdata.data().time <= 0) {
-          res.send("time out link");
-          return;
-        } else {
-          const scanuserdata = db
-            .collection("scans")
-            .doc(req.user.uid)
-            .get()
-            .then((scanuserdata) => {
-              if (
-                scanuserdata.data().scan.indexOf(linkdata.data().uid) != "-1"
-              ) {
-                res.send("havedscan");
-              } else {
-                //year 1 scan2 or 2 scan 1 return
-                const bountyplus = db
-                  .collection("bounty")
-                  .doc("list")
-                  .get()
-                  .then((bountyplus) => {
-                    if (
-                      bountyplus.data().list.indexOf(linkdata.data().uid) !=
-                      "-1"
-                    ) {
-                      const sender = USERSRef.doc(checker)
-                        .get()
-                        .then((sender) => {
-                          res.send({
-                            name: sender.data().name,
-                            year: sender.data().year,
-                            pic: sender.data().pic,
-                            point: 6,
-                          });
-                        });
-                      const userupdatepoint = USERSRef.doc(req.user.uid)
-                        .get()
-                        .then((userupdatepoint) => {
-                          const update = USERSRef.doc(req.user.uid).set(
-                            {
-                              point: userupdatepoint.data().point + 6,
-                              count: userupdatepoint.data().count + 1,
-                            },
-                            { merge: true }
-                          );
-                          return;
-                        });
-                    } else {
-                      //year 1 scan2 or 2 scan 1 return
+// testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
+//   const findlink = LINKRef.where("link", "==", req.params.id)
+//     .get()
+//     .then((findlink) => {
+//       if (findlink.empty) {
+//         res.send("link not found");
+//         return;
+//       }
+//       findlink.forEach((linkdata) => {
+//         checker = linkdata.data().uid;
+//         checkyear = linkdata.data().year;
+//         if (linkdata.data().time <= 0) {
+//           res.send("time out link");
+//           return;
+//         } else {
+//           const scanuserdata = db
+//             .collection("scans")
+//             .doc(req.user.uid)
+//             .get()
+//             .then((scanuserdata) => {
+//               if (
+//                 scanuserdata.data().scan.indexOf(linkdata.data().uid) != "-1"
+//               ) {
+//                 res.send("havedscan");
+//               } else {
+//                 //year 1 scan2 or 2 scan 1 return
+//                 const bountyplus = db
+//                   .collection("bounty")
+//                   .doc("list")
+//                   .get()
+//                   .then((bountyplus) => {
+//                     if (
+//                       bountyplus.data().list.indexOf(linkdata.data().uid) !=
+//                       "-1"
+//                     ) {
+//                       const sender = USERSRef.doc(checker)
+//                         .get()
+//                         .then((sender) => {
+//                           res.send({
+//                             name: sender.data().name,
+//                             year: sender.data().year,
+//                             pic: sender.data().pic,
+//                             point: 6,
+//                           });
+//                         });
+//                       const userupdatepoint = USERSRef.doc(req.user.uid)
+//                         .get()
+//                         .then((userupdatepoint) => {
+//                           const update = USERSRef.doc(req.user.uid).set(
+//                             {
+//                               point: userupdatepoint.data().point + 6,
+//                               count: userupdatepoint.data().count + 1,
+//                             },
+//                             { merge: true }
+//                           );
+//                           return;
+//                         });
+//                     } else {
+//                       //year 1 scan2 or 2 scan 1 return
+//
+//                       const sender = USERSRef.doc(checker)
+//                         .get()
+//                         .then((sender) => {
+//                           res.send({
+//                             name: sender.data().name,
+//                             year: sender.data().year,
+//                             pic: sender.data().pic,
+//                             point: 6,
+//                           });
+//                         });
+//                       const userupdatepoint = USERSRef.doc(req.user.uid)
+//                         .get()
+//                         .then((userupdatepoint) => {
+//                           const update = USERSRef.doc(req.user.uid).set(
+//                             {
+//                               point: userupdatepoint.data().point + 3,
+//                               count: userupdatepoint.data().count + 1,
+//                             },
+//                             { merge: true }
+//                           );
+//                           return;
+//                         });
+//                     }
+//                   })
+//                   .then(() => {
+//                     const timedecrease = LINKRef.doc(linkdata.data().uid).set(
+//                       { time: linkdata.data().time - 1 },
+//                       { merge: true }
+//                     );
+//                     const scansave = SCANSRef.doc(req.user.uid).update({
+//                       scan: admin.firestore.FieldValue.arrayUnion(
+//                         linkdata.data().uid
+//                       ),
+//                     });
+//                   });
+//               }
+//               return;
+//             });
+//         }
+//         // res.send(linkdata.data());
+//       });
+//     });
+// });
 
-                      const sender = USERSRef.doc(checker)
-                        .get()
-                        .then((sender) => {
-                          res.send({
-                            name: sender.data().name,
-                            year: sender.data().year,
-                            pic: sender.data().pic,
-                            point: 6,
-                          });
-                        });
-                      const userupdatepoint = USERSRef.doc(req.user.uid)
-                        .get()
-                        .then((userupdatepoint) => {
-                          const update = USERSRef.doc(req.user.uid).set(
-                            {
-                              point: userupdatepoint.data().point + 3,
-                              count: userupdatepoint.data().count + 1,
-                            },
-                            { merge: true }
-                          );
-                          return;
-                        });
-                    }
-                  })
-                  .then(() => {
-                    const timedecrease = LINKRef.doc(linkdata.data().uid).set(
-                      { time: linkdata.data().time - 1 },
-                      { merge: true }
-                    );
-                    const scansave = SCANSRef.doc(req.user.uid).update({
-                      scan: admin.firestore.FieldValue.arrayUnion(
-                        linkdata.data().uid
-                      ),
-                    });
+testController.post('/scan/:id', isLoggedIn, async (req, res) => {
+  try {
+    const scanID = req.params.id;
+    const userUID = req.user.uid;
+    const userRef = firestore.collection('users');
+    const linkRef = firestore.collection('links');
+    const scanRef = await firestore.collection('scans');
+    let findLink = await linkRef.where('link', "==", scanID).get();
+    if (!findLink.empty) {
+      await findLink.forEach(doc => {
+        let linkUID = doc.data().uid;
+        let linkYear = doc.data().year;
+        let linkTime = doc.data().time;
+        console.log(linkTime)
+        if (linkTime <= 0) {
+          res.status(400).send({
+            'statusCode': 400,
+            'statusText': 'Bad Request',
+            'error': true,
+            'message': 'Link timed out',
+            'time': false,
+          })
+        } else {
+          scanRef.doc(userUID).get().then(async scanUserData => {
+            if (scanUserData.data().scan.indexOf(linkUID) != -1) {
+              res.status(400).send({
+                'statusCode': 400,
+                'statusText': 'Bad Request',
+                'error': true,
+                'message': 'Have scanned',
+                'time': true,
+              });
+            } else {
+              let bounty = await firestore.collection('bounty').doc('list').get()
+              if (bounty.data().list.indexOf(linkUID) != -1) //มีใน bounty ไหม
+              {
+                //ถ้ามีใน bounty =>
+                //1 ให้ res name, year, pic, point ของ linnkUID
+                //2 ให้เรา update point + 1:5 2:7 3:9 4: 11 และ count + 1 ให้ตัวเอง
+                const userData = await userRef.doc(userUID).get();
+                let arrayPoint = [5, 7, 9, 11]
+                await userRef.doc(userUID).get().then(userUpdate => {
+                  userRef.doc(userUID).update({ //1:5 2:7 3:9 4: 11
+                    point: (linkYear <= 4) ? userUpdate.data().point + arrayPoint[linkYear - 1] : 11,
+                    count: userUpdate.data().count + 1
                   });
+                });
+                const dataLink = await userRef.doc(linkUID).get();
+                res.status(200).send({
+                  name: dataLink.data().name,
+                  year: dataLink.data().year,
+                  pic: dataLink.data().pic,
+                  point: (linkYear <= 4) ? arrayPoint[linkYear - 1] : 11 //1:5 2:7 3:9 4: 11
+                });
+              } else {
+                console.log('1111')
+                const userData = await userRef.doc(userUID).get();
+                const linkData = await userRef.doc(linkUID).get();
+                let isYear = userData.data().year;
+                let isPlayer = parseInt(userData.data().player);
+                let isLinkPlayer = parseInt(linkData.data().player);
+                let isLinkYear = linkData.data().year;
+                if ((isPlayer == 1 && isLinkPlayer == 1) && (isYear != isLinkYear) && (isYear == 1 || isLinkYear == 1)) { //ถ้าคนสแกนกับคนโดนเป็น player //อันนึงต้องปี1
+                  //quistion fals ถ้าไม่มีคำถาม
+                  res.status(200).send({
+                    name: linkData.data().name,
+                    year: isLinkYear,
+                    pic: linkData.data().pic,
+                    question: linkData.data().like ? true : false, //ไม่มีคำถาม
+                    time: true,
+                    like: linkData.data().like //ถามว่าจะมีกรณีที่ความชอบเติมไม่ครบมั้ย
+                  });
+                } else {
+                  //else ถ้าไม่มีใน bounty =>
+                  //1 ให้ res name, year, pic, point ของ linnkUIDuse
+                  const dataLink = await userRef.doc(linkUID).get();
+                  res.status(200).send({
+                    name: dataLink.data().name,
+                    year: dataLink.data().year,
+                    pic: dataLink.data().pic,
+                    time: true,
+                    point: 3
+                  });
+                }
+                //2 ให้เรา update point + 3 และ count + 1 ให้ตัวเอง
+                await userRef.doc(userUID).get().then(userUpdate => {
+                  userRef.doc(userUID).update({
+                    point: userUpdate.data().point + 3,
+                    count: userUpdate.data().count + 1
+                  });
+                  console.log('update point, count of user')
+                });
+                //then time - 1 >= 0 ของ linkUID
+                await linkRef.doc(linkUID).update({
+                  time: linkTime - 1
+                });
               }
-              return;
-            });
+              //อัพเดทใน scan ของตัวเอง เพิ่ม uid ที่เราไปสแกน
+              let updateScan = await scanUserData.data().scan;
+              updateScan.push(linkUID);
+              await scanRef.doc(userUID).update({
+                scan: updateScan
+              });
+            }
+          });
         }
-        // res.send(linkdata.data());
       });
-    });
+    } else {
+      res.status(404).send({
+        'statusCode': '404',
+        'statusText': 'Bad Request',
+        'error': true,
+        'message': 'Link is empty'
+      });
+    }
+  } catch (e) {
+    res.status(500).send({
+      'statusCode': '500',
+      'statusText': 'Internal Server Error',
+      'error': true
+    })
+  }
 });
 
 testController.get("/", (req, res) => {
