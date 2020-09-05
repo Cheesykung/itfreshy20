@@ -150,13 +150,12 @@ export default {
       to.path &&
       !(
         this.firstStep.branch &&
-        this.firstStep.year &&
+        this.firstStep.year === '1' &&
         this.firstStep.contact &&
         this.firstStep.age &&
         this.firstStep.religion
-      )
-    ) {
-      alertify.notify("PLEASE FILLED UP THE FORM!", "warning", 3);
+    )) {
+      alertify.notify("PLEASE FILLED UP THE FORM & THIS FORM IS FOR FIRST YEAR STUDENTS ONLY!", "warning", 3);
       next(false);
     } else {
       next();
@@ -168,14 +167,14 @@ export default {
       if (
         !(
           this.firstStep.branch &&
-          this.firstStep.year &&
-          this.firstStep.contact &&
+          this.firstStep.year.length === 1 &&
+          this.firstStep.contact.length >= 4 &&
           this.firstStep.age &&
-          this.firstStep.religion
+          this.firstStep.religion.length >= 3
         )
       ) {
         this.loading = false;
-        alertify.notify("PLEASE FILLED UP THE FORM!", "warning", 3);
+        alertify.notify("PLEASE FILLED UP THE FORM! (FOR FIRST YEAR ONLY)", "warning", 3);
       } else {
         if (this.checkLength()) {
           this.$store.dispatch("register/setFirstStep", this.firstStep);

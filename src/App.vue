@@ -2,7 +2,7 @@
   <div id="app" v-lazy:background-image="bgObj">
     <Nav v-if="showNav" />
     <transition name="animated">
-      <keep-alive max="5">
+      <keep-alive max="6">
         <router-view :key="$route.fullPath" />
       </keep-alive>
     </transition>

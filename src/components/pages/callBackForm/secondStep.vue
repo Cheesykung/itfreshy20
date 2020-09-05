@@ -47,7 +47,7 @@
                 v-model="secondStep.id"
               />
             </span>
-            <span class="space-y-3 flex flex-col" v-if="getYear === 2">
+            <!-- <span class="space-y-3 flex flex-col" v-if="getYear === 2">
               <p class="text-left text-primary-200 text-opacity-100">คุณต้องการมีน้องรหัสใช่หรือไม่</p>
               <div
                 class="flex flex-row space-x-2 text-primary-250 py-2 items-center justify-start flex-no-wrap content-center"
@@ -71,7 +71,7 @@
                 />
                 <label for="no" class="mx-1">ไม่ใช่</label>
               </div>
-            </span>
+            </span>-->
           </div>
           <!--- Start step zone --->
           <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
@@ -96,7 +96,7 @@
             <span class="flex flex-row flex-no-wrap">
               <p
                 class="text-primary-300 underline cursor-pointer text-sm"
-                @click="$router.push({ path: prevRoute.path })"
+                @click="$router.go(-1)"
               >BACK</p>
             </span>
           </div>
@@ -137,9 +137,12 @@ export default {
     });
     if (!store.getters["register/getFirstStep"]) {
       next({ name: "Step 1", replace: true });
+    } else if(store.getters["register/getYear"] !== 1) {
+      next({ name: "Profile", replace: true });
     } else {
       next();
     }
+    next();
   },
   beforeRouteLeave(to, from, next) {
     if (
@@ -156,10 +159,12 @@ export default {
     } else {
       next();
     }
+    next();
   },
   methods: {
     /* eslint-disable */
     ...mapActions("register", ["sendForm", "sendToken"]),
+
     nextStep() {
       this.loading = true;
       if (
@@ -172,29 +177,65 @@ export default {
       ) {
         alertify.notify("PLEASE FILL UP THE FORM!", "warning", 3);
         this.loading = false;
-      } else {
-        if (this.checkStdId()) {
-          if (this.getYear === 2 && this.confirm) {
-            if (this.confirm === "yes") {
-              this.secondStep.player = 1;
-            } else if (this.confirm === "no") {
-              this.secondStep.player = 0;
-            } else if (!this.confirm) {
-              alertify.notify("PLEASE MAKE A CHOICE!", "warning", 3);
-              this.loading = false;
-              return;
-            }
-          }
+      } else if (this.checkStdId()) {
+          if (this.getYear === 1) {
+            this.$store.dispatch("register/setSecond", this.secondStep);
+            this.loading = false;
+            this.$router.push({ name: "Step 3" });
+          } else if (this.getYear === 2) {
+            alertify
+              .confirm(
+                "คุณต้องการมีน้องรหัสหรือไม่?",
+                "OK เพื่อไปต่อ CANCEL หากไม่ต้องการ",
+                async () => {
+                  //กรณีที่ต้องการเล่น
+                  this.secondStep.player = 1;
 
-          this.$store.dispatch("register/setSecond", this.secondStep);
+                  await this.$store.dispatch(
+                    "register/setSecond",
+                    this.secondStep
+                  );
+                  this.loading = false;
+                  this.$router.push({ name: "Step 3" });
+                },
+                async () => {
+                  //กรณีที่ไม่ต้องการเล่น
+                  this.secondStep.player = 0;
+                  this.$store.dispatch("register/setSecond", this.secondStep);
 
-          if (this.getYear === 3 || this.getYear === 4) {
+                  await this.sendForm()
+                    .then(res => {
+                      if (res) {
+                        localStorage.setItem("firstTime", "false");
+                        alertify.notify("สำเร็จ!", "success", 3);
+                        this.loading = false;
+                        this.$router.replace("/profile");
+                      }
+                    })
+                    .catch(e => {
+                      console.log(e);
+                      alertify.notify("พบข้อผิดพลาด :(", "error", 3);
+                      this.loading = false;
+                    });
+                }
+              )
+              .set("frameless", true);
+            // if (this.confirm === "yes") {
+            //   this.secondStep.player = 1;
+            // } else if (this.confirm === "no") {
+            //   this.secondStep.player = 0;
+            // } else if (!this.confirm) {
+            //   alertify.notify("PLEASE MAKE A CHOICE!", "warning", 3);
+            //   this.loading = false;
+            //   return;
+            // }
+          } else if (this.getYear === 3 || this.getYear === 4) {
             this.sendForm()
               .then(res => {
                 if (res) {
                   localStorage.setItem("firstTime", "false");
-                  alertify.notify("สำเร็จ!", "success", 3)
-                    this.$router.push("/profile");
+                  alertify.notify("สำเร็จ!", "success", 3);
+                  this.$router.replace("/profile");
                 }
               })
               .catch(e => {
@@ -202,13 +243,10 @@ export default {
                 alertify.notify("พบข้อผิดพลาด :(", "error", 3);
                 this.loading = false;
               });
-          } else {
-            this.$router.push({ name: "Step 3" });
-            this.loading = false;
           }
-        } else {
-          this.loading = false;
-        }
+      } else {
+        alertify.notify("PLEASE MAKE A CHOICE!", "warning", 3);
+        this.loading = false;
       }
     },
     checkStdId() {
@@ -220,7 +258,7 @@ export default {
         let idScope = id % 1000000;
         let getTwo = Math.floor((id * 0.1) / 100000);
         let year = parseInt(this.getYear);
-        let countLast = Math.floor(id % 1000) >= 300;
+        let countLast = this.getYear === 1 ? Math.floor(id % 1000) > 251 : Math.floor(id % 1000) >= 300;
 
         if (Math.floor((idScope / 1000) % 10000) !== 70) {
           alertify.notify(
