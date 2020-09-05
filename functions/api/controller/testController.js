@@ -64,7 +64,7 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
                 allvisitor: allvisitorget.data().allvisitor + 1
               }, { merge: true })
             })
-            res.status(200).json({ data: "pass" })
+            res.status(200).json({ data: "newuser" })
             return;
           }
           else {
@@ -84,7 +84,7 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
               allvisitor: allvisitorget.data().allvisitor + 1
             }, { merge: true })
           })
-          res.status(200).json({ data: "pass" })
+          res.status(200).json({ data: "newuser" })
           const alluserget = ALLRef.doc('stat').get().then((alluserget) => {
             const alluserupdate = ALLRef.doc('stat').set({
               alluser: alluserget.data().alluser + 1
