@@ -346,7 +346,6 @@ profileController.put('/scaned', async (req, res) => {
 
 });
 
-// แก้!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 profileController.put('/answer', async (req, res) => {
     try {
         
@@ -367,41 +366,41 @@ profileController.put('/answer', async (req, res) => {
         score += answer.third *  1.5;
         score += answer.fourth * 1.25;
         score += answer.fifth;
+        console.log(score);
 
         //if he/she is 1st year
         if (year == 1) {
             let id = req.headers.id; // id ของน้อง
-            let name = req.headers.uid // uid,id ของพี่
+            let uid = req.headers.uid // uid,id ของพี่
 
             if (id != undefined) {
                 let userRef = firestore.collection('secretfromuser').doc(id);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
 
-                for (let i = 0; i < userData.score.length; i++) {
-                    let ref = userData.score[i];
-                    if (ref.uid == name) {
-                        if (ref.point != 0) {
-                            score += ref.point;
-                            let remove = {
-                                'uid' : name,
-                                'point' : ref.point
-                            }
-                            await userRef.update({
-                                'score' : admin.firestore.FieldValue.arrayRemove(remove)
-                            });
-                            break ;
+                let user = userData.score.filter(element => element.uid == uid);
+
+                if (user.length != 0) {
+                    let total = user[0].point;
+                    if (total != 0) {
+                        score += total;
+                        let remove = {
+                            'uid' : uid,
+                            'point' : total
                         }
+                        await userRef.update({
+                            'score' : admin.firestore.FieldValue.arrayRemove(remove)
+                        });
                     }
                 }
-                let payload = {
-                    'uid' : name,
-                    'point' : score
-                }
-                console.log(payload);
-                await userRef.update({
-                    'score' : admin.firestore.FieldValue.arrayUnion(payload)
-                });
+                    let payload = {
+                        'uid' : uid,
+                        'point' : score
+                    }
+                    console.log(payload);
+                    await userRef.update({
+                        'score' : admin.firestore.FieldValue.arrayUnion(payload)
+                    });
 
                 res.status(200).send({
                     'statusCode' : '200',
@@ -423,7 +422,7 @@ profileController.put('/answer', async (req, res) => {
             }
         }
         else if (year == 2) {
-            let name = req.headers.id; // uid ,id ของพี่
+            let id = req.headers.id; // uid ,id ของพี่
             let uid = req.headers.uid; // uid ของน้อง
 
             if (uid != undefined) {
@@ -435,26 +434,26 @@ profileController.put('/answer', async (req, res) => {
                 let userGet = await userRef.get();
                 let userData = userGet.data();
 
-                for (let i = 0; i < userData.score.length; i++) {
-                    let path = userData.score[i];
-                    if (path.uid == name) {
-                        if (path.point != 0) {
-                            score += path.point;
-                            let remove = {
-                                'uid' : name,
-                                'point' : path.point
-                            }
-                            await userRef.update({
-                                'score' : admin.firestore.FieldValue.arrayRemove(remove)
-                            });
-                            break ;
+                let user = userData.score.filter(element => element.uid == id);
+                
+                if (user.length != 0) {
+                    let total = user[0].point;
+                    if (total != 0) {
+                        score += total;
+                        let remove = {
+                            'uid' : id,
+                            'point' : total
                         }
+                        await userRef.update({
+                            'score' : admin.firestore.FieldValue.arrayRemove(remove)
+                        });
                     }
                 }
                 let payload = {
-                    'uid' : name,
+                    'uid' : id,
                     'point' : score
                 }
+                console.log(payload);
                 await userRef.update({
                     'score' : admin.firestore.FieldValue.arrayUnion(payload)
                 });
