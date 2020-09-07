@@ -11,9 +11,7 @@
         <template #content>
           <div class="flex flex-col flex-wrap space-y-8">
             <span class="space-y-3 mb-5 flex flex-col content-center justify-center items-center">
-              <h4 class="text-xl text-primary-250 font-semibold">
-                กรอกสิ่งที่ชอบทำ 5 อันดับ
-              </h4>
+              <h4 class="text-xl text-primary-250 font-semibold">กรอกสิ่งที่ชอบทำ 5 อันดับ</h4>
               <p class="text-sm text-primary-300">เรียงลำดับจากมากไปน้อย</p>
             </span>
             <span class="space-y-3 flex flex-col" v-for="(item, i) in likes" :key="i">
@@ -73,23 +71,26 @@ export default {
   },
   data() {
     return {
-      likes: new Array(5),
+      likes: ["", "", "", "", ""],
       loading: false,
       prevRoute: null
     };
   },
   beforeRouteEnter(to, from, next) {
-     next(vm => {
+    next(vm => {
       vm.prevRoute = from;
     });
     if (
-      !store.getters["register/getSecondStep"] &&
-      store.getters["register/getYear"] === 3 &&
-      store.getters["register/getYear"] === 4
+      !store.getters["register/getSecondStep"] ||
+      store.getters["register/getYear"] === 3 ||
+      store.getters["register/getYear"] === 4 ||
+      store.getters["register/getProfile"].player === 0
     ) {
-      if(store.getters["register/getYear"] === 3 &&
-      store.getters["register/getYear"] === 4) {
-        next({ path: "/profile", replace: true })
+      if (
+        store.getters["register/getYear"] === 3 &&
+        store.getters["register/getYear"] === 4
+      ) {
+        next({ path: "/profile", replace: true });
       } else {
         next({ name: "Step 2", replace: true });
       }
@@ -98,7 +99,13 @@ export default {
     }
   },
   beforeRouteLeave(to, from, next) {
-    if (to.path && !this.likes.every(item => item.length > 2 && item !== null && item !== "" && !item.length < 3)) {
+    if (
+      to.path &&
+      !this.likes.every(
+        item =>
+          item.length > 2 && item !== null && item !== "" && !item.length < 3
+      )
+    ) {
       alertify.notify("PLEASE FILL UP THE FORM!", "warning", 3);
       next(false);
     } else {
@@ -106,45 +113,46 @@ export default {
     }
   },
   methods: {
-    ...mapActions("register", ["sendForm", "getGate", "sendToken", "setLikes"]),
-    ...mapActions("user", ["setProfile", "sendToken"]),
+    ...mapActions("register", ["sendForm", "getGate", "sendToken", "setLikes", "setProfile"]),
+    ...mapActions("user", ["sendToken"]),
     async submit() {
       this.loading = true;
-      const ifArrayEmpty = (item) => item.length > 2 && item !== null && item !== "" && !item.length < 3;
-      if (this.getYear === 2) {
-        if (this.likes.every(ifArrayEmpty)) {
-          this.setLikes(this.likes);
-          this.sendForm()
-            .then(res => {
-              this.loading = false;
-              alertify.notify("สำเร็จ!", "success", 3);
-              if (res) {
-                this.sendToken().then((res) => {
-                  localStorage.setItem("firstTime", "false");
-                  this.$router.push({ path: "/profile" });
-                })
-              }
-            })
-            .catch(e => {
-              console.log(e);
-              alertify.notify("พบข้อผิดพลาด :(", "error", 3);
-              this.loading = false;
-            });
-        } else {
-          this.loading = false
-          alertify.notify("ATLEAST 3 CHARACTERS", "warning", 3);
-          return;
-        }
-      } else {
-        if (this.likes.every(ifArrayEmpty)) {
-          await this.setLikes(this.likes);
-          await this.getGate().then((gate) => {
-            if(gate.data.length > 0) {
-               this.sendForm()
+      const ifArrayEmpty = item =>
+        item.length > 2 && item !== null && item !== "" && item.length;
+      // if (this.getYear === 2) {
+      //   if (this.likes.every(ifArrayEmpty)) {
+      //     this.setLikes(this.likes);
+      //     this.sendForm()
+      //       .then(res => {
+      //         this.loading = false;
+      //         if (res) {
+      //           this.sendToken().then((res) => {
+      //             localStorage.setItem("firstTime", "false");
+      //             this.$router.push({ path: "/profile" });
+      //           })
+      //         }
+      //       })
+      //       .catch(e => {
+      //         console.log(e);
+      //         alertify.notify("พบข้อผิดพลาด :(", "error", 3);
+      //         this.loading = false;
+      //       });
+      //   } else {
+      //     this.loading = false
+      //     alertify.notify("ATLEAST 3 CHARACTERS", "warning", 3);
+      //     return;
+      //   }
+      // } else
+      if (this.getYear === 1 && this.likes.every(ifArrayEmpty) === true) {
+        await this.setLikes(this.likes);
+        await this.getGate().then(gate => {
+          if (gate.data.length > 0 && this.likes.every(ifArrayEmpty)) {
+            this.sendForm()
               .then(res => {
                 if (res) {
                   this.setProfile(res.data.data);
-                  this.$router.push({ name: 'Your Gate' })
+                  alertify.notify("ยินดีต้อนรับ!", "success", 3);
+                  this.$router.push({ name: "Your Gate" });
                 }
               })
               .catch(e => {
@@ -152,17 +160,19 @@ export default {
                 alertify.notify("พบข้อผิดพลาด :(", "error", 3);
                 this.loading = false;
               });
-            } else {
-              alertify.notify("พบข้อผิดพลาด :(", "error", 3);
-                this.loading = false;
-            }
-          })
-          
-        } else {
-          this.loading = false
-          alertify.notify("ATLEAST 3 CHARACTERS", "warning", 3);
-          return;
-        }
+          } else {
+            alertify.notify("พบข้อผิดพลาด :(", "error", 3);
+            this.loading = false;
+          }
+        });
+      } else {
+        this.loading = false;
+        alertify.notify(
+          "ATLEAST 4 CHARACTERS AND FILL UP THE FORM",
+          "warning",
+          3
+        );
+        return;
       }
     }
   },

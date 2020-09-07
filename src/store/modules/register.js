@@ -22,12 +22,7 @@ const state = () => ({
     player: null,
     status: null,
     gate: null,
-    likes: [
-      { car: false },
-      { song: false },
-      { movie: false },
-      { coding: false },
-    ],
+    likes: null,
   },
 });
 
@@ -184,8 +179,6 @@ const actions = {
       };
     }
 
-    console.log(data);
-
     return new Promise((resolve, reject) => {
       try {
         firebase
@@ -200,7 +193,7 @@ const actions = {
               })
               .then((result) => {
                 if (result) {
-                  dispatch("user/setAuth", result, { root: true });
+                  //dispatch("user/setAuth", result, { root: true });
                   resolve(result);
                 }
               })
