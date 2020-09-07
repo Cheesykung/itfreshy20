@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="refresh" content="30">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
@@ -21,10 +20,13 @@
       }
 
       .detail{
-        margin-bottom: 50px;
         font-size: 16px;
         text-align: center;
-        padding: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        position: absolute;
+        width: 80%;
+        margin-top: 100px;
       }
 
       .head{
@@ -38,18 +40,119 @@
         transform: translateY(10px);
       }
 
+      .menu{
+        width: 100px;
+        height: 100px;
+      }
+
+      .menuBox{
+        background-color: rgba(132,132,132,0.62);
+        border: none;
+        color: white;
+        float: left;
+        font-size: 28px;
+      }
+
+      .select{
+        background-color: none;
+      }
+
+      .graph{
+        max-height: 200px;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      .date{
+        bottom: 0px;
+      }
+
+      .barBox{
+        display: inline-block;
+        width: 100%;
+        height: 35px;
+      }
+
+      .bar{
+        background-color: gray;
+        text-align: right;
+      }
+
+      #number{
+        font-size: 64px;
+      }
+
     </style>
   </head>
-<body>
+<body onload="changeData(4)">
   <div class="container">
       <h2 class="head">DASHBOARD</h2>
-      <div class="detailBox row">
-        <div class="detail col-sm-6 col-12 col-lg-4" id="visit"><label class="num"><%= visit %></label><br>Total Visitors</div>
-        <div class="detail col-sm-6 col-12 col-lg-4" id="user"><label class="num"><%= user %></label><br>Total Users</div>
-        <div class="detail col-sm-6 col-12 col-lg-4" id="scan"><label class="num"><%= scan %></label><br>Total Scans</div>
-        <div class="detail col-sm-6 col-12 col-lg-6" id="bounty"><label class="num"><%= bounty %></label><br>Total Bounties</div>
-        <div class="detail col-12 col-lg-6" id="gen"><label class="num"><%= gen %></label><br>Total Generate Qr Codes</div>
+      <div calss="row menu">
+        <button class="col-4 col-lg-3 menuBox" onclick="changeData(4)" id="visit">Visitor</button>
+        <button class="col-4 col-lg-2 menuBox" onclick="changeData(3)" id="user">User</button>
+        <button class="col-4 col-lg-2 menuBox" onclick="changeData(2)" id="scan">Scan</button>
+        <button class="col-6 col-lg-2 menuBox" onclick="changeData(0)" id="bounty">Bounty</button>
+        <button class="col-6 col-lg-3 menuBox" onclick="changeData(1)" id="qr">Qr Code</button>
+      </div>
+      
+      <div class="detail">
+        <h4>Update Last</h4><h4> Date: 8/9 Time: 00:01</h4>
+        <h1 id="number"></h1>
+        <h4 id="topic">Total</h4><br>
+        <div class="graph">
+          <div class="row ">
+            
+            <div class="col-2 date barDate">0</div>
+            <div class="col-10 barBox">
+              <div class="bar"></div>
+            </div>
+
+            <div class="col-2 date barDate">0</div>
+            <div class="col-10 barBox">
+              <div class="bar"></div>
+            </div>
+
+            <div class="col-2 date barDate">0</div>
+            <div class="col-10 barBox">
+              <div class="bar"></div>
+            </div>
+            
+          </div>
+        </div>
       </div>
   </div>
 </body>
+
+<script>
+
+  function changeData(topic){
+
+    var topics = ['Bounties', 'Generate QR Codes', 'Scans', 'Users', 'Visitors']
+    var total = [4,7, 10, 174, 3936]
+    var listData = [[4, 7, 10, 141, 3462], [0, 0, 0, 19, 317], [0, 0, 0, 14, 157]];
+    var listDate = ['5/9', '6/9', '7/9'];
+    var numList = listData.length;
+
+    var maxNum = listData[0][topic];
+    for (i = 1; i < numList; i++)
+    {
+      if (listData[i][topic]  > maxNum)
+      {
+        maxNum = listData[i][topic];
+      }
+    }
+
+    for (i = 0; i < numList; i++)
+    {
+      var num = listData[i][topic];
+      document.getElementsByClassName("bar")[i].innerHTML = num;
+      document.getElementsByClassName("barDate")[i].innerHTML = listDate[i];
+      document.getElementsByClassName("bar")[i].style = "width: "+parseInt((num*1.0/total[topic])*100)+"%;"
+    }
+
+    document.getElementById("number").innerText = total[topic];
+    document.getElementById("topic").innerText = "Total "+topics[topic];
+
+  }
+</script>
 </html>
