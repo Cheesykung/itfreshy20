@@ -1,5 +1,4 @@
 //require zone // sailor
-//test 
 
 const minify = require("express-minify");
 const compression = require("compression");
