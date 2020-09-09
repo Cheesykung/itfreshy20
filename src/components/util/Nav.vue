@@ -22,7 +22,7 @@
             class="fas fa-user-alt basic-icon hidden md:block ease delay-50 duration-200 hover:scale-125"
           ></i>
         </div>
-        <div>
+        <div @click="$router.push('/edit')">
           <i
             class="fas fa-cog basic-icon ease delay-50 duration-200 hover:scale-125 hover:rotate-90"
           ></i>
@@ -39,13 +39,13 @@
         class="cursor-pointer basic-icon ease delay-50 duration-200 hover:scale-125 hover:rotate-90"
       >&times;</span>
       <ul class="lucky-font">
-        <!-- <li
+        <li
           v-for="(item, i) in navLinks"
           :key="i"
           class="capitalize transform duration-150 delay-50 hover:scale-125"
         >
-          <router-link :to="item.link">{{ item.name }}</router-link>
-        </li> -->
+          <router-link :to="{ path: item.link, replace: true}">{{ item.name }}</router-link>
+        </li>
         <li
           @click="signOut"
           class="capitalize transform duration-150 delay-50 hover:scale-125"
@@ -68,11 +68,11 @@ export default {
     return {
       hidden: true,
       navLinks: [
-        { name: "Dashboard", link: "#", icon: "" },
+        { name: "Dashboard", link: "/dashboard", icon: "" },
         { name: "Profile", link: "/profile", icon: "" },
-        { name: "Bounty", link: "#", icon: "" },
+        { name: "Bounty", link: "/bounty", icon: "" },
         { name: "Hunted", link: "#", icon: "" },
-        { name: "Leaderboard", link: "#", icon: "" }
+        { name: "Leaderboard", link: "/leaderboard", icon: "" }
       ]
     };
   },

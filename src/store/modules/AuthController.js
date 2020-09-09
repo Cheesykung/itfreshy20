@@ -26,14 +26,14 @@ const actions = {
             secure: true,
           });
           if (result.credential.accessToken) {
-          dispatch("setAuth", result.user.providerData[0]);
-          dispatch("sendToken").then((res) => {
-            if (res.data.data === 'newuser') {
-              router.go({ path: "/continue", params: { next: true }})
-            } else {
-              router.go({ path: "/profile", params: { next: '_self' }})
-            }}
-          );
+            dispatch("setAuth", result.user.providerData[0]);
+            dispatch("sendToken").then((res) => {
+              if (res.data.data === "newuser") {
+                router.go({ path: "/continue", params: { next: true } });
+              } else {
+                router.go({ path: "/profile", params: { next: "_self" } });
+              }
+            });
           }
           resolve(result);
         })
@@ -55,16 +55,43 @@ const actions = {
     });
   },
 
-  sendToken({commit, dispatch, getters}) {
+  setQr({ commit }, payload) {
     return new Promise((resolve, reject) => {
       firebase
         .auth()
         .currentUser.getIdToken()
         .then((res) => {
           axios
-            .get(API + "/test/fire", {
+            .post(
+              API + "test/scan/" + payload, "",
+              {
+                headers: {
+                  FIREBASE_AUTH_TOKEN: res,
+                },
+              }
+            )
+            .then((resData) => {
+              resolve(resData.data);
+              commit("setQrData", resData.data, { root: false });
+            })
+            .catch((e) => {
+              reject(e);
+              throw e;
+            });
+        });
+    });
+  },
+
+  sendToken({ commit, dispatch, getters }) {
+    return new Promise((resolve, reject) => {
+      firebase
+        .auth()
+        .currentUser.getIdToken()
+        .then((res) => {
+          axios
+            .get(API + "test/fire", {
               headers: {
-                "FIREBASE_AUTH_TOKEN": res,
+                FIREBASE_AUTH_TOKEN: res,
               },
             })
             .then((result) => {
@@ -73,24 +100,27 @@ const actions = {
                 result.data.data === "newuser" ? true : false
               );
 
-              if(result.data.data == "newuser")
-                {
-                  dispatch("setAuth", firebase.auth().currentUser.providerData[0], { root: false });
-                } else {
-                  dispatch("setAuth", result.data.user, { root: false })
-                }
+              if (result.data.data == "newuser") {
+                dispatch(
+                  "setAuth",
+                  firebase.auth().currentUser.providerData[0],
+                  { root: false }
+                );
+              } else {
+                dispatch("setAuth", result.data.user, { root: false });
+              }
 
               resolve(result);
             })
             .catch((e) => {
               reject(e);
-            })
+            });
         });
     });
   },
 
   setProfile(context, payload) {
-    context.commit("setProfile", payload , { root: false })
+    context.commit("setProfile", payload, { root: false });
   },
 
   async signOut(context) {
@@ -102,7 +132,7 @@ const actions = {
           Cookies.remove("user");
           localStorage.removeItem("firstTime");
           context.commit("clearProfile", { root: false });
-          router.go({ path: "/signin", params: { ref: 'none' } })
+          router.go({ path: "/signin", params: { ref: "none" } });
           resolve(res);
         })
         .catch((e) => {
