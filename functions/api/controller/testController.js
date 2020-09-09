@@ -47,8 +47,8 @@ testController.use(bodyParser.json());
 testController.use(bodyParser.urlencoded({ extended: true }));
 testController.use(helmet());
 testController.use(cookieParser());
-testController.use(compression());
-testController.use(cors({ origin: true, credentials: true }));
+// testController.use(compression());
+testController.use(cors({origin: true, credentials: true}));
 testController.set("views", path.join(__dirname, "views"));
 testController.set("view engine", "ejs");
 log.info("Server start");
@@ -360,55 +360,63 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
 //     });
 // });
 
-testController.post("/scan/:id", isLoggedIn, async (req, res) => {
-  try {
-    const scanID = req.params.id;
-    const userUID = req.user.uid;
-    const userRef = firestore.collection("users");
-    const linkRef = firestore.collection("links");
-    const scanRef = await firestore.collection("scans");
-    let findLink = await linkRef.where("link", "==", scanID).get();
-    if (!findLink.empty) {
-      await findLink.forEach((doc) => {
-        let linkUID = doc.data().uid;
-        let linkYear = doc.data().year;
-        let linkTime = doc.data().time;
-        if (linkUID !== userUID) {
-          if (linkTime <= 0) {
-            res.status(400).send({
-              statusCode: 400,
-              statusText: "Bad Request",
-              error: true,
-              message: "Link timed out",
-              time: false,
-            });
-          } else {
-            scanRef
-              .doc(userUID)
-              .get()
-              .then(async (scanUserData) => {
-                if (scanUserData.data().scan.indexOf(linkUID) != -1) {
-                  res.status(400).send({
-                    statusCode: 400,
-                    statusText: "Bad Request",
-                    error: true,
-                    message: "Have scanned",
-                    time: true,
-                  });
-                } else {
-                  const userData = await userRef.doc(userUID).get();
-                  const linkData = await userRef.doc(linkUID).get();
-                  const statsRef = await firestore
-                    .collection("allstats")
-                    .doc("stat");
-                  let isYear = userData.data().year;
-                  let isPlayer = parseInt(userData.data().player);
-                  let isLinkPlayer = parseInt(linkData.data().player);
-                  let isLinkYear = linkData.data().year;
-                  let bounty = await firestore
-                    .collection("bounty")
-                    .doc("list")
-                    .get();
+testController.post('/scan/:id',isLoggedIn, async (req, res) => {
+    try {
+        const scanID = req.params.id;
+        const userUID = req.user.uid;
+        const userRef = firestore.collection('users');
+        const linkRef = firestore.collection('links');
+        const scanRef = await firestore.collection('scans');
+        let findLink = await linkRef.where('link', "==", scanID).get();
+        if (!findLink.empty) {
+            await findLink.forEach(doc => {
+                let linkUID = doc.data().uid;
+                let linkYear = doc.data().year;
+                let linkTime = doc.data().time;
+                if (linkUID !== userUID) {
+                    if (linkTime <= 0) {
+                        res.status(200).send({
+                            'statusCode': 200,
+                            'statusText': 'Bad Request',
+                            'error': true,
+                            'message': 'Link timed out',
+                            'time': false,
+                        })
+                    } else {
+                        scanRef.doc(userUID).get().then(async scanUserData => {
+                            if (scanUserData.data().scan.indexOf(linkUID) != -1) {
+                                res.status(200).send({
+                                    'statusCode': 200,
+                                    'statusText': 'Bad Request',
+                                    'error': true,
+                                    'message': 'Have scanned',
+                                    'time': true,
+                                });
+                            } else {
+                                const userData = await userRef.doc(userUID).get();
+                                const linkData = await userRef.doc(linkUID).get();
+                                const statsRef = await firestore.collection('allstats').doc('stat');
+                                let isYear = parseInt(userData.data().year);
+                                let isPlayer = parseInt(userData.data().player);
+                                let isLinkPlayer = parseInt(linkData.data().player);
+                                let isLinkYear = parseInt(linkData.data().year);
+                                let bounty = await firestore.collection('bounty').doc('list').get()
+
+                                //const dataLink = await userRef.doc(linkUID).get();
+                                let arrayPoint = [5, 7, 9, 11]
+                                let point;
+                                if (bounty.data().list.indexOf(linkUID) != -1) {
+                                    point = (linkYear <= 4) ? arrayPoint[linkYear - 1] : 11;
+                                    let isAllBounty = await statsRef.get().then(data => {
+                                        return data.data().allbounty;
+                                    });
+                                    await statsRef.update({
+                                        'allbounty': isAllBounty + 1
+                                    });
+
+                                } else {
+                                    point = 3;
+                                }
 
                   //const dataLink = await userRef.doc(linkUID).get();
                   let arrayPoint = [5, 7, 9, 11];
@@ -494,19 +502,26 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                     return data.data().allscan;
                   });
 
-                  await statsRef.update({
-                    allscan: isAllScan + 1,
-                  });
+                            }
+                        });
+                    }
+                } else {
+                    res.status(200).send({
+                        'statusCode': '200',
+                        'statusText': 'Bad Request',
+                        'error': true,
+                        'message': 'link is invalid'
+                    });
                 }
               });
           }
         } else {
-          res.status(400).send({
-            statusCode: "400",
-            statusText: "Bad Request",
-            error: true,
-            message: "link is invalid",
-          });
+            res.status(200).send({
+                'statusCode': '200',
+                'statusText': 'Bad Request',
+                'error': true,
+                'message': 'Link is empty'
+            });
         }
       });
     } else {
