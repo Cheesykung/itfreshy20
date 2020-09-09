@@ -345,8 +345,8 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                 let linkTime = doc.data().time;
                 if (linkUID !== userUID) {
                     if (linkTime <= 0) {
-                        res.status(400).send({
-                            'statusCode': 400,
+                        res.status(200).send({
+                            'statusCode': 200,
                             'statusText': 'Bad Request',
                             'error': true,
                             'message': 'Link timed out',
@@ -355,8 +355,8 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                     } else {
                         scanRef.doc(userUID).get().then(async scanUserData => {
                             if (scanUserData.data().scan.indexOf(linkUID) != -1) {
-                                res.status(400).send({
-                                    'statusCode': 400,
+                                res.status(200).send({
+                                    'statusCode': 200,
                                     'statusText': 'Bad Request',
                                     'error': true,
                                     'message': 'Have scanned',
@@ -366,10 +366,10 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                                 const userData = await userRef.doc(userUID).get();
                                 const linkData = await userRef.doc(linkUID).get();
                                 const statsRef = await firestore.collection('allstats').doc('stat');
-                                let isYear = userData.data().year;
+                                let isYear = parseInt(userData.data().year);
                                 let isPlayer = parseInt(userData.data().player);
                                 let isLinkPlayer = parseInt(linkData.data().player);
-                                let isLinkYear = linkData.data().year;
+                                let isLinkYear = parseInt(linkData.data().year);
                                 let bounty = await firestore.collection('bounty').doc('list').get()
 
                                 //const dataLink = await userRef.doc(linkUID).get();
@@ -456,8 +456,8 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                         });
                     }
                 } else {
-                    res.status(400).send({
-                        'statusCode': '400',
+                    res.status(200).send({
+                        'statusCode': '200',
                         'statusText': 'Bad Request',
                         'error': true,
                         'message': 'link is invalid'
@@ -465,8 +465,8 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                 }
             });
         } else {
-            res.status(400).send({
-                'statusCode': '400',
+            res.status(200).send({
+                'statusCode': '200',
                 'statusText': 'Bad Request',
                 'error': true,
                 'message': 'Link is empty'
