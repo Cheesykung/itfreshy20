@@ -2,6 +2,7 @@
   <div
     class="bg-primary-1100 bg-opacity-75 flex flex-col justify-center py-20 md:py-32 space-y-16 md:space-y-20 flex-wrap px-8 sm:px-10 md:px-24 lg:mx-32 xl:mx-48"
   >
+    <slot name="subHeader"></slot>
     <slot name="content"></slot>
   </div>
 </template>
