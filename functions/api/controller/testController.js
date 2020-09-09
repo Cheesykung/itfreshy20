@@ -47,7 +47,7 @@ testController.use(bodyParser.json());
 testController.use(bodyParser.urlencoded({extended: true}));
 testController.use(helmet());
 testController.use(cookieParser());
-testController.use(compression());
+// testController.use(compression());
 testController.use(cors({origin: true, credentials: true}));
 testController.set("views", path.join(__dirname, "views"));
 testController.set("view engine", "ejs");
