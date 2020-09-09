@@ -4,88 +4,153 @@
       <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
-            :data-src="getProfile.photoURL + '?width=500'"
+            :data-src="getProfile.photoURL? getProfile.photoURL + '?width=500' : getProfile.pic + '?width=500'"
             class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
           />
           <div class="details space-y-2 items-center">
-            <h1 class="text-3xl text-primary-100 font-thin">{{ getProfile.displayName }}</h1>
+            <h1
+              class="text-3xl text-primary-100 font-thin"
+            >{{ getProfile.displayName ? getProfile.displayName : getProfile.name }}</h1>
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
             <i class="fas fa-map-marked-alt"></i>
-            <span>IT KMITL</span>
+            <span>IT KMITL{{ getProfile.branch ? ", " + getProfile.branch : '' }}{{ getProfile.year ? " ปี " + getProfile.year : '' }}</span>
           </div>
           <div class="like space-x-4">
-            <i class="fas fa-pizza-slice text-gray-400"></i>
-            <i class="fas fa-football-ball text-gray-400"></i>
-            <i class="fab fa-spotify text-gray-400"></i>
-            <i class="fas fa-film text-gray-400"></i>
+            <i
+              class="fas fa-pizza-slice text-gray-400"
+              v-if="getProfile.gate === '' && getProfile.year !== '1'"
+            ></i>
+            <i
+              class="fas fa-football-ball text-gray-400"
+              v-if="getProfile.gate === '' && getProfile.year !== '1'"
+            ></i>
+            <i
+              class="fab fa-spotify text-gray-400"
+              v-if="getProfile.gate === '' && getProfile.year !== '1'"
+            ></i>
+            <i
+              class="fas fa-film text-gray-400"
+              v-if="getProfile.gate === '' && getProfile.year !== '1'"
+            ></i>
+            <span
+              v-lazyload="{ selector: 'img' }"
+              v-if="getProfile.gate !== '' || getProfile.year === '1'"
+              class="flex flex-row space-x-2 justify-center items-center content-center text-primary-200"
+            >
+              <img class="object-cover w-full" :data-src="image" v-if="image !== null" />
+              <ion-icon name="skull-outline" v-else></ion-icon>
+              <p class="capitalize">{{ getProfile.status }}</p>
+            </span>
           </div>
         </div>
         <!--- Profile Stats --->
         <div class="stats items-stretch">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">
-              <span class="text-3xl font-semibold text-gray-200 -m-1">
-                <ion-icon name="skull-outline"></ion-icon>
-              </span>
-            </span>
+            <span
+              class="text-2xl font-semibold text-gray-200"
+            >{{ getProfile.count ? getProfile.count : 0 }}</span>
             <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-3xl font-semibold text-gray-200 -m-1">
-              <ion-icon name="skull-outline"></ion-icon>
-            </span>
+            <span
+              class="text-2xl font-semibold text-gray-200"
+            >{{ getProfile.count ? Math.abs(148 - getProfile.count) : 148 }}</span>
             <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
           </div>
         </div>
         <!--- Profile button --->
         <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8 py-6">
-          <!-- <button
+          <button
             class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm animate-pulse"
+            @click="Bounty()"
           >ล่ารายชื่อเลย!</button>
-          <button class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm">สร้างลิงค์ใหม่</button> -->
-          <h3 class="text-2xl animate-pulse text-primary-200 font-semibold">เตรียมออกล่าเร็วๆนี้!</h3>
+          <button
+            class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm"
+            @click="genQr()"
+          >สร้างลิงค์ใหม่</button>
+          <span class="loading" v-if="loading"></span>
+          <!-- <h3 class="text-2xl animate-pulse text-primary-200 font-semibold">เตรียมออกล่าเร็วๆนี้!</h3> -->
         </div>
       </div>
     </div>
   </section>
 </template>
 <script>
+/* eslint-disable */
 import { mapGetters } from "vuex";
 import axios from "axios";
 import alertify from "alertifyjs";
-import Cookies from "js-cookie";
+import gate from "../store/modules/gateModule";
+import firebase from "firebase/app";
+import "firebase/auth";
+import store from "../store";
+import QRCode from "qrcode";
+
+var vm = this;
 
 export default {
   data() {
-    return {};
+    return {
+      image: null,
+      loading: false,
+      qr: new Array(1)
+    };
   },
-  mounted() {},
+  beforeUpdate() {
+    if (this.getYear === "1") this.image = this.gatePic[0].smallImg;
+  },
   methods: {
-    goProfile(id) {
-      this.$router.push({ path: "/profile/" + id });
+    Bounty() {
+      this.$router.push({ path: "/bounty" });
     },
-    async genQr() {
+    genQr: function() {
       try {
-        const setQr = await axios.get(
-          "https://us-central1-itfreshy2020.cloudfunctions.net/test/genqrcode/",
-          Cookies.get("user"),
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "text/html"
-            }
-          }
-        );
+        firebase
+          .auth()
+          .currentUser.getIdToken(/* forceRefresh */ true)
+          .then(idToken => {
+            axios
+              .get(
+                "https://us-central1-itfreshy2020.cloudfunctions.net/test/genqrcode/",
+                {
+                  withCredentials: true,
+                  headers: {
+                    FIREBASE_AUTH_TOKEN: idToken
+                  }
+                }
+              )
+              .then(setQr => {
+                if (setQr.status === 200) {
+                  let data = setQr.data;
 
-        if (setQr.status === 200) {
-          let data = await setQr.data;
-          alertify.success("สร้างลิงค์สำเร็จ!");
-          alertify.alert("QR Code ของคุณ", data.qrcode);
-          this.$store.commit("user/setLink", data.qrcode);
-        } else {
-          console.log("Something went wrong.");
-        }
+                  alertify
+                    .alert(
+                      '<div id="qr-code" class="flex flex-col content-center items-center"></div>'
+                    ) 
+                    .setHeader("Your QR Code")
+                    .showModal('ajs-dialog-custom');
+
+                  let qrEl = document.getElementById("qr-code");
+
+                  if (this.qr.length < 2) {
+                    QRCode.toCanvas(data.qrcode.toString(), (err, canvas) => {
+                      if (err) throw err;
+
+                      qrEl.appendChild(canvas);
+                      this.qr.push(data.qrcode);
+                    });
+                  }
+                  alertify.success("สร้าง Qr Code สำเร็จ!");
+                  store.commit("user/setLink", data.qrcode);
+                } else {
+                  console.log("Something went wrong.");
+                }
+              })
+              .catch(e => {
+                throw e;
+              });
+          });
       } catch (e) {
         console.log(e);
       }
@@ -97,13 +162,20 @@ export default {
   computed: {
     ...mapGetters("user", {
       getProfile: "getProfile",
-      getLink: "getLink"
+      getYear: "getYear",
+      getLink: "getLink",
+      getGate: "getGate"
     }),
     routeId() {
       return parseInt(this.$route.params.id);
     },
     showProfile() {
       return this.getProfileById(this.routeId);
+    },
+    gatePic() {
+      return gate.filter(item => {
+        return item.name === this.getGate;
+      });
     }
   }
 };
@@ -217,5 +289,9 @@ export default {
   .button-gp button {
     flex: 0 1 20%;
   }
+}
+
+ .ajs-dialog-custom {
+  @apply bg-primary-1100 bg-opacity-75;
 }
 </style>

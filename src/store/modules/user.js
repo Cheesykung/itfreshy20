@@ -5,9 +5,11 @@
 //import passport from "passport"
 
 import actions from "./AuthController";
+import gate from "../modules/gateModule";
 
 const state = () => ({
   profile: {},
+  baseProfile: {},
   status: Boolean,
   link: null,
   firstTime: localStorage.getItem("firstTime")
@@ -19,14 +21,19 @@ const getters = {
   getLink: (state) => {
     return state.link;
   },
+  getGate: (state) => {
+    return state.profile.gate;
+  },
+  getGateInfo: (state) => {
+    return gate.filter((item) => {
+      item.name === state.profile.gate;
+    });
+  },
   getProfileById: (state) => (proId) => {
     return state.broMock.find(({ id }) => id === proId);
   },
   getProfile: (state) => {
     return state.profile;
-  },
-  getHuntedCount: (state) => {
-    return state.profile.count;
   },
   getYear: (state) => {
     return state.profile.year;

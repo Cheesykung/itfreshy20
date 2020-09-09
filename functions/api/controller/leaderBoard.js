@@ -3,11 +3,31 @@ const express = require('express');
 const admin = require('../config/admin');
 const firestore = admin.firestore();
 const ldrBoardController = express();
+const bunyan = require("bunyan");
+const log = bunyan.createLogger({ name: "myapp" });
+const minify = require("express-minify");
+const { auth } = require('firebase-admin');
+const authService = auth();
 
+ldrBoardController.use(function (req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+    );
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "X-Requested-With,Content-Type,Authorization"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    next();
+});
+
+ldrBoardController.use(minify());
 ldrBoardController.use(cors({ origin: true }));
-ldrBoardController.post('/ranking', async (req, res) => {
+ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
     try {
-        const uid = req.body.uid;
+        const uid = req.user.uid;
         const year = parseInt(req.body.year);
 
         const ranksRef = await firestore.collection('ranks');
@@ -16,7 +36,7 @@ ldrBoardController.post('/ranking', async (req, res) => {
         console.log(haveUID.exists)
 
         if (haveUID.exists) {
-            let snapshot = await userRef.orderBy('count', 'desc').get(); //sort users
+            let snapshot = await userRef.orderBy('point', 'desc').get(); //sort users
             let arrayScoreY1 = []; // Create array to store the sequence
             let arrayScoreY2 = []; //year2
             //console.log(snapshot)
@@ -61,7 +81,9 @@ ldrBoardController.post('/ranking', async (req, res) => {
             // Create data for the response.
             let rankingY1 = setRanking(arrayScoreY1, indexY1);
             console.log(rankingY1)
+
             let rankingY2 = setRanking(arrayScoreY2, indexY2);
+            console.log(indexY2)
             let rankMe = {};
             if (year == 1) {
                 rankMe = {
@@ -71,6 +93,7 @@ ldrBoardController.post('/ranking', async (req, res) => {
                 };
             }
             else if (year == 2) {
+                console.log('pass')
                 rankMe = {
                     "name": arrayScoreY2[indexY2].name,
                     "point": arrayScoreY2[indexY2].point,
@@ -86,6 +109,8 @@ ldrBoardController.post('/ranking', async (req, res) => {
                     };
                 });
             }
+
+            //console.log('rankeme-->'+rankMe)
 
             res.status(200).send({
                     'year1': rankingY1,
@@ -124,7 +149,6 @@ function setRanking(array, index) {
             }
         }
         else {
-            console.log(i);
             data["rank"+(i+1)] = (i < array.length) ? {
                 "name": array[i].name,
                 "point": array[i].point,
@@ -137,6 +161,19 @@ function setRanking(array, index) {
         }
     }
     return data;
+}
+
+async function isLoggedIn(req, res, next) {
+    const idToken = req.header('FIREBASE_AUTH_TOKEN');
+    let decodedIdToken;
+    try {
+        decodedIdToken = await authService.verifyIdToken(idToken);
+    } catch (error) {
+        next(error);
+        return;
+    }
+    req.user = decodedIdToken;
+    next();
 }
 
 module.exports = ldrBoardController;

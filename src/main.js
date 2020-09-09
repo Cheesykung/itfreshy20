@@ -10,7 +10,7 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import "@fortawesome/fontawesome-free/js/all.js";
 import layzyLoad from "./directives/layzyLoad";
 import VueLazyLoad from "vue-lazyload";
-import VueAlertify from 'vue-alertify';
+import VueAlertify from "vue-alertify";
 
 Vue.use(VueAlertify);
 
@@ -32,10 +32,9 @@ let app;
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     store.dispatch("user/sendToken");
-    store.dispatch("user/setAuth", user.providerData[0]);
   }
 
-  console.log("Sorry, if you have any problems please contact staff.")
+  console.log("Hello Script Kiddies :p");
 
   if (!app) {
     app = new Vue({

@@ -23,7 +23,10 @@
               />
             </span>
             <span class="space-y-3 flex flex-col">
-              <label for="religion" class="text-left text-primary-200 text-opacity-100">What's your religion?</label>
+              <label
+                for="religion"
+                class="text-left text-primary-200 text-opacity-100"
+              >What's your religion?</label>
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -46,7 +49,10 @@
               </select>
             </span>
             <span class="space-y-3 flex flex-col">
-              <label for="year" class="text-left text-primary-200 text-opacity-100">Your College Years</label>
+              <label
+                for="year"
+                class="text-left text-primary-200 text-opacity-100"
+              >Your College Years</label>
               <select
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 name="year"
@@ -73,7 +79,7 @@
           <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
             <button
               type="submit"
-              class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+              class="btn bg-primary hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               @click="nextStep()"
               v-if="!loading"
             >
@@ -87,11 +93,12 @@
             >
               <span class="bullet active" :class="!loading ? 'animate-bounce' : ''"></span>
               <span class="bullet"></span>
+              <span class="bullet"></span>
             </span>
             <span class="flex flex-row flex-no-wrap">
               <p
                 class="text-primary-300 underline capitalize cursor-pointer text-sm"
-                @click="$router.go(-1)"
+                @click="$router.push({ path: prevRoute.path })"
               >Back</p>
               <!-- <span class="bullet"></span>
               <span class="bullet"></span>-->
@@ -124,10 +131,14 @@ export default {
       },
       branch: ["IT", "DATA", "BIT"],
       year: [1, 2, 3, 4],
-      loading: false
+      loading: false,
+      prevRoute: null
     };
   },
   beforeRouteEnter(to, from, next) {
+     next(vm => {
+        vm.prevRoute = from
+      });
     if (!store.getters["register/getGender"]) {
       next({ path: "/gender", replace: true });
     } else {
@@ -139,13 +150,12 @@ export default {
       to.path &&
       !(
         this.firstStep.branch &&
-        this.firstStep.year &&
+        this.firstStep.year === '1' &&
         this.firstStep.contact &&
         this.firstStep.age &&
         this.firstStep.religion
-      )
-    ) {
-      alertify.notify("PLEASE FILLED OUT!", "warning", 3);
+    )) {
+      alertify.notify("PLEASE FILLED UP THE FORM & THIS FORM IS FOR FIRST YEAR STUDENTS ONLY!", "warning", 3);
       next(false);
     } else {
       next();
@@ -157,14 +167,14 @@ export default {
       if (
         !(
           this.firstStep.branch &&
-          this.firstStep.year &&
-          this.firstStep.contact &&
+          this.firstStep.year.length === 1 &&
+          this.firstStep.contact.length >= 4 &&
           this.firstStep.age &&
-          this.firstStep.religion
+          this.firstStep.religion.length >= 3
         )
       ) {
         this.loading = false;
-        alertify.notify("PLEASE FILLED OUT!", "warning", 3);
+        alertify.notify("PLEASE FILLED UP THE FORM! (FOR FIRST YEAR ONLY)", "warning", 3);
       } else {
         if (this.checkLength()) {
           this.$store.dispatch("register/setFirstStep", this.firstStep);
@@ -174,7 +184,13 @@ export default {
       }
     },
     checkLength() {
-      if (this.firstStep.age.length !== 2 || !parseInt(this.firstStep.age)) {
+      let intAge = parseInt(this.firstStep.age);
+
+      if (
+        this.firstStep.age.length !== 2 ||
+        !intAge ||
+        intAge > 26 || intAge < 17
+      ) {
         alertify.notify("กรอกอายุที่ถูกต้อง", "error", 3);
         return false;
       } else {

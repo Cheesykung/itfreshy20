@@ -12,16 +12,17 @@ const Profile = () => import("../views/Profile.vue");
 const Hunted = () => import("../views/Hunted.vue");
 const Bounty = () => import("../views/Bounty.vue");
 const Leaderboard = () => import("../views/Leaderboard.vue");
+const Edit = () => import("../views/Edit.vue")
 
 const callback = () => import("../views/Callback.vue");
 const gender = () => import("../components/pages/callBackForm/gender.vue");
 const step1 = () => import("../components/pages/callBackForm/firstStep.vue");
 const step2 = () => import("../components/pages/callBackForm/secondStep.vue");
 const step3 = () => import("../components/pages/callBackForm/thStep.vue");
-const step4 = () => import("../components/pages/callBackForm/likesStep.vue");
-const step5 = () => import("../components/pages/callBackForm/lastStep.vue");
+const step4 = () => import("../components/pages/callBackForm/lastStep.vue");
 
 Vue.use(VueRouter);
+
 
 const routes = [
   {
@@ -95,16 +96,6 @@ const routes = [
       {
         path: "step4",
         component: step4,
-        name: "What you likes?",
-        meta: {
-          requiresAuth: true,
-          requiresFirstTime: true,
-          hideNavigation: true,
-        },
-      },
-      {
-        path: "step5",
-        component: step5,
         name: "Your Gate",
         meta: {
           requiresAuth: true,
@@ -146,12 +137,13 @@ const routes = [
         firebase.auth().currentUser &&
         !to.matched.some(({ path }) => path === "/continue")
       ) {
-        next({ path: "/continue" });
+        next({ path: "/continue", query: { next: to.fullPath }, replace: true });
       } else {
         next();
       }
+      next();
     },
-    children: [{ path: ":id", component: Profile, name: "Profile" }],
+    children: [{ path: ":id", component: Profile }],
   },
   {
     path: "/hunted",
@@ -163,6 +155,15 @@ const routes = [
     },
   },
   {
+    path: "/edit/:id",
+    name: "Edit",
+    component: Edit,
+    meta: {
+      title: "Edit Profile",
+      rquiresAuth: true
+    }
+  },
+  {
     path: "/signin",
     name: "Signin",
     component: Signin,
@@ -172,7 +173,7 @@ const routes = [
         localStorage.getItem("firstTime") === "true" &&
         to.matched.some(({ path }) => path !== "/continue")
       ) {
-        next({ path: "/continue" });
+        next({ path: "/continue", query: { next: to.fullPath }, replace: true});
       } else {
         next();
       }
@@ -203,7 +204,6 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const firstTime = localStorage.getItem("firstTime");
-  //const firstTime = store.getters["user/getFirstTime"];
   const token = Cookies.get("user");
   const user = firebase.auth().currentUser;
 
@@ -224,7 +224,7 @@ router.beforeEach((to, from, next) => {
       to.matched.some((item) => item.meta.requiresFirstTime) &&
       firstTime == "false"
     ) {
-      next({ path: '/profile' });
+      next({ path: '/profile', query: { next: to.fullPath }, replace: true });
     } else {
       next();
     }

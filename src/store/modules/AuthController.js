@@ -1,7 +1,7 @@
 /* eslint-disable */
 import firebase from "firebase/app";
 import "firebase/auth";
-import Cookies from "js-cookie";
+import Cookies, { getJSON } from "js-cookie";
 import axios from "axios";
 import router from "../../router";
 
@@ -29,9 +29,9 @@ const actions = {
           dispatch("setAuth", result.user.providerData[0]);
           dispatch("sendToken").then((res) => {
             if (res.data.data === 'newuser') {
-              router.push('/continue')
+              router.go({ path: "/continue", params: { next: true }})
             } else {
-              router.push('/profile')
+              router.go({ path: "/profile", params: { next: '_self' }})
             }}
           );
           }
@@ -55,14 +55,14 @@ const actions = {
     });
   },
 
-  sendToken(context) {
+  sendToken({commit, dispatch, getters}) {
     return new Promise((resolve, reject) => {
       firebase
         .auth()
         .currentUser.getIdToken()
         .then((res) => {
           axios
-            .get(API + "test/fire", {
+            .get(API + "/test/fire", {
               headers: {
                 "FIREBASE_AUTH_TOKEN": res,
               },
@@ -73,11 +73,12 @@ const actions = {
                 result.data.data === "newuser" ? true : false
               );
 
-              context.dispatch(
-                "setNewUser",
-                result.data.data === "newuser" ? "true" : "false",
-                { root: false }
-              );
+              if(result.data.data == "newuser")
+                {
+                  dispatch("setAuth", firebase.auth().currentUser.providerData[0], { root: false });
+                } else {
+                  dispatch("setAuth", result.data.user, { root: false })
+                }
 
               resolve(result);
             })
@@ -86,6 +87,10 @@ const actions = {
             })
         });
     });
+  },
+
+  setProfile(context, payload) {
+    context.commit("setProfile", payload , { root: false })
   },
 
   async signOut(context) {
@@ -97,7 +102,7 @@ const actions = {
           Cookies.remove("user");
           localStorage.removeItem("firstTime");
           context.commit("clearProfile", { root: false });
-          router.push({ path: "/signin" }).then(router.go());
+          router.go({ path: "/signin", params: { ref: 'none' } })
           resolve(res);
         })
         .catch((e) => {

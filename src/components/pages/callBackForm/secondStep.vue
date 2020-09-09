@@ -47,7 +47,7 @@
                 v-model="secondStep.id"
               />
             </span>
-            <span class="space-y-3 flex flex-col" v-if="getYear === '2'">
+            <!-- <span class="space-y-3 flex flex-col" v-if="getYear === 2">
               <p class="text-left text-primary-200 text-opacity-100">คุณต้องการมีน้องรหัสใช่หรือไม่</p>
               <div
                 class="flex flex-row space-x-2 text-primary-250 py-2 items-center justify-start flex-no-wrap content-center"
@@ -71,26 +71,33 @@
                 />
                 <label for="no" class="mx-1">ไม่ใช่</label>
               </div>
-            </span>
+            </span>-->
           </div>
           <!--- Start step zone --->
           <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
             <button
               type="submit"
-              class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+              class="btn bg-primary hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               @click="nextStep()"
               v-if="!loading"
             >
-              go!
+              {{ getYear !== 1 && getYear !== 2 ? "Let's Go!" : 'Next Step'}}
               <ion-icon name="chevron-forward-outline"></ion-icon>
             </button>
             <span class="loading" v-if="loading"></span>
-            <span class="flex flex-row flex-no-wrap space-x-3"  :class="loading ? 'animate-bounce' : ''">
+            <span
+              class="flex flex-row flex-no-wrap space-x-3"
+              :class="loading ? 'animate-bounce' : ''"
+            >
               <span class="bullet"></span>
               <span class="bullet active" :class="!loading ? 'animate-bounce' : ''"></span>
+              <span class="bullet"></span>
             </span>
-            <span class="flex flex-row flex-no-wrap ">
-              <p class=" text-primary-300 underline cursor-pointer text-sm" @click="$router.go(-1)">BACK</p>
+            <span class="flex flex-row flex-no-wrap">
+              <p
+                class="text-primary-300 underline cursor-pointer text-sm"
+                @click="$router.go(-1)"
+              >BACK</p>
             </span>
           </div>
           <!--- End step zone --->
@@ -120,15 +127,22 @@ export default {
         player: ""
       },
       confirm: "",
-      loading: false
+      loading: false,
+      prevRoute: null
     };
   },
   beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.prevRoute = from;
+    });
     if (!store.getters["register/getFirstStep"]) {
       next({ name: "Step 1", replace: true });
+    } else if(store.getters["register/getYear"] !== 1) {
+      next({ name: "Profile", replace: true });
     } else {
       next();
     }
+    next();
   },
   beforeRouteLeave(to, from, next) {
     if (
@@ -140,14 +154,17 @@ export default {
         this.secondStep.id
       )
     ) {
-      alertify.notify("PLEASE FILLED OUT!", "warning", 3);
+      alertify.notify("PLEASE FILL UP THE FORM!", "warning", 3);
       next(false);
     } else {
       next();
     }
+    next();
   },
   methods: {
-    ...mapActions("register", ["sendForm"]),
+    /* eslint-disable */
+    ...mapActions("register", ["sendForm", "sendToken"]),
+
     nextStep() {
       this.loading = true;
       if (
@@ -158,38 +175,78 @@ export default {
           this.secondStep.id
         )
       ) {
-        alertify.notify("PLEASE FILLED OUT!", "warning", 3);
+        alertify.notify("PLEASE FILL UP THE FORM!", "warning", 3);
         this.loading = false;
-      } else {
-        if (this.checkStdId()) {
-          if (parseInt(this.getYear) === 2 && this.confirm) {
-            if (this.confirm === "yes") {
-              this.secondStep.player = 1;
-            } else if (this.confirm === "no") {
-              this.secondStep.player = 0;
-            } else if (!this.confirm) {
-              alertify.notify("PLEASE MAKE A CHOICE!", "warning", 3);
-              this.loading = false
-              return;
-            }
-          }
-
-          this.$store.dispatch("register/setSecond", this.secondStep);
-          this.sendForm()
-            .then(res => {
-              if (res) {
-                console.log(res);
-                alertify.notify("สำเร็จ!", "success", 3);
-              }
-            })
-            .catch(e => {
-              console.log(e);
-              alertify.notify("พบข้อผิดพลาด :(", "error", 3);
-              this.loading = false;
-            });
-        } else {
+      } else if (this.checkStdId()) {
+          if (this.getYear === 1) {
+            this.$store.dispatch("register/setSecond", this.secondStep);
             this.loading = false;
+            this.$router.push({ name: "Step 3" });
+          } else if (this.getYear === 2) {
+            alertify
+              .confirm(
+                "คุณต้องการมีน้องรหัสหรือไม่?",
+                "OK เพื่อไปต่อ CANCEL หากไม่ต้องการ",
+                async () => {
+                  //กรณีที่ต้องการเล่น
+                  this.secondStep.player = 1;
+
+                  await this.$store.dispatch(
+                    "register/setSecond",
+                    this.secondStep
+                  );
+                  this.loading = false;
+                  this.$router.push({ name: "Step 3" });
+                },
+                async () => {
+                  //กรณีที่ไม่ต้องการเล่น
+                  this.secondStep.player = 0;
+                  this.$store.dispatch("register/setSecond", this.secondStep);
+
+                  await this.sendForm()
+                    .then(res => {
+                      if (res) {
+                        localStorage.setItem("firstTime", "false");
+                        alertify.notify("สำเร็จ!", "success", 3);
+                        this.loading = false;
+                        this.$router.replace("/profile");
+                      }
+                    })
+                    .catch(e => {
+                      console.log(e);
+                      alertify.notify("พบข้อผิดพลาด :(", "error", 3);
+                      this.loading = false;
+                    });
+                }
+              )
+              .set("frameless", true);
+            // if (this.confirm === "yes") {
+            //   this.secondStep.player = 1;
+            // } else if (this.confirm === "no") {
+            //   this.secondStep.player = 0;
+            // } else if (!this.confirm) {
+            //   alertify.notify("PLEASE MAKE A CHOICE!", "warning", 3);
+            //   this.loading = false;
+            //   return;
+            // }
+          } else if (this.getYear === 3 || this.getYear === 4) {
+            this.sendForm()
+              .then(res => {
+                if (res) {
+                  localStorage.setItem("firstTime", "false");
+                  alertify.notify("สำเร็จ!", "success", 3);
+                  this.$router.replace("/profile");
+                }
+              })
+              .catch(e => {
+                console.log(e);
+                alertify.notify("พบข้อผิดพลาด :(", "error", 3);
+                this.loading = false;
+              });
           }
+      } else {
+        alertify.notify("PLEASE MAKE A CHOICE!", "warning", 3);
+        this.loading = false;
       }
     },
     checkStdId() {
@@ -197,15 +254,34 @@ export default {
         alertify.notify("รหัสนักศึกษาต้องมี 8 หลัก", "warning", 3);
         return false;
       } else {
-        //62070102
         let id = parseInt(this.secondStep.id);
         let idScope = id % 1000000;
+        let getTwo = Math.floor((id * 0.1) / 100000);
+        let year = parseInt(this.getYear);
+        let countLast = this.getYear === 1 ? Math.floor(id % 1000) > 251 : Math.floor(id % 1000) >= 300;
+
         if (Math.floor((idScope / 1000) % 10000) !== 70) {
           alertify.notify(
             "กรุณากรอกรหัสนักศึกษาของคณะไอทีเท่านั้น!",
             "error",
             3
           );
+          return false;
+        } else if (year === 1 && getTwo !== 63) {
+          alertify.notify("กรุณากรอกรหัสนักศึกษาปี 1 ให้ถูกต้อง", "error", 3);
+          return false;
+        } else if (year === 2 && getTwo !== 62) {
+          alertify.notify("กรุณากรอกรหัสนักศึกษาปี 2 ให้ถูกต้อง", "error", 3);
+          return false;
+        } else if (year === 3 && getTwo !== 61) {
+          console.log(year, getTwo);
+          alertify.notify("กรุณากรอกรหัสนักศึกษาปี 3 ให้ถูกต้อง", "error", 3);
+          return false;
+        } else if (year === 4 && getTwo !== 60) {
+          alertify.notify("กรุณากรอกรหัสนักศึกษาปี 4 ให้ถูกต้อง", "error", 3);
+          return false;
+        } else if (countLast) {
+          alertify.notify("กรุณากรอกรหัสนักศึกษาให้ถูกต้อง", "warning", 3);
           return false;
         } else {
           return true;
@@ -214,7 +290,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters("register", ["getYear"]),
+    ...mapGetters("register", ["getYear"])
     // checkStdId() {
     //   if (this.secondStep.id.length !== 8) {
     //     alertify.notify("รหัสนักศึกษาต้องมี 8 หลัก", "warning", 3);
@@ -240,20 +316,4 @@ export default {
 </script>
 
 <style scoped>
-input:focus,
-input:active,
-textarea:focus,
-textarea:active {
-  border-bottom: 1px solid rgb(97, 97, 182) !important;
-  box-shadow: 0 1px 0 0 rgb(97, 97, 182) !important;
-}
-
-input[type="radio"],
-label {
-  cursor: pointer;
-}
-
-input[type="radio"] {
-  fill: rgb(97, 97, 182) !important;
-}
 </style>

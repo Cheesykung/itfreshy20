@@ -16,7 +16,7 @@
           <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
             <button
               type="submit"
-              class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+              class="btn bg-primary hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
               id="sub_button"
             >
               Let's Go!

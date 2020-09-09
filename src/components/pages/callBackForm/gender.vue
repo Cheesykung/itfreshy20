@@ -56,7 +56,7 @@
       <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
         <button
           type="submit"
-          class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
+          class="btn bg-primary hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
           :class="active ? 'animate-pulse' : ''"
           @click="submitGen(active)"
           id="sub_button"
@@ -65,6 +65,7 @@
           <ion-icon name="chevron-forward-outline"></ion-icon>
         </button>
         <span class="flex flex-row flex-no-wrap space-x-3 animate-bounce">
+          <span class="bullet"></span>
           <span class="bullet"></span>
           <span class="bullet"></span>
         </span>
