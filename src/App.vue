@@ -202,19 +202,19 @@ button:focus {
 }
 
 ::-webkit-scrollbar {
-  width: 0.35rem;
+  width: 0.6rem;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-primary-1000;
+  @apply bg-primary-1100;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary-850 rounded-full;
+  @apply bg-primary-850;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary-700;
+  @apply bg-primary-600;
 }
 
 .lucky-font {

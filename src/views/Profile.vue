@@ -1,11 +1,11 @@
 <template>
   <section class="w-screen min-h-screen profile-wrap">
     <div class="flex flex-col content-center justify-center items-center h-full py-12">
-      <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
+      <div class="profile container grid-cols-1 gap-10 self-center">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
             :data-src="getProfile.photoURL? getProfile.photoURL + '?width=500' : getProfile.pic + '?width=500'"
-            class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
+            class="profile-pic object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
           />
           <div class="details space-y-2 items-center">
             <h1
@@ -50,13 +50,13 @@
             <span
               class="text-2xl font-semibold text-gray-200"
             >{{ getProfile.count ? getProfile.count : 0 }}</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
+            <span class="text-sm font-normal text-gray-400">รุ่น{{ getProfile.year === '1' ? 'พี่' : 'น้อง'  }}ที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
             <span
               class="text-2xl font-semibold text-gray-200"
-            >{{ getProfile.count ? Math.abs(148 - getProfile.count) : 148 }}</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
+            >{{ getProfile.year === 1 ? getProfile.count ? Math.abs(148 - getProfile.count) : 148 : getProfile.count ? Math.abs(251 - getProfile.count) : 251 }}</span>
+            <span class="text-sm font-normal text-gray-400">รุ่น{{ getProfile.year === '1' ? 'พี่' : 'น้อง'  }}ที่ยังไม่ได้ล่า</span>
           </div>
         </div>
         <!--- Profile button --->
@@ -92,11 +92,13 @@ import QRCode from "qrcode";
 var vm = this;
 
 export default {
+  components: {
+  },
   data() {
     return {
       image: null,
       loading: false,
-      qr: new Array(1)
+      qr: new Array(1),
     };
   },
   beforeUpdate() {
@@ -223,6 +225,28 @@ export default {
 <style scoped>
 .profile {
   @apply grid;
+}
+
+.profile-pic[lazy="loading"] {
+  position: relative;
+  background-color: #E2E2E2;
+}
+
+.profile-pic[lazy="loading"]::after {
+  display: block;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: translateY(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .2), transparent);
+    animation: loading 1s infinite;
+}
+
+@keyframes loading {
+  100% {
+    transform: translateY(100%);
+  }
 }
 
 .profile-wrap {
