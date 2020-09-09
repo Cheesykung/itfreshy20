@@ -63,13 +63,15 @@
         <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8 py-6">
           <button
             class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm animate-pulse"
-            @click="Bounty()"
+            @click="!loading ? Bounty() : null"
           >ล่ารายชื่อเลย!</button>
           <button
             class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm"
             @click="genQr()"
-          >สร้างลิงค์ใหม่</button>
-          <span class="loading" v-if="loading"></span>
+          >
+            <span :class="loading ? 'loading text-sm' : ''">{{ !loading? 'สร้างลิงค์ใหม่' : ''}}</span>
+          </button>
+
           <!-- <h3 class="text-2xl animate-pulse text-primary-200 font-semibold">เตรียมออกล่าเร็วๆนี้!</h3> -->
         </div>
       </div>
@@ -104,7 +106,16 @@ export default {
     Bounty() {
       this.$router.push({ path: "/bounty" });
     },
+    copyTxt: function(e) {
+      if (e) {
+        e.target.select();
+        e.target.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        alertify.success("Copied!");
+      }
+    },
     genQr: function() {
+      this.loading = true;
       try {
         firebase
           .auth()
@@ -123,24 +134,53 @@ export default {
               .then(setQr => {
                 if (setQr.status === 200) {
                   let data = setQr.data;
+                  let url = new URL(data.qrcode);
+                  let newUrl = url.pathname
+                    .toString()
+                    .substring(url.pathname.lastIndexOf("qrcode"));
+                  newUrl = newUrl.replace("qrcode/", "scan/");
+                  newUrl = new URL("https://localhost:8080/" + newUrl);
 
                   alertify
                     .alert(
-                      '<div id="qr-code" class="flex flex-col content-center items-center"></div>'
-                    ) 
-                    .setHeader("Your QR Code")
-                    .showModal('ajs-dialog-custom');
+                      '<div id="qr-code" class="flex flex-col space-y-6 content-center items-center py-6">\
+                      <div id="url" class=" user-select-all bg-gray-300 text-gray-700 p-4 text-xs rounded-lg cursor-pointer select-text border-2 font-medium border-gray-400">\
+                      ' +
+                        newUrl +
+                        "\
+                      </div>\
+                      </div>"
+                    )
+                    .setHeader("Your QR Code");
 
                   let qrEl = document.getElementById("qr-code");
+                  let qrUrl = document.getElementById("url");
 
                   if (this.qr.length < 2) {
-                    QRCode.toCanvas(data.qrcode.toString(), (err, canvas) => {
+                    QRCode.toCanvas(newUrl.href, (err, canvas) => {
                       if (err) throw err;
 
-                      qrEl.appendChild(canvas);
+                      qrEl.insertBefore(canvas, qrUrl);
                       this.qr.push(data.qrcode);
                     });
+
+                    qrUrl.addEventListener("click", () => {
+                    qrUrl.classList.add("bg-green-200");
+                    qrUrl.classList.add("border-green-300");
+                    qrUrl.classList.add("text-green-700");
+                    alertify.success("Copied!")
+                    
+                    var range = document.createRange();
+                    range.selectNode(qrUrl);
+                    window.getSelection().removeAllRanges(); // clear current selection
+                    window.getSelection().addRange(range); // to select text
+                    document.execCommand("copy");
+                    window.getSelection().removeAllRanges();
+                    
+                  });
                   }
+                  
+                  this.loading = false;
                   alertify.success("สร้าง Qr Code สำเร็จ!");
                   store.commit("user/setLink", data.qrcode);
                 } else {
@@ -208,7 +248,6 @@ export default {
 .stats {
   @apply flex flex-row justify-center content-center flex-wrap;
 }
-
 .stats .un-chased,
 .stats .chased {
   flex: 0 1 20%;
@@ -291,7 +330,7 @@ export default {
   }
 }
 
- .ajs-dialog-custom {
+.ajs-dialog-custom {
   @apply bg-primary-1100 bg-opacity-75;
 }
 </style>
