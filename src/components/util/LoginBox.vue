@@ -23,7 +23,7 @@
   </div>
 </template>
 <script>
-//import firebase from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth";
 import alertify from "alertifyjs";
 
@@ -52,18 +52,18 @@ export default {
         });
     }
   },
-  // beforeRouteEnter(to, from, next) {
-  //   if (
-  //     firebase.auth().currentUser &&
-  //     localStorage.getItem("firstTime") === "true" &&
-  //     !to.matched.some(({ path }) => path === "/continue")
-  //   ) {
-  //     next({ path: "/continue", query: { next: to.fullPath }, replace: true });
-  //   } else {
-  //     next();
-  //   }
-  //   next();
-  // }
+  beforeRouteEnter(to, from, next) {
+    if (
+      firebase.auth().currentUser &&
+      localStorage.getItem("firstTime") === "true" &&
+      !to.matched.some(({ path }) => path === "/continue")
+    ) {
+      next({ path: "/continue", query: { next: to.fullPath }, replace: true });
+    } else {
+      next();
+    }
+    next();
+  }
 };
 </script>
 <style scoped>
