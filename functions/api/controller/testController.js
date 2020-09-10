@@ -450,6 +450,7 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                       time: true,
                       like: linkData.data().like,
                       stdid: linkData.data().id, //ถามว่าจะมีกรณีที่ความชอบเติมไม่ครบมั้ย
+                      uid: linkUID,
                     });
                   } else {
                     //else ถ้าไม่มีใน bounty =>
@@ -462,6 +463,7 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                       time: true,
                       stdid: linkData.data().id,
                       point: point,
+                      uid: linkUID,
                     });
                   }
                   //2 ให้เรา update point + 3 และ count + 1 ให้ตัวเอง
