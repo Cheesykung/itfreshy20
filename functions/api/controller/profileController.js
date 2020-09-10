@@ -351,11 +351,11 @@ profileController.put('/answer', async (req, res) => {
         
         // นายต้องส่งกลับมาเป็น object นะ เเล้วก็บอกด้วยว่าอันไหนคือคำตอบของข้อไหน
         // let answer = {
-        // first : 1-5 (number)
-        // second : 1-5 (number)
-        // third : 1-5 (number)
-        // fourth : 1-5 (number)
-        // fifth : 1-5 (number)
+        // first : (number)
+        // second : (number)
+        // third : (number)
+        // fourth : (number)
+        // fifth : (number)
         // };
         let answer = req.body.answer;
         let year = req.headers.year; //require ปีของคนที่ตอบคำถามอ่ะ หมายถึง คนที่ทำอยู่นะไม่ใช่เจ้าของคำถามนั้นๆ
@@ -366,26 +366,35 @@ profileController.put('/answer', async (req, res) => {
         score += answer.third *  1.5;
         score += answer.fourth * 1.25;
         score += answer.fifth;
-        console.log(score);
+
+        let id = req.headers.id; // uid น้องบน firebase
+        let uid = req.headers.uid;  // uid พี่บน firebase
+        //owner = ของน้อง in every อันเลย
+        //scorer = ของพี่ in every อันเลย
 
         //if he/she is 1st year
         if (year == 1) {
-            let id = req.headers.id; // id ของน้อง
-            let uid = req.headers.uid // uid,id ของพี่
-
             if (id != undefined) {
-                let userRef = firestore.collection('secretfromuser').doc(id);
+                let owner = await firestore.collection('users').doc(id).get();
+                let owner_data = owner.data();
+                let owner_id = owner_data.id;
+
+                let scorer = await firestore.collection('users').doc(uid).get();
+                let scorer_data = scorer.data();
+                let scorer_id = scorer_data.id;                
+
+                let userRef = firestore.collection('secretfromuser').doc(owner_id);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
 
-                let user = userData.score.filter(element => element.uid == uid);
+                let user = userData.score.filter(element => element.uid == scorer_id);
 
                 if (user.length != 0) {
                     let total = user[0].point;
                     if (total != 0) {
                         score += total;
                         let remove = {
-                            'uid' : uid,
+                            'uid' : scorer_id,
                             'point' : total
                         }
                         await userRef.update({
@@ -394,7 +403,7 @@ profileController.put('/answer', async (req, res) => {
                     }
                 }
                     let payload = {
-                        'uid' : uid,
+                        'uid' : scorer_id,
                         'point' : score
                     }
                     console.log(payload);
@@ -422,26 +431,31 @@ profileController.put('/answer', async (req, res) => {
             }
         }
         else if (year == 2) {
-            let id = req.headers.id; // uid ,id ของพี่
-            let uid = req.headers.uid; // uid ของน้อง
+            let x = uid; // สลับค่ากัน
+            uid = id;
+            id = x;
 
             if (uid != undefined) {
                 let owner = await firestore.collection('users').doc(uid).get();
-                let data = owner.data();
-                let ref = data.id;
+                let owner_data = owner.data();
+                let owner_id = owner_data.id;
 
-                let userRef = firestore.collection('secretfromuser').doc(ref);
+                let scorer = await firestore.collection('users').doc(id).get();
+                let scorer_data = scorer.data();
+                let scorer_id = scorer_data.id;
+
+                let userRef = firestore.collection('secretfromuser').doc(owner_id);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
 
-                let user = userData.score.filter(element => element.uid == id);
+                let user = userData.score.filter(element => element.uid == scorer_id);
                 
                 if (user.length != 0) {
                     let total = user[0].point;
                     if (total != 0) {
                         score += total;
                         let remove = {
-                            'uid' : id,
+                            'uid' : scorer_id,
                             'point' : total
                         }
                         await userRef.update({
@@ -450,7 +464,7 @@ profileController.put('/answer', async (req, res) => {
                     }
                 }
                 let payload = {
-                    'uid' : id,
+                    'uid' : scorer_id,
                     'point' : score
                 }
                 console.log(payload);
