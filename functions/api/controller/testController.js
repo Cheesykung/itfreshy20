@@ -448,7 +448,8 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                       pic: linkData.data().pic,
                       question: linkData.data().like ? true : false, //ไม่มีคำถาม
                       time: true,
-                      like: linkData.data().like, //ถามว่าจะมีกรณีที่ความชอบเติมไม่ครบมั้ย
+                      like: linkData.data().like,
+                      stdid: linkData.data().stdid, //ถามว่าจะมีกรณีที่ความชอบเติมไม่ครบมั้ย
                     });
                   } else {
                     //else ถ้าไม่มีใน bounty =>
@@ -459,6 +460,7 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                       year: dataLink.data().year,
                       pic: dataLink.data().pic,
                       time: true,
+                      stdid: linkData.data().stdid,
                       point: point,
                     });
                   }
