@@ -419,8 +419,8 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                                 }
 
                   //const dataLink = await userRef.doc(linkUID).get();
-                  let arrayPoint = [5, 7, 9, 11];
-                  let point;
+                  // let arrayPoint = [5, 7, 9, 11];
+                  // let point;
                   if (bounty.data().list.indexOf(linkUID) != -1) {
                     point = linkYear <= 4 ? arrayPoint[linkYear - 1] : 11;
                     let isAllBounty = await statsRef.get().then((data) => {
@@ -514,18 +514,9 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                     });
                 }
               });
-          }
-        } else {
-            res.status(200).send({
-                'statusCode': '200',
-                'statusText': 'Bad Request',
-                'error': true,
-                'message': 'Link is empty'
-            });
-        }
-      });
+
     } else {
-      res.status(400).send({
+      res.status(200).send({
         statusCode: "400",
         statusText: "Bad Request",
         error: true,
