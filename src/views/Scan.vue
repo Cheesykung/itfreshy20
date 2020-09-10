@@ -20,10 +20,13 @@
             <h1 class="text-3xl text-primary-100">{{ dataRecieved.name }}</h1>
             <span class="font-semibold text-primary-250">Year {{ dataRecieved.year }}</span>
           </span>
-          <span class="flex flex-col" v-if="getYear !== '2'">
-            <h3 class="text-2xl sm:text-3xl text-secondary_b">How About..</h3>
+          <span class="flex flex-col space-y-6 items-center justify-center" v-if="getYear === '1'">
+            <h3 class="flex relative items-center text-2xl sm:text-3xl text-secondary_b">
+              How About..
+              <span class="lines"></span>
+            </h3>
             <ul class="px-1">
-              <li v-for="(item, i) in dataRecieved.like" :key="i" class="my-8 flex-col space-y-4">
+              <li v-for="(item, i) in dataRecieved.like" :key="i" class="mb-8 flex-col space-y-4">
                 <h4
                   class="text-capitalize sm:text-lg lg:text-xl font-normal text-primary-200"
                 >{{ item }}</h4>
@@ -31,15 +34,21 @@
                   <li
                     v-for="(icon, index) in icons"
                     :key="index"
-                    class="text-3xl sm:text-4xl"
-                    @click="getLevel(i, index)"
+                    class="text-3xl sm:text-4xl cursor-pointer"
+                    :class="ansActive[i-1].id == i-1 && ansActive[i-1].state == index-2 ? 'text-secondary_b' : ''"
+                    @click="getLevel(i, index);"
                   >
                     <i :class="icon.class"></i>
                   </li>
                 </ul>
               </li>
             </ul>
-            {{ likeSet }}
+            <span>
+              <button
+                class="block px-8 py-3 text-sm bg-secondary_b text-gray-100 rounded-lg"
+                @click="setAns()"
+              >Go!</button>
+            </span>
           </span>
           <div class="stats" v-if="dataRecieved.point">
             <div class="chased flex flex-col space-y-2 justify-center content-center">
@@ -79,6 +88,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
+import alertify from "alertifyjs";
 
 export default {
   components: {
@@ -94,8 +104,14 @@ export default {
         { class: "far fa-grin-wink", name: "like" },
         { class: "far fa-grin-hearts", name: "love" }
       ],
-      active: [],
-      likeSet: []
+      ansActive: [
+        { id: 0, state: null },
+        { id: 1, state: null },
+        { id: 2, state: null },
+        { id: 3, state: null },
+        { id: 4, state: null }
+      ],
+      answer: []
     };
   },
   mounted() {
@@ -104,27 +120,27 @@ export default {
     });
   },
   methods: {
-    ...mapActions("user", ["setQr"]),
-    getLevel(questionId, level) {
-      switch (level) {
-        case level === 0:
-          level = -2;
-          break;
-        case level === 1:
-          level = -1;
-          break;
-        case level === 2:
-          level = 0;
-          break;
-        case level === 3:
-          level = 1;
-          break;
-        case level === 4:
-          level = 2;
-          break;
-      }
-      this.likeSet.push({questionId, level});
+    ...mapActions("user", ["setQr", "setAnswer"]),
+    getLevel(i, index) {
+      this.ansActive[i - 1].id = i - 1;
+      this.ansActive[i - 1].state = index - 2;
+    },
+    async setAns() {
+      const isNull = item => item.state !== null;
+      const ans = this.ansActive;
+      if (ans.every(isNull)) {
+        this.answer = {
+          first: this.ansActive[0].state,
+          second: this.ansActive[1].state,
+          third: this.ansActive[2].state,
+          fourth: this.ansActive[3].state,
+          fifth: this.ansActive[4].state
+        };
 
+        await this.setAnswer(this.answer).then(res => console.log(res));
+      } else {
+        alertify.notify("PLEASE FILL UP THE FORM");
+      }
     }
   },
   computed: {
@@ -151,5 +167,12 @@ export default {
 .stats .chased {
   border-right: solid 1px;
   @apply border-primary-800;
+}
+
+span.lines {
+  content: "";
+  flex: 1 1 auto;
+  border-top: 1px solid;
+  @apply border-primary-850;
 }
 </style>

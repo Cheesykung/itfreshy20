@@ -62,14 +62,11 @@ const actions = {
         .currentUser.getIdToken()
         .then((res) => {
           axios
-            .post(
-              API + "test/scan/" + payload, "",
-              {
-                headers: {
-                  FIREBASE_AUTH_TOKEN: res,
-                },
-              }
-            )
+            .post(API + "test/scan/" + payload, "", {
+              headers: {
+                FIREBASE_AUTH_TOKEN: res,
+              },
+            })
             .then((resData) => {
               resolve(resData.data);
               commit("setQrData", resData.data, { root: false });
@@ -121,6 +118,33 @@ const actions = {
 
   setProfile(context, payload) {
     context.commit("setProfile", payload, { root: false });
+  },
+
+  setAnswer({ getters }, payload) {
+    return new Promise((resolve, reject) => {
+      firebase
+        .auth()
+        .currentUser.getIdToken()
+        .then((res) => {
+          axios
+            .put(API + "/profile/answer", {"answer": payload}, {
+              headers: {
+                'FIREBASE_AUTH_TOKEN': res,
+                "id": parseInt(getters.getProfile.id),
+                "year": parseInt(getters.getProfile.year),
+              },
+            })
+            .then((ans) => {
+              resolve(ans);
+            })
+            .catch((e) => {
+              reject(e);
+            });
+        })
+        .catch((e) => {
+          throw e;
+        });
+    });
   },
 
   async signOut(context) {

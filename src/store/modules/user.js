@@ -16,6 +16,7 @@ const state = () => ({
     ? localStorage.getItem("firstTime")
     : null,
   qrData: null,
+  answer: null
 });
 
 const getters = {
@@ -53,6 +54,9 @@ const getters = {
 const mutations = {
   setQrData: (state, payload) => {
     state.qrData = payload;
+  },
+  setAnswer: (state, payload) => {
+    state.answer = payload
   },
   setProfile: (state, payloadProfile) => {
     state.profile = payloadProfile;
