@@ -154,7 +154,7 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
   try {
     const statsRef = await firestore.collection("allstats").doc("stat");
     const getyear = USERSRef.doc(req.user.uid)
-      .get()
+      .get()    
       .then((getyear) => {
         return (data = {
           link: name,
@@ -162,6 +162,7 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
           time: 10,
           year: getyear.data().year,
           player: getyear.data().player,
+          stdid : getyear.data().id,
         });
       })
       .then(async (getyear) => {
@@ -432,14 +433,16 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                     (isYear === 1 || isLinkYear === 1)
                   ) {
                     //ถ้าคนสแกนกับคนโดนเป็น player //อันนึงต้องปี1
-                    //quistion fals ถ้าไม่มีคำถาม
+                    //quistion fals ถ้าไม่มีคำถาม linkstdid
                     res.status(200).send({
                       name: linkData.data().name,
                       year: isLinkYear,
                       pic: linkData.data().pic,
                       question: linkData.data().like ? true : false, //ไม่มีคำถาม
                       time: true,
-                      like: linkData.data().like, //ถามว่าจะมีกรณีที่ความชอบเติมไม่ครบมั้ย
+                      like: linkData.data().like,
+                      stdid: linkData.data().id, //ถามว่าจะมีกรณีที่ความชอบเติมไม่ครบมั้ย
+                      uid: linkUID,
                     });
                   } else {
                     //else ถ้าไม่มีใน bounty =>
@@ -450,7 +453,9 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                       year: dataLink.data().year,
                       pic: dataLink.data().pic,
                       time: true,
+                      stdid: linkData.data().id,
                       point: point,
+                      uid: linkUID,
                     });
                   }
                   //2 ให้เรา update point + 3 และ count + 1 ให้ตัวเอง
