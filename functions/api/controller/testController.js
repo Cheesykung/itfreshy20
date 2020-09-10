@@ -154,7 +154,7 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
   try {
     const statsRef = await firestore.collection("allstats").doc("stat");
     const getyear = USERSRef.doc(req.user.uid)
-      .get()
+      .get()    
       .then((getyear) => {
         return (data = {
           link: name,
@@ -162,6 +162,7 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
           time: 10,
           year: getyear.data().year,
           player: getyear.data().player,
+          stdid : getyear.data().id,
         });
       })
       .then(async (getyear) => {
