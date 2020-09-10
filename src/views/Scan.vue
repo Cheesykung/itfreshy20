@@ -21,12 +21,11 @@
             <span class="font-semibold text-primary-250">Year {{ dataRecieved.year }}</span>
           </span>
           <span class="flex flex-col space-y-6 items-center justify-center" v-if="getYear === '1'">
-            <h3 class="flex relative items-center text-2xl sm:text-3xl text-secondary_b">
+            <h3 class="flex relative items-center text-lg sm:text-xl text-secondary_b bg-transparent px-6 py-1 -mb-5 rounded-lg border-2 border-secondary_b border-solid">
               How About..
-              <span class="lines"></span>
             </h3>
-            <ul class="px-1">
-              <li v-for="(item, i) in dataRecieved.like" :key="i" class="mb-8 flex-col space-y-4">
+            <ul class="px-1 divide-y divide-primary-1000 divide-solid">
+              <li v-for="(item, i) in dataRecieved.like" :key="i" class="py-8 flex-col space-y-4">
                 <h4
                   class="text-capitalize sm:text-lg lg:text-xl font-normal text-primary-200"
                 >{{ item }}</h4>
