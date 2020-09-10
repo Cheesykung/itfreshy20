@@ -441,7 +441,7 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                     (isYear === 1 || isLinkYear === 1)
                   ) {
                     //ถ้าคนสแกนกับคนโดนเป็น player //อันนึงต้องปี1
-                    //quistion fals ถ้าไม่มีคำถาม
+                    //quistion fals ถ้าไม่มีคำถาม linkstdid
                     res.status(200).send({
                       name: linkData.data().name,
                       year: isLinkYear,
@@ -449,7 +449,7 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                       question: linkData.data().like ? true : false, //ไม่มีคำถาม
                       time: true,
                       like: linkData.data().like,
-                      stdid: linkData.data().stdid, //ถามว่าจะมีกรณีที่ความชอบเติมไม่ครบมั้ย
+                      stdid: linkData.data().id, //ถามว่าจะมีกรณีที่ความชอบเติมไม่ครบมั้ย
                     });
                   } else {
                     //else ถ้าไม่มีใน bounty =>
@@ -460,7 +460,7 @@ testController.post('/scan/:id',isLoggedIn, async (req, res) => {
                       year: dataLink.data().year,
                       pic: dataLink.data().pic,
                       time: true,
-                      stdid: linkData.data().stdid,
+                      stdid: linkData.data().id,
                       point: point,
                     });
                   }
