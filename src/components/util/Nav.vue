@@ -44,7 +44,7 @@
           :key="i"
           class="capitalize transform duration-150 delay-50 hover:scale-125"
         >
-          <router-link :to="{ path: item.link, replace: true}">{{ item.name }}</router-link>
+          <router-link :to="{ path: item.link, replace: true}" @click="hidden = true">{{ item.name }}</router-link>
         </li>
         <li
           @click="signOut"
