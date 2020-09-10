@@ -2,7 +2,7 @@
   <div id="app" v-lazy:background-image="bgObj">
     <Nav v-if="showNav" />
     <transition name="animated">
-      <keep-alive max="6">
+      <keep-alive max="10">
         <router-view :key="$route.fullPath" />
       </keep-alive>
     </transition>
@@ -37,6 +37,10 @@ export default {
     "$route.meta.hideNavigation": function(hideNavigation) {
       this.showNav = !hideNavigation;
     },
+    /* eslint-disable */
+    $route(to, from) {
+      document.title = to.meta.title || "IT HUNTER 2020";
+    },
     online(v) {
       if (v) {
         this.showOnline = true;
@@ -67,7 +71,7 @@ export default {
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;300;400&family=Roboto:wght@300;400;600&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Righteous&display=swap");
 
 html,
 body {
@@ -75,7 +79,7 @@ body {
 }
 
 #app {
-  font-family: 'Righteous', Helvetica, cursive, 'Prompt';
+  font-family: "Righteous", Helvetica, cursive, "Prompt";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -153,7 +157,7 @@ body {
 }
 
 .loading {
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: 500;
   font-family: Kanit;
 }
@@ -198,19 +202,19 @@ button:focus {
 }
 
 ::-webkit-scrollbar {
-  width: 0.35rem;
+  width: 0.6rem;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-primary-1000;
+  @apply bg-primary-1100;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary-850 rounded-full;
+  @apply bg-primary-850;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary-700;
+  @apply bg-primary-600;
 }
 
 .lucky-font {
