@@ -130,8 +130,8 @@ const actions = {
             .put(API + "/profile/answer", {"answer": payload}, {
               headers: {
                 'FIREBASE_AUTH_TOKEN': res,
-                'id': parseInt(getters.getProfile.year) === 1 ? getters.getProfile.uid : gettters.getQrData.uid,
-                'uid': parseInt(getters.getProfile.year) === 2 ? getters.getQrData.uid : gettters.getProfile.uid,
+                'id': parseInt(getters.getProfile.year) === 1 ? getters.getProfile.uid : getters.getQrData.uid,
+                'uid': parseInt(getters.getProfile.year) === 2 ? getters.getProfile.uid : getters.getQrData.uid,
                 "year": parseInt(getters.getProfile.year),
               },
             })

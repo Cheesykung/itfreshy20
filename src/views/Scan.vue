@@ -20,8 +20,8 @@
             <h1 class="text-3xl text-primary-100">{{ dataRecieved.name }}</h1>
             <span class="font-semibold text-primary-250">Year {{ dataRecieved.year }}</span>
           </span>
-          <span class="flex flex-col space-y-6 items-center justify-center" v-if="getYear === '1'">
-            <h3 class="flex relative items-center text-lg sm:text-xl text-secondary_b bg-transparent px-6 py-1 -mb-5 rounded-lg border-2 border-secondary_b border-solid">
+          <span class="flex flex-col space-y-6 items-center justify-center" v-if="getYear === '1' || getYear === '2'">
+            <h3 class="flex relative items-center text-lg sm:text-xl text-secondary_b bg-transparent px-6 py-1 -mb-6 mt-6 rounded-lg border-2 border-secondary_b border-solid">
               How About..
             </h3>
             <ul class="px-1 divide-y divide-primary-1000 divide-solid">
@@ -59,7 +59,7 @@
               <span class="text-sm font-normal">Added Points</span>
             </div>
           </div>
-          <div v-if="getYear !== '1'">
+          <div v-if="getYear !== '1' && getYear !== '2'">
             <button
               class="block mt-6 px-8 py-3 text-sm bg-secondary_b text-green-100 rounded-lg"
               @click="$router.go(-1)"
@@ -136,7 +136,11 @@ export default {
           fifth: this.ansActive[4].state
         };
 
-        await this.setAnswer(this.answer).then(res => console.log(res));
+        await this.setAnswer(this.answer).then(res => {
+          console.log(res.data)
+          alertify.success(res.data.message + ", " + res.data.score )
+          //  this.$router.push({ path: '/profile' })
+          });
       } else {
         alertify.notify("PLEASE FILL UP THE FORM");
       }
