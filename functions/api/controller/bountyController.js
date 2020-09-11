@@ -44,11 +44,11 @@ bountyController.post('/random', async(req, res) => {
             year2_users.splice(b, 1);
 
             let c = Math.floor(Math.random() * year3_users.length);
-            year3_users[c] != undefined ? bounty_id.push(year2_users[c]) : bounty_id.push(null);
+            year3_users[c] != undefined ? bounty_id.push(year3_users[c]) : bounty_id.push(null);
             year3_users.splice(c, 1);
             
             let d = Math.floor(Math.random() * year4_users.length);
-            year4_users[d] != undefined ? bounty_id.push(year2_users[d]) : bounty_id.push(null);
+            year4_users[d] != undefined ? bounty_id.push(year4_users[d]) : bounty_id.push(null);
             year4_users.splice(d, 1);
         }
 
