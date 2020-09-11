@@ -12,7 +12,7 @@ bountyController.use(cors({ origin: true }));
 
 // This API is now in cron-job.You can find it in index.js
 bountyController.post('/random', async(req, res) => {
-//     //Random 10 users to push in 'bounty' in db
+    //Random 10 users to push in 'bounty' in db
     try {
         let userRef = await firestore.collection('users').get();
         let year1_users = [];
@@ -24,10 +24,10 @@ bountyController.post('/random', async(req, res) => {
         userRef.forEach(function (element) {
             let user = element.data();
             if (user.newuser == 0) {
-                user.year == "1" ? year1_users.push(user) : null;
-                user.year == "2" ? year2_users.push(user) : null;
-                user.year == "3" ? year3_users.push(user) : null;
-                user.year == "4" ? year4_users.push(user) : null;
+                user.year == "1" ? year1_users.push(user.uid) : null;
+                user.year == "2" ? year2_users.push(user.uid) : null;
+                user.year == "3" ? year3_users.push(user.uid) : null;
+                user.year == "4" ? year4_users.push(user.uid) : null;
             }
         });
 
@@ -38,26 +38,21 @@ bountyController.post('/random', async(req, res) => {
             let a = Math.floor(Math.random() * year1_users.length);
             let b = Math.floor(Math.random() * year2_users.length);
             let c = Math.floor(Math.random() * year3_users.length);
-            let d = Math.floor(Math.random() * year4_users.length); 
-            bounty_id.push(year1_users[a]);
-            bounty_id.push(year2_users[b]);
-            bounty_id.push(year3_users[c]);
-            bounty_id.push(year4_users[d]);
+            let d = Math.floor(Math.random() * year4_users.length);
+            year1_users[a] != undefined ? bounty_id.push(year1_users[a]) : bounty_id.push(null);
             year1_users.splice(a, 1);
+            year2_users[b] != undefined ? bounty_id.push(year2_users[b]) : bounty_id.push(null);
             year2_users.splice(b, 1);
+            year2_users[c] != undefined ? bounty_id.push(year2_users[c]) : bounty_id.push(null);
             year3_users.splice(c, 1);
+            year2_users[d] != undefined ? bounty_id.push(year2_users[d]) : bounty_id.push(null);
             year4_users.splice(d, 1);
         }
-        console.log(bounty_id.length);
-        console.log(year1_users);
-        console.log(year2_users);
-        console.log(year3_users);
-        console.log(year4_users);
 
-        // // update ref of bounty to 'bounty' in db
-        // await firestore.collection('bounty').doc('list').set({
-        //     'list' : bounty_id
-        // });
+        // update ref of bounty to 'bounty' in db
+        await firestore.collection('bounty').doc('list').set({
+            'list' : bounty_id
+        });
 
         res.status(200).send({
             'statusCode' : '200',
@@ -85,10 +80,24 @@ bountyController.get('', async (req, res) => {
         let list = bountyData.list;
         //because list that we got is the reference of users in firebase that we push in /random
         //so when we want to get data we can use that referece to get data without using where() function
-        let userDoc = [];
-        for (let i = 0; i < 10; i++) {
-            let users = await list[i].get();
-            userDoc.push(users.data());
+
+        let all_bounty = [];
+        for (let i = 0; i < list.length; i++) {
+            if (list[i] != null) {
+                let user = await firestore.collection('users').doc(list[i]).get();
+                let user_data = user.data();
+                let payload = {
+                    'fname' : user_data.fname,
+                    'surname' : user_data.surname,
+                    'nickname' : user_data.nickname,
+                    'age' : user_data.age,
+                    'year' : user_data.year,
+                    'branch' : user_data.branch,
+                    'contact' : user_data.contact,
+                    'pic' : user_data.pic,
+                };
+                all_bounty.push(payload);
+            }
         }
 
         res.status(200).send({
@@ -96,7 +105,7 @@ bountyController.get('', async (req, res) => {
             'statusText' : 'OK',
             'error' : false,
             'message' : 'BOUNTY GOT',
-            'data' : userDoc
+            'data' : all_bounty
         });
 
     } catch (e) {

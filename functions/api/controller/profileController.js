@@ -367,8 +367,8 @@ profileController.put('/answer', async (req, res) => {
         score += answer.fourth * 1.25;
         score += answer.fifth;
 
-        let id = req.headers.id; // uid น้องบน firebase
-        let uid = req.headers.uid;  // uid พี่บน firebase
+        let id = req.headers.id; // uid น้องบน firebase ไม่ใช่ Token ยาวๆนะ ชื่อ DOC ใน 'users' อ่ะ
+        let uid = req.headers.uid;  // uid พี่บน firebase ไม่ใช่ Token ยาวๆนะ ชื่อ DOC ใน 'users' อ่ะ
         //owner = ของน้อง in every อันเลย
         //scorer = ของพี่ in every อันเลย
 
