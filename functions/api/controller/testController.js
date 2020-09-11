@@ -287,8 +287,11 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
     if (!findLink.empty) {
       await findLink.forEach((doc) => {
         let linkUID = doc.data().uid;
-        let linkYear = doc.data().year;
-        let linkTime = doc.data().time;
+        let linkYear = parseInt(doc.data().year);
+        let linkTime = parseInt(doc.data().time);
+        let linkPlayer = parseInt(doc.data().player);
+        let stdid = doc.data().stdid;
+
         if (linkUID !== userUID) {
           if (linkTime <= 0) {
             res.status(200).send({
@@ -319,14 +322,16 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                     .doc("stat");
                   let isYear = parseInt(userData.data().year);
                   let isPlayer = parseInt(userData.data().player);
-                  let isLinkPlayer = parseInt(linkData.data().player);
-                  let isLinkYear = parseInt(linkData.data().year);
+                  // let isLinkPlayer = parseInt(linkData.data().player);
+                  let isLinkPlayer = linkPlayer;
+                  // let isLinkYear = parseInt(linkData.data().year);
+                  let isLinkYear = linkYear
                   let bounty = await firestore
                     .collection("bounty")
                     .doc("list")
                     .get();
 
-                  const dataLink = await userRef.doc(linkUID).get();
+                  //const dataLink = await userRef.doc(linkUID).get();
                   let arrayPoint = [5, 7, 9, 11];
                   let point;
                   if (bounty.data().list.indexOf(linkUID) != -1) {
@@ -358,6 +363,7 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                       like: linkData.data().like,
                       stdid: linkData.data().id, //ถามว่าจะมีกรณีที่ความชอบเติมไม่ครบมั้ย
                       uid: linkUID,
+                      point: point
                     });
                   } else {
                     //else ถ้าไม่มีใน bounty =>
@@ -386,7 +392,7 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                     contact: isLinkContact ? isLinkContact : null,
                     pic: isLinkPic ? isLinkPic : null,
                   });
-                  console.log(arrayDataLink);
+                  //console.log(arrayDataLink);
                   await userRef
                     .doc(userUID)
                     .get()
@@ -399,7 +405,7 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                     });
 
                   //อัพเดทใน scan ของตัวเอง เพิ่ม uid ที่เราไปสแกน
-                  let updateScan = await scanUserData.data().scan;
+                  let updateScan = scanUserData.data().scan;
                   updateScan.push(linkUID);
                   await scanRef.doc(userUID).update({
                     scan: updateScan,
