@@ -36,16 +36,19 @@ bountyController.post('/random', async(req, res) => {
             //random number between 0 - 9 for array[index]
             //math.random will return number between 0 -> 1
             let a = Math.floor(Math.random() * year1_users.length);
-            let b = Math.floor(Math.random() * year2_users.length);
-            let c = Math.floor(Math.random() * year3_users.length);
-            let d = Math.floor(Math.random() * year4_users.length);
             year1_users[a] != undefined ? bounty_id.push(year1_users[a]) : bounty_id.push(null);
             year1_users.splice(a, 1);
+            
+            let b = Math.floor(Math.random() * year2_users.length);
             year2_users[b] != undefined ? bounty_id.push(year2_users[b]) : bounty_id.push(null);
             year2_users.splice(b, 1);
-            year2_users[c] != undefined ? bounty_id.push(year2_users[c]) : bounty_id.push(null);
+
+            let c = Math.floor(Math.random() * year3_users.length);
+            year3_users[c] != undefined ? bounty_id.push(year2_users[c]) : bounty_id.push(null);
             year3_users.splice(c, 1);
-            year2_users[d] != undefined ? bounty_id.push(year2_users[d]) : bounty_id.push(null);
+            
+            let d = Math.floor(Math.random() * year4_users.length);
+            year4_users[d] != undefined ? bounty_id.push(year2_users[d]) : bounty_id.push(null);
             year4_users.splice(d, 1);
         }
 
