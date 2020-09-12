@@ -347,7 +347,7 @@ profileController.put('/scaned', async (req, res) => {
 });
 
 profileController.put('/answer', async (req, res) => {
-    try {
+    // try {
         
         // นายต้องส่งกลับมาเป็น object นะ เเล้วก็บอกด้วยว่าอันไหนคือคำตอบของข้อไหน
         // let answer = {
@@ -430,7 +430,7 @@ profileController.put('/answer', async (req, res) => {
                 return ;
             }
         }
-        else if (year == 2) {
+        else if (year >= 2) {
             if (uid != undefined) {
                 let x = uid; // uid พี่ สลับค่ากัน
                 uid = id; // id น้อง nws
@@ -491,15 +491,15 @@ profileController.put('/answer', async (req, res) => {
             }
         }
 
-    } catch (e) {
-        console.log(e);
-        res.status(500).send({
-            'statusCode' : '500',
-            'statusText' : 'Internal Server Error',
-            'error' : true,
-        });
-        return ;
-    }
+    // } catch (e) {
+    //     console.log(e);
+    //     res.status(500).send({
+    //         'statusCode' : '500',
+    //         'statusText' : 'Internal Server Error',
+    //         'error' : true,
+    //     });
+    //     return ;
+    // }
 });
 
 

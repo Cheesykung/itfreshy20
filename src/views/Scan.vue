@@ -20,10 +20,23 @@
             <h1 class="text-3xl text-primary-100">{{ dataRecieved.name }}</h1>
             <span class="font-semibold text-primary-250">Year {{ dataRecieved.year }}</span>
           </span>
-          <span class="flex flex-col space-y-6 items-center justify-center" v-if="getYear === '1' || getYear === '2'">
-            <h3 class="flex relative items-center text-lg sm:text-xl text-secondary_b bg-transparent px-6 py-1 -mb-6 mt-6 rounded-lg border-2 border-secondary_b border-solid">
-              How About..
-            </h3>
+          <div class="stats" v-if="dataRecieved.point">
+            <div class="chased flex flex-col space-y-2 justify-center content-center">
+              <span class="text-2xl font-semibold text-primary-200 uppercase">{{ getPoints }}</span>
+              <span class="text-sm font-normal text-primary-275">Total Points</span>
+            </div>
+            <div class="un-chased flex flex-col space-y-2 justify-center content-center">
+              <span class="text-2xl font-semibold">++{{ dataRecieved.point }}</span>
+              <span class="text-sm font-normal">Added Points</span>
+            </div>
+          </div>
+          <span
+            class="flex flex-col space-y-6 items-center justify-center"
+            v-if="getYear === '1' || getYear === '2'"
+          >
+            <h3
+              class="flex relative items-center text-lg sm:text-xl text-secondary_b bg-transparent px-6 py-1 -mb-6 mt-6 rounded-lg border-2 border-secondary_b border-solid"
+            >How About..</h3>
             <ul class="px-1 divide-y divide-primary-1000 divide-solid">
               <li v-for="(item, i) in dataRecieved.like" :key="i" class="py-8 flex-col space-y-4">
                 <h4
@@ -42,23 +55,15 @@
                 </ul>
               </li>
             </ul>
-            <span>
+            <span :class="loading ? 'loading' : ''">
               <button
                 class="block px-8 py-3 text-sm bg-secondary_b text-gray-100 rounded-lg"
+                v-if="!loading"
                 @click="setAns()"
               >Go!</button>
             </span>
           </span>
-          <div class="stats" v-if="dataRecieved.point">
-            <div class="chased flex flex-col space-y-2 justify-center content-center">
-              <span class="text-2xl font-semibold text-primary-200 uppercase">{{ getPoints }}</span>
-              <span class="text-sm font-normal text-primary-275">Total Points</span>
-            </div>
-            <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-              <span class="text-2xl font-semibold">++{{ dataRecieved.point }}</span>
-              <span class="text-sm font-normal">Added Points</span>
-            </div>
-          </div>
+
           <div v-if="getYear !== '1' && getYear !== '2'">
             <button
               class="block mt-6 px-8 py-3 text-sm bg-secondary_b text-green-100 rounded-lg"
@@ -71,8 +76,9 @@
             <ion-icon name="close-circle-outline" class="text-6xl text-complementary-treda"></ion-icon>
             <span class="uppercase text-lg">{{ dataRecieved.message }}</span>
           </div>
-          <span>
+          <span :class="loading ? 'loading' : ''">
             <button
+              v-if="!loading"
               class="block px-8 py-3 text-sm bg-complementary-treda text-gray-100 rounded-lg"
               @click="$router.go(-1)"
             >Go Back</button>
@@ -110,7 +116,8 @@ export default {
         { id: 3, state: null },
         { id: 4, state: null }
       ],
-      answer: []
+      answer: [],
+      loading: false
     };
   },
   mounted() {
@@ -125,6 +132,7 @@ export default {
       this.ansActive[i - 1].state = index - 2;
     },
     async setAns() {
+      this.loading = true;
       const isNull = item => item.state !== null;
       const ans = this.ansActive;
       if (ans.every(isNull)) {
@@ -137,11 +145,12 @@ export default {
         };
 
         await this.setAnswer(this.answer).then(res => {
-          console.log(res.data)
-          alertify.success(res.data.message + ", " + res.data.score )
-          //  this.$router.push({ path: '/profile' })
-          });
+          console.log(res.data);
+          alertify.success("Success");
+          this.$router.go();
+        });
       } else {
+        this.loading = false;
         alertify.notify("PLEASE FILL UP THE FORM");
       }
     }

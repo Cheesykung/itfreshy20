@@ -1,6 +1,6 @@
 //require zone // sailor
 
-const minify = require("express-minify");
+
 const compression = require("compression");
 const path = require("path");
 const cors = require("cors");
@@ -29,7 +29,7 @@ const log = bunyan.createLogger({ name: "myapp" });
 if (process.env.NODE_ENV === "production") {
   testController.set("trust proxy", 1); // trust first proxy
 }
-testController.use(minify());
+
 testController.use(function(req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
   res.setHeader(
@@ -73,7 +73,7 @@ testController.post('/backup',isLoggedIn, async (req, res) =>{
 });
 
 testController.get("/fire", isLoggedIn, async (req, res) => {
-  try {
+  // try {
     const checknewuser = USERSRef.doc(req.user.uid)
       .get()
       .then((checknewuser) => {
@@ -142,9 +142,9 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
           return;
         }
       });
-  } catch (error) {
-    res.status(500).json({ data: error });
-  }
+  // } catch (error) {
+  //   res.status(500).json({ data: error });
+  // }
 });
 testController.post("/gate", isLoggedIn, async (req, res) => {
   try {
