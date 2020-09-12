@@ -146,8 +146,6 @@ const actions = {
             .put(API + "/profile/answer", JSON.parse(answer), {
               headers: {
                 'FIREBASE_AUTH_TOKEN': res,
-                // 'id': getters.getQrData.uid,
-                // 'uid': getters.getProfile.uid,
                 'id': parseInt(getters.getProfile.year) === 1 ? getters.getProfile.uid : getters.getQrData.uid,
                 'uid': parseInt(getters.getProfile.year) === 1 ? getters.getQrData.uid : getters.getProfile.uid,
                 "year": parseInt(getters.getProfile.year),

@@ -202,7 +202,7 @@ button:focus {
 }
 
 ::-webkit-scrollbar {
-  width: 0.6rem;
+  width: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {
@@ -210,7 +210,7 @@ button:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary-850;
+  @apply bg-primary-900;
 }
 
 ::-webkit-scrollbar-thumb:hover {

@@ -22,7 +22,7 @@
             class="fas fa-user-alt basic-icon hidden md:block ease delay-50 duration-200 hover:scale-125"
           ></i>
         </div>
-        <div @click="$router.push('/edit')">
+        <div>
           <i
             class="fas fa-cog basic-icon ease delay-50 duration-200 hover:scale-125 hover:rotate-90"
           ></i>
