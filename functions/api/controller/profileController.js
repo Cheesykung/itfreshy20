@@ -431,11 +431,11 @@ profileController.put('/answer', async (req, res) => {
             }
         }
         else if (year == 2) {
-            let x = uid; // สลับค่ากัน
-            uid = id;
-            id = x;
-
             if (uid != undefined) {
+                let x = uid; // uid พี่ สลับค่ากัน
+                uid = id; // id น้อง nws
+                id = x; // uid พี่ 1tx
+
                 let owner = await firestore.collection('users').doc(uid).get();
                 let owner_data = owner.data();
                 let owner_id = owner_data.id;
@@ -448,7 +448,7 @@ profileController.put('/answer', async (req, res) => {
                 let userGet = await userRef.get();
                 let userData = userGet.data();
 
-                let user = userData.score.filter(element => element.uid == scorer_id);
+                let user = userData.score.filter(element => element.uid === scorer_id);
                 
                 if (user.length != 0) {
                     let total = user[0].point;

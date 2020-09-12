@@ -61,7 +61,7 @@
         </div>
         <!--- Profile button --->
         <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8 py-6">
-          <button
+          <!-- <button
             class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm animate-pulse"
             @click="!loading ? Bounty() : null"
           >ล่ารายชื่อเลย!</button>
@@ -70,9 +70,9 @@
             @click="genQr()"
           >
             <span :class="loading ? 'loading text-sm' : ''">{{ !loading? 'สร้างลิงค์ใหม่' : ''}}</span>
-          </button>
+          </button> -->
 
-          <!-- <h3 class="text-2xl animate-pulse text-primary-200 font-semibold">เตรียมออกล่าเร็วๆนี้!</h3> -->
+          <h3 class="text-2xl animate-pulse text-primary-200 font-semibold">เตรียมออกล่าเร็วๆนี้!</h3>
         </div>
       </div>
     </div>

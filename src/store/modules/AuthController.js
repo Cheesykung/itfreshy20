@@ -79,6 +79,20 @@ const actions = {
     });
   },
 
+  getToken() {
+    return new Promise((resolve, reject) => {
+      firebase
+        .auth()
+        .currentUser.getIdToken()
+        .then((res) => {
+          resolve(res)
+        }).catch((e) => {
+          reject(e);
+          throw e;
+        })
+    })
+  },
+
   sendToken({ commit, dispatch, getters }) {
     return new Promise((resolve, reject) => {
       firebase

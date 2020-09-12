@@ -51,19 +51,7 @@ export default {
           alertify.error("เกิดข้อผิดพลาด");
         });
     }
-  },
-  // beforeRouteEnter(to, from, next) {
-  //   if (
-  //     firebase.auth().currentUser &&
-  //     localStorage.getItem("firstTime") === "true" &&
-  //     !to.matched.some(({ path }) => path === "/continue")
-  //   ) {
-  //     next({ path: "/continue", query: { next: to.fullPath }, replace: true });
-  //   } else {
-  //     next();
-  //   }
-  //   next();
-  // }
+  }
 };
 </script>
 <style scoped>
