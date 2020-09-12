@@ -28,12 +28,13 @@ ldrBoardController.use(cors({ origin: true }));
 ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
     try {
         const uid = req.user.uid;
-        const year = parseInt(req.body.year);
+        //const year = parseInt(req.body.year);
 
         const ranksRef = await firestore.collection('ranks');
         const userRef = await firestore.collection("users");
+        //let year = await userRef.doc(uid).get();
         const haveUID = await userRef.doc(uid).get();
-        console.log(haveUID.exists)
+        let year = parseInt(await haveUID.data().year);
 
         if (haveUID.exists) {
             let snapshot = await userRef.orderBy('point', 'desc').get(); //sort users

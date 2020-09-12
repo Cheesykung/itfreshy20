@@ -53,6 +53,25 @@ testController.set("views", path.join(__dirname, "views"));
 testController.set("view engine", "ejs");
 log.info("Server start");
 
+testController.post('/backup',isLoggedIn, async (req, res) =>{
+  const testRandom = await firestore.collection('users').get();
+  const backup = await firestore.collection('backupUser');
+  const userRef2 = await firestore.collection("users").doc(req.user.uid).get();
+  let role = userRef2.data().role;
+
+  console.log(role) // ใช้ newuserเป็น 0
+  if (role == "king") {
+    testRandom.forEach(doc => {
+      backup.doc(doc.id).set(doc.data());
+    });
+    res.send("okkk")
+  } else {
+    res.send("not admin")
+  }
+
+
+});
+
 testController.get("/fire", isLoggedIn, async (req, res) => {
   try {
     const checknewuser = USERSRef.doc(req.user.uid)
@@ -256,110 +275,6 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
     });
   }
 });
-//ค้าง qrcode เหลือโยนคำถาม
-// testController.get("/qrcode/:id", isLoggedIn, async function (req, res) {
-//   const findlink = LINKRef.where("link", "==", req.params.id)
-//     .get()
-//     .then((findlink) => {
-//       if (findlink.empty) {
-//         res.send("link not found");
-//         return;
-//       }
-//       findlink.forEach((linkdata) => {
-//         checker = linkdata.data().uid;
-//         checkyear = linkdata.data().year;
-//         if (linkdata.data().time <= 0) {
-//           res.send("time out link");
-//           return;
-//         } else {
-//           const scanuserdata = db
-//             .collection("scans")
-//             .doc(req.user.uid)
-//             .get()
-//             .then((scanuserdata) => {
-//               if (
-//                 scanuserdata.data().scan.indexOf(linkdata.data().uid) != "-1"
-//               ) {
-//                 res.send("havedscan");
-//               } else {
-//                 //year 1 scan2 or 2 scan 1 return
-//                 const bountyplus = db
-//                   .collection("bounty")
-//                   .doc("list")
-//                   .get()
-//                   .then((bountyplus) => {
-//                     if (
-//                       bountyplus.data().list.indexOf(linkdata.data().uid) !=
-//                       "-1"
-//                     ) {
-//                       const sender = USERSRef.doc(checker)
-//                         .get()
-//                         .then((sender) => {
-//                           res.send({
-//                             name: sender.data().name,
-//                             year: sender.data().year,
-//                             pic: sender.data().pic,
-//                             point: 6,
-//                           });
-//                         });
-//                       const userupdatepoint = USERSRef.doc(req.user.uid)
-//                         .get()
-//                         .then((userupdatepoint) => {
-//                           const update = USERSRef.doc(req.user.uid).set(
-//                             {
-//                               point: userupdatepoint.data().point + 6,
-//                               count: userupdatepoint.data().count + 1,
-//                             },
-//                             { merge: true }
-//                           );
-//                           return;
-//                         });
-//                     } else {
-//                       //year 1 scan2 or 2 scan 1 return
-//
-//                       const sender = USERSRef.doc(checker)
-//                         .get()
-//                         .then((sender) => {
-//                           res.send({
-//                             name: sender.data().name,
-//                             year: sender.data().year,
-//                             pic: sender.data().pic,
-//                             point: 6,
-//                           });
-//                         });
-//                       const userupdatepoint = USERSRef.doc(req.user.uid)
-//                         .get()
-//                         .then((userupdatepoint) => {
-//                           const update = USERSRef.doc(req.user.uid).set(
-//                             {
-//                               point: userupdatepoint.data().point + 3,
-//                               count: userupdatepoint.data().count + 1,
-//                             },
-//                             { merge: true }
-//                           );
-//                           return;
-//                         });
-//                     }
-//                   })
-//                   .then(() => {
-//                     const timedecrease = LINKRef.doc(linkdata.data().uid).set(
-//                       { time: linkdata.data().time - 1 },
-//                       { merge: true }
-//                     );
-//                     const scansave = SCANSRef.doc(req.user.uid).update({
-//                       scan: admin.firestore.FieldValue.arrayUnion(
-//                         linkdata.data().uid
-//                       ),
-//                     });
-//                   });
-//               }
-//               return;
-//             });
-//         }
-//         // res.send(linkdata.data());
-//       });
-//     });
-// });
 
 testController.post("/scan/:id", isLoggedIn, async (req, res) => {
   try {
@@ -372,8 +287,11 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
     if (!findLink.empty) {
       await findLink.forEach((doc) => {
         let linkUID = doc.data().uid;
-        let linkYear = doc.data().year;
-        let linkTime = doc.data().time;
+        let linkYear = parseInt(doc.data().year);
+        let linkTime = parseInt(doc.data().time);
+        let linkPlayer = parseInt(doc.data().player);
+        let stdid = doc.data().stdid;
+
         if (linkUID !== userUID) {
           if (linkTime <= 0) {
             res.status(200).send({
@@ -404,16 +322,18 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                     .doc("stat");
                   let isYear = parseInt(userData.data().year);
                   let isPlayer = parseInt(userData.data().player);
-                  let isLinkPlayer = parseInt(linkData.data().player);
-                  let isLinkYear = parseInt(linkData.data().year);
+                  // let isLinkPlayer = parseInt(linkData.data().player);
+                  let isLinkPlayer = linkPlayer;
+                  // let isLinkYear = parseInt(linkData.data().year);
+                  let isLinkYear = linkYear
                   let bounty = await firestore
                     .collection("bounty")
                     .doc("list")
                     .get();
 
                   //const dataLink = await userRef.doc(linkUID).get();
-                  // let arrayPoint = [5, 7, 9, 11];
-                  // let point;
+                  let arrayPoint = [5, 7, 9, 11];
+                  let point;
                   if (bounty.data().list.indexOf(linkUID) != -1) {
                     point = linkYear <= 4 ? arrayPoint[linkYear - 1] : 11;
                     let isAllBounty = await statsRef.get().then((data) => {
@@ -443,6 +363,7 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                       like: linkData.data().like,
                       stdid: linkData.data().id, //ถามว่าจะมีกรณีที่ความชอบเติมไม่ครบมั้ย
                       uid: linkUID,
+                      point: point
                     });
                   } else {
                     //else ถ้าไม่มีใน bounty =>
@@ -471,7 +392,7 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                     contact: isLinkContact ? isLinkContact : null,
                     pic: isLinkPic ? isLinkPic : null,
                   });
-                  console.log(arrayDataLink);
+                  //console.log(arrayDataLink);
                   await userRef
                     .doc(userUID)
                     .get()
@@ -484,7 +405,7 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                     });
 
                   //อัพเดทใน scan ของตัวเอง เพิ่ม uid ที่เราไปสแกน
-                  let updateScan = await scanUserData.data().scan;
+                  let updateScan = scanUserData.data().scan;
                   updateScan.push(linkUID);
                   await scanRef.doc(userUID).update({
                     scan: updateScan,
@@ -651,5 +572,7 @@ function isAdmin(req, res, next) {
     });
   }
 }
+
+
 
 module.exports = testController;
