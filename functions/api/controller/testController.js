@@ -30,7 +30,7 @@ if (process.env.NODE_ENV === "production") {
   testController.set("trust proxy", 1); // trust first proxy
 }
 
-testController.use(function(req, res, next) {
+testController.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "https://itfreshy2020.web.app");
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -53,7 +53,7 @@ testController.set("views", path.join(__dirname, "views"));
 testController.set("view engine", "ejs");
 log.info("Server start");
 
-testController.post('/backup',isLoggedIn, async (req, res) =>{
+testController.post('/backup', isLoggedIn, async (req, res) => {
   const testRandom = await firestore.collection('users').get();
   const backup = await firestore.collection('backupUser');
   const userRef2 = await firestore.collection("users").doc(req.user.uid).get();
@@ -71,45 +71,38 @@ testController.post('/backup',isLoggedIn, async (req, res) =>{
 
 
 });
+testController.get('/getfire/:id', isLoggedIn, async (req, res) => {
+  const getotheruser = USERSRef.doc(req.params.id)
+    .get()
+    .then((getotheruser) => {
+      if (getotheruser.exists) {
+        res.status(200).json({
+          pic: getotheruser.data().pic,
+          name: getotheruser.data().name,
+          count: getotheruser.data().count,
+          gate: getotheruser.data().gate,
+          uid: getotheruser.data().uid,
+          scanSave: getotheruser.data().scanSave,
+          branch: getotheruser.data().branch,
+          contact: getotheruser.data().contact,
+          point: getotheruser.data().point,
+          coin: getotheruser.data().coin,
+        });
+      }
+      else{
+        res.status(500).json({data: "notfound"})
+      }
+    })
+});
+
 
 testController.get("/fire", isLoggedIn, async (req, res) => {
   // try {
-    const checknewuser = USERSRef.doc(req.user.uid)
-      .get()
-      .then((checknewuser) => {
-        if (checknewuser.exists) {
-          if (checknewuser.data().newuser == 1) {
-            const allvisitorget = ALLRef.doc("stat")
-              .get()
-              .then((allvisitorget) => {
-                const allvisitorupdate = ALLRef.doc("stat").set(
-                  {
-                    allvisitor: allvisitorget.data().allvisitor + 1,
-                  },
-                  { merge: true }
-                );
-              });
-            res.status(200).json({ data: "newuser" });
-            return;
-          } else {
-            const allvisitorget = ALLRef.doc("stat")
-              .get()
-              .then((allvisitorget) => {
-                const allvisitorupdate = ALLRef.doc("stat").set(
-                  {
-                    allvisitor: allvisitorget.data().allvisitor + 1,
-                  },
-                  { merge: true }
-                );
-              });
-            const getuser = USERSRef.doc(req.user.uid)
-              .get()
-              .then((getuser) => {
-                res.status(200).json({ data: "pass", user: getuser.data() });
-              });
-            return;
-          }
-        } else {
+  const checknewuser = USERSRef.doc(req.user.uid)
+    .get()
+    .then((checknewuser) => {
+      if (checknewuser.exists) {
+        if (checknewuser.data().newuser == 1) {
           const allvisitorget = ALLRef.doc("stat")
             .get()
             .then((allvisitorget) => {
@@ -121,27 +114,58 @@ testController.get("/fire", isLoggedIn, async (req, res) => {
               );
             });
           res.status(200).json({ data: "newuser" });
-          const alluserget = ALLRef.doc("stat")
+          return;
+        } else {
+          const allvisitorget = ALLRef.doc("stat")
             .get()
-            .then((alluserget) => {
-              const alluserupdate = ALLRef.doc("stat").set(
+            .then((allvisitorget) => {
+              const allvisitorupdate = ALLRef.doc("stat").set(
                 {
-                  alluser: alluserget.data().alluser + 1,
+                  allvisitor: allvisitorget.data().allvisitor + 1,
                 },
                 { merge: true }
               );
             });
-          const newuser = USERSRef.doc(req.user.uid).set({
-            name: req.user.name,
-            uid: req.user.uid,
-            pic: req.user.picture,
-            newuser: 1,
-            count: 0,
-            role: "user",
-          });
+          const getuser = USERSRef.doc(req.user.uid)
+            .get()
+            .then((getuser) => {
+              res.status(200).json({ data: "pass", user: getuser.data() });
+            });
           return;
         }
-      });
+      } else {
+        const allvisitorget = ALLRef.doc("stat")
+          .get()
+          .then((allvisitorget) => {
+            const allvisitorupdate = ALLRef.doc("stat").set(
+              {
+                allvisitor: allvisitorget.data().allvisitor + 1,
+              },
+              { merge: true }
+            );
+          });
+        res.status(200).json({ data: "newuser" });
+        const alluserget = ALLRef.doc("stat")
+          .get()
+          .then((alluserget) => {
+            const alluserupdate = ALLRef.doc("stat").set(
+              {
+                alluser: alluserget.data().alluser + 1,
+              },
+              { merge: true }
+            );
+          });
+        const newuser = USERSRef.doc(req.user.uid).set({
+          name: req.user.name,
+          uid: req.user.uid,
+          pic: req.user.picture,
+          newuser: 1,
+          count: 0,
+          role: "user",
+        });
+        return;
+      }
+    });
   // } catch (error) {
   //   res.status(500).json({ data: error });
   // }
@@ -166,14 +190,14 @@ testController.post("/gate", isLoggedIn, async (req, res) => {
   }
 });
 //marks ขาด middle ware
-testController.get("/genqrcode", isLoggedIn, async function(req, res) {
+testController.get("/genqrcode", isLoggedIn, async function (req, res) {
   // res.status(200).send("kuyyyy")
   let data = {};
   const name = uuidv4();
   try {
     const statsRef = await firestore.collection("allstats").doc("stat");
     const getyear = USERSRef.doc(req.user.uid)
-      .get()    
+      .get()
       .then((getyear) => {
         return (data = {
           link: name,
@@ -181,7 +205,7 @@ testController.get("/genqrcode", isLoggedIn, async function(req, res) {
           time: 10,
           year: getyear.data().year,
           player: getyear.data().player,
-          stdid : getyear.data().id,
+          stdid: getyear.data().id,
         });
       })
       .then(async (getyear) => {
@@ -387,6 +411,8 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                   let userDataLink = await userData.data().scanSave;
                   let arrayDataLink = userDataLink ? userDataLink : [];
                   arrayDataLink.push({
+                    uid: linkUID,
+                    year: linkYear,
                     name: isLinkName ? isLinkName : null,
                     branch: isLinkBranch ? isLinkBranch : null,
                     contact: isLinkContact ? isLinkContact : null,
@@ -470,9 +496,9 @@ testController.get("/ryutools/finddoc/:collection/:docname", (req, res) => {
   try {
     log.info(
       "king querty doc " +
-        req.params.collection +
-        " doc name " +
-        req.params.docname
+      req.params.collection +
+      " doc name " +
+      req.params.docname
     );
     const all = db
       .collection(req.params.collection)
@@ -517,7 +543,7 @@ testController.get("/help", async (req, res) => {
 //   console.log(req.user);
 // });
 
-testController.use(function(req, res, next) {
+testController.use(function (req, res, next) {
   res.status(404);
   res.render("404");
   // res.render("gimmick")
