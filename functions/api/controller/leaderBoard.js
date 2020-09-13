@@ -143,11 +143,11 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
 });
 
 function setRanking(array, index) {
-    let data = {};
+    let data = [];
     //let end = (array.length <= 9) ? array.length - 1: 9;
     for (let i=0;i<=9;i++) {
         if (i === 9 && index > 9) {
-            data["rank10"] = {
+            data[i] = {
                 "name": array[index].name ? array[index].name: null,
                 "point": array[index].point ? array[index].point: null,
                 "pic": array[index].pic ? array[index].pic: null,
@@ -155,7 +155,7 @@ function setRanking(array, index) {
             }
         }
         else {
-            data["rank"+(i+1)] = (i < array.length) ? {
+            data[i] = (i < array.length) ? {
                 "name": array[i].name,
                 "point": array[i].point,
                 "pic": array[i].pic ? array[i].pic: null,
