@@ -411,6 +411,8 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                   let userDataLink = await userData.data().scanSave;
                   let arrayDataLink = userDataLink ? userDataLink : [];
                   arrayDataLink.push({
+                    uid: linkUID,
+                    year: linkYear,
                     name: isLinkName ? isLinkName : null,
                     branch: isLinkBranch ? isLinkBranch : null,
                     contact: isLinkContact ? isLinkContact : null,
