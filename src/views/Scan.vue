@@ -32,7 +32,7 @@
           </div>
           <span
             class="flex flex-col space-y-6 items-center justify-center"
-            v-if="getYear === '1' || getYear === '2'"
+            v-if="dataRecieved.question"
           >
             <h3
               class="flex relative items-center text-lg sm:text-xl text-secondary_b bg-transparent px-6 py-1 -mb-6 mt-6 rounded-lg border-2 border-secondary_b border-solid"
@@ -64,7 +64,7 @@
             </span>
           </span>
 
-          <div v-if="getYear !== '1' && getYear !== '2'">
+          <div v-if="!dataRecieved.question">
             <button
               class="block mt-6 px-8 py-3 text-sm bg-secondary_b text-green-100 rounded-lg"
               @click="$router.go(-1)"
@@ -147,7 +147,7 @@ export default {
         await this.setAnswer(this.answer).then(res => {
           console.log(res.data);
           alertify.success("Success");
-          this.$router.go();
+          this.$router.push({path: '/profile'});
         });
       } else {
         this.loading = false;

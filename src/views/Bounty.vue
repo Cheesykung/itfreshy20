@@ -1,126 +1,30 @@
 <template>
-  <section class="w-screen min-h-screen main-wrap">
-    <p class="text-s">Find For Points</p>
-    <div class="overflow-y-auto h-screen">
-      <div
-        class="grid grid-cols-2 grid-rows-1 flex items-center justify-center max-w-md mx-auto gap-2 px-5 py-2"
-      >
-        <div class="flex content-center justify-center items-center max-w-md mx-auto">
-          <div class="rounded bg-gray-700">
-            <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-              <p class="text-s">2</p>
-              <p class="text-xs">Film Kanlaya</p>
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-              <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center" />
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-              <p>SCORE</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex content-center justify-center items-center max-w-md mx-auto">
-          <div class="rounded bg-gray-700">
-            <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-              <p class="text-s">2</p>
-              <p class="text-xs">Film Kanlaya</p>
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-              <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center" />
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-              <p>SCORE</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="grid grid-cols-2 grid-rows-1 flex items-center justify-center max-w-md mx-auto gap-2 px-5 py-2"
-      >
-        <div class="flex content-center justify-center items-center max-w-md mx-auto">
-          <div class="rounded bg-gray-700">
-            <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-              <p class="text-s">2</p>
-              <p class="text-xs">Film Kanlaya</p>
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-              <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center" />
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-              <p>SCORE</p>
-            </div>
-          </div>
-        </div>
-        <div class="flex content-center justify-center items-center max-w-md mx-auto">
-          <div class="rounded bg-gray-700">
-            <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-              <p class="text-s">2</p>
-              <p class="text-xs">Film Kanlaya</p>
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-              <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center" />
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-              <p>SCORE</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="grid grid-cols-2 grid-rows-1 flex items-center justify-center max-w-md mx-auto gap-2 px-5 py-2"
-      >
-        <div class="flex content-center justify-center items-center max-w-md mx-auto">
-          <div class="rounded bg-gray-700">
-            <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-              <p class="text-s">2</p>
-              <p class="text-xs">Film Kanlaya</p>
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-              <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center" />
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-              <p>SCORE</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex content-center justify-center items-center max-w-md mx-auto">
-          <div class="rounded bg-gray-700">
-            <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-              <p class="text-s">2</p>
-              <p class="text-xs">Film Kanlaya</p>
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-              <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center" />
-            </div>
-            <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-              <p>SCORE</p>
-            </div>
-          </div>
-        </div>
+  <section class="w-screen min-h-screen main-wrap py-12">
+    <div v-if="bountyList">
+    <div class="bounted-wrap grid-cols-1 sm:grid-cols-2">
+      <div class="bounted-item space-y-4" v-for="(item, i) in bountyList.data" :key="i">
+        <img :src="item.pic + '?width=200'" class="object-cover w-24 h-24 rounded-full" />
+        <p class="text-lg">{{ item.nickname }}</p>
       </div>
     </div>
-    {{ bountyList }}
-    <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-5 py-5">
-      <button
-        type="submit"
-        class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
-      >random</button>
     </div>
+    <grid-loader v-else />
   </section>
 </template>
 
 <script>
 import API from "../middleware/api/userApi";
 import axios from "axios";
+import GridLoader from "@/components/util/gridLoader";
+
 export default {
   data() {
     return {
       bountyList: null
     };
+  },
+  components: {
+    GridLoader
   },
   mounted() {
     this.getBounty();
@@ -140,4 +44,11 @@ export default {
 </script>
 
 <style scoped>
+.bounted-wrap {
+  @apply grid gap-6 max-w-xl mx-auto px-6 my-12;
+}
+
+.bounted-item {
+  @apply bg-primary-1100 bg-opacity-75 rounded-lg flex flex-col justify-center items-center px-3 py-12 text-primary-200;
+}
 </style>

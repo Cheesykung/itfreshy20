@@ -156,6 +156,10 @@ body {
   }
 }
 
+.hover\:shadow-outline:hover {
+  box-shadow: 0 0 0 3px rgba(49,40,207, 0.8) !important;
+}
+
 .loading {
   font-size: 1rem;
   font-weight: 500;
@@ -170,17 +174,17 @@ body {
 @keyframes dots {
   0%,
   20% {
-    color: rgba(23, 19, 98);
-    text-shadow: 0.25em 0 0 rgba(23, 19, 98), 0.5em 0 0 rgba(23, 19, 98);
+    color: rgb(23, 19, 98);
+    text-shadow: 0.25em 0 0 rgb(23, 19, 98), 0.5em 0 0 rgb(23, 19, 98);
   }
 
   40% {
     color: #a8a5da;
-    text-shadow: 0.25em 0 0 rgba(23, 19, 98), 0.5em 0 0 rgba(23, 19, 98);
+    text-shadow: 0.25em 0 0 rgb(23, 19, 98), 0.5em 0 0 rgb(23, 19, 98);
   }
 
   60% {
-    text-shadow: 0.25em 0 0 #a8a5da, 0.5em 0 0 rgba(23, 19, 98);
+    text-shadow: 0.25em 0 0 #a8a5da, 0.5em 0 0 rgb(23, 19, 98);
   }
 
   80%,

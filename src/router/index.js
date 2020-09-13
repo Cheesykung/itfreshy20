@@ -30,7 +30,7 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    redirect: firebase.auth().currentUser ? "/dashboard" : "/signin",
+    redirect: Cookies.get("user") ? "/profile" : "/signin",
     meta: {
       title: "IT@KMITL FRESHY 2020",
       requiresAuth: true,
@@ -158,7 +158,7 @@ const routes = [
       requiresAuth: true,
     },
   },{
-    path: "/scan/:id",
+    path: "/scan/",
     name: "Scan",
     component: Scan,
     meta: {
@@ -197,7 +197,10 @@ const routes = [
   },
   {
     path: "*",
-    redirect: "/",
+    redirect: Cookies.get("user") ? "/": "/signin",
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 

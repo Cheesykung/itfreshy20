@@ -1,87 +1,19 @@
 <template>
-  <section class="w-screen min-h-screen main-wrap">
-    <div class="flex flex-col content-center justify-center items-center h-full py-12">
-      <div class="grid-container gap-2 px-4 md:px-24">
-        <div
-          class="row-start-1 col-start-2 col-end-3 flex flex-col items-center justify-center space-y-2"
-        >
-          <span class="rounded-full h-24 w-24 bg-gray-700 flex justify-center items-center gap-1"></span>
-          <div class="text-gray-700 gap-1 text-xs">Film Kanlaya</div>
-          <div class="text-gray-700 text-lg">1000</div>
-        </div>
-
-        <div
-          class="row-start-1 col-start-1 col-end-4 flex flex-row justify-center items-center gap-20"
-        >
-          <div class="grid grid-rows-2 gap-1">
-            <span class="rounded-full h-24 w-24 bg-gray-700 flex"></span>
-            <div class="text-gray-700 gap-1 text-xs">Film Kanlaya</div>
-            <!-- <div class="text-gray-700 text-lg">1000</div> -->
-          </div>
-
-          <div class="grid grid-rows-2 gap-1">
-            <span class="rounded-full h-24 w-24 bg-gray-700 flex"></span>
-            <div class="text-gray-700 text-xs">Film Kanlaya</div>
-          </div>
-        </div>
+  <section class="w-screen min-h-screen main-wrap overflow-hidden">
+    <div class="filter space-x-4">
+      <div class="filter-item bg-primary-1100 bg-opacity-75"
+           :class="active === i ? 'bg-secondary_b bg-opacity-100' : ''" v-for="i in 2" :key="i" @click="active = i">
+        Year {{ i }}
       </div>
     </div>
 
-    <div class="overflow-y-auto h-64">
-      <span class="flex flex-col items-center justify-center space-y-10 py-5">
-        <div class="rounded-full py-2 px-1 bg-gray-700 justify-center items-center w-56">
-          <div class="grid grid-cols-4 grid-rows-1 flex">
-            <p class="text-xs">4</p>
-            <img />
-            <p class="text-xs">Film Kanlaya</p>
-            <p class="text-xs">score</p>
-          </div>
-        </div>
-      </span>
-
-      <span class="flex flex-col items-center justify-center space-y-10 py-5">
-        <div class="rounded-full py-2 px-1 bg-gray-700 justify-center items-center w-56">
-          <div class="grid grid-cols-4 grid-rows-1 flex">
-            <p class="text-xs">5</p>
-            <img />
-            <p class="text-xs">Film Kanlaya</p>
-            <p class="text-xs">score</p>
-          </div>
-        </div>
-      </span>
-
-      <span class="flex flex-col items-center justify-center space-y-10 py-5">
-        <div class="rounded-full py-2 px-1 bg-gray-700 justify-center items-center w-56">
-          <div class="grid grid-cols-4 grid-rows-1 flex">
-            <p class="text-xs">6</p>
-            <img />
-            <p class="text-xs">Film Kanlaya</p>
-            <p class="text-xs">score</p>
-          </div>
-        </div>
-      </span>
-
-      <span class="flex flex-col items-center justify-center space-y-10 py-5">
-        <div class="rounded-full py-2 px-1 bg-gray-700 justify-center items-center w-56">
-          <div class="grid grid-cols-4 grid-rows-1 flex">
-            <p class="text-xs">7</p>
-            <img />
-            <p class="text-xs">Film Kanlaya</p>
-            <p class="text-xs">score</p>
-          </div>
-        </div>
-      </span>
+    <keep-alive max="2" v-if="leaderList">
+      <year1 v-if="active === 1" :player_data="leaderList.year1" :self_rank="leaderList.rankMe"/>
+      <year2 v-else :player_data="leaderList.year2" :self_rank="leaderList.rankMe" />
+    </keep-alive>
+    <div class="flex flex-row justify-center items-center h-full my-24" v-else>
+      <grid-loader />
     </div>
-    {{ leaderList }}
-    <span class="flex flex-col items-center justify-center space-y-10 py-10">
-      <div class="rounded-full py-2 px-1 bg-gray-700 justify-center items-center w-64">
-        <div class="grid grid-cols-3 grid-rows-1 flex">
-          <img />
-          <p class="text-xs">Film Kanlaya</p>
-          <p class="text-xs">score</p>
-        </div>
-      </div>
-    </span>
   </section>
 </template>
 
@@ -89,11 +21,18 @@
 import API from "../middleware/api/userApi";
 import axios from "axios";
 import { mapActions, mapGetters } from "vuex";
+import GridLoader from "@/components/util/gridLoader";
 
 export default {
+  components: {
+    GridLoader,
+    year1: () => import("../components/pages/leaderboard/year1"),
+    year2: () => import("../components/pages/leaderboard/years2"),
+  },
   data() {
     return {
-      leaderList: null
+      leaderList: null,
+      active: 1
     };
   },
   mounted() {
@@ -101,6 +40,9 @@ export default {
   },
   methods: {
     ...mapActions("user", ["getToken"]),
+    getDataByYear(year) {
+      return year
+    },
     getLeader() {
       this.getToken().then(async res => {
         try {
@@ -128,4 +70,67 @@ export default {
 </script>
 
 <style scoped>
+.filter {
+  @apply flex flex-row justify-center items-center flex-no-wrap px-4 py-8 max-w-sm mx-auto;
+}
+
+.filter .filter-item {
+  flex: 1 1 10%;
+  @apply text-primary-200 p-3 text-xs cursor-pointer rounded-full;
+}
+
+>>> .secondary-container {
+  @apply flex flex-col justify-center items-stretch px-4 my-6 max-w-lg mx-auto text-primary-300;
+}
+
+>>> .secondary-card {
+  flex: 1 1;
+  @apply rounded-full py-3 px-4 bg-primary-1100 bg-opacity-75 flex flex-row justify-start items-center content-center;
+}
+
+>>> .secondary-card:last-child {
+  @apply relative mt-24 mb-10;
+}
+
+>>> .secondary-card:last-child:before {
+  content: 'Your Rank';
+  @apply absolute text-primary-200 text-2xl;
+  top: -3.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+>>> .secondary-card .rank {
+  flex: 0 1 5%;
+}
+
+>>> .secondary-card .img-rank {
+  flex: 0 1 5%;
+}
+
+>>> .secondary-card .player-txt {
+  flex: 1 1 50%;
+  @apply text-left;
+}
+
+>>> .secondary-card .player-score {
+  flex: 1 1 10%;
+}
+
+>>> .topsec-player {
+  @apply flex flex-row justify-center items-stretch;
+}
+
+>>> .topsec-player .player-item {
+  flex: 1 1 50%;
+  @apply flex flex-col justify-start items-center px-2;
+}
+
+>>> .text-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-all;
+}
 </style>

@@ -1,10 +1,10 @@
 <template>
   <section class="w-screen min-h-screen profile-wrap">
-    <div class="flex flex-col content-center justify-center items-center h-full py-12">
+    <div class="page-container">
       <div class="profile container grid-cols-1 gap-10 self-center">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
-            :data-src="getProfile.photoURL? getProfile.photoURL + '?width=500' : getProfile.pic + '?width=500'"
+            :data-src="getProfile.photoURL? getProfile.photoURL + '?width=226' : getProfile.pic + '?width=226'"
             class="profile-pic object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
           />
           <div class="details space-y-2 items-center">
@@ -46,7 +46,8 @@
         </div>
         <!--- Profile Stats --->
         <div class="stats items-stretch">
-          <div class="chased flex flex-col space-y-2 justify-center content-center">
+          <div class="chased flex flex-col space-y-2 justify-center content-center cursor-pointer"
+               @click="$router.push('/hunted')">
             <span
               class="text-2xl font-semibold text-gray-200"
             >{{ getProfile.count ? getProfile.count : 0 }}</span>
@@ -61,7 +62,7 @@
         </div>
         <!--- Profile button --->
         <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8 py-6">
-          <!-- <button
+          <button
             class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm animate-pulse"
             @click="!loading ? Bounty() : null"
           >ล่ารายชื่อเลย!</button>
@@ -70,9 +71,7 @@
             @click="genQr()"
           >
             <span :class="loading ? 'loading text-sm' : ''">{{ !loading? 'สร้างลิงค์ใหม่' : ''}}</span>
-          </button> -->
-
-          <h3 class="text-2xl animate-pulse text-primary-200 font-semibold">เตรียมออกล่าเร็วๆนี้!</h3>
+          </button>
         </div>
       </div>
     </div>
@@ -88,6 +87,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import store from "../store";
 import QRCode from "qrcode";
+import API from "../middleware/api/userApi"
 
 var vm = this;
 
@@ -125,7 +125,7 @@ export default {
           .then(idToken => {
             axios
               .get(
-                "https://us-central1-itfreshy2020.cloudfunctions.net/test/genqrcode/",
+                API + "test/genqrcode/",
                 {
                   withCredentials: true,
                   headers: {
@@ -141,7 +141,7 @@ export default {
                     .toString()
                     .substring(url.pathname.lastIndexOf("qrcode"));
                   newUrl = newUrl.replace("qrcode/", "scan/");
-                  newUrl = new URL("https://localhost:8080/" + newUrl);
+                  newUrl = new URL("https://itfreshy2020.web.app/" + newUrl);
 
                   alertify
                     .alert(
@@ -225,6 +225,10 @@ export default {
 <style scoped>
 .profile {
   @apply grid;
+}
+
+.page-container {
+  @apply flex  flex-col content-center justify-center items-center h-full py-12;
 }
 
 .profile-pic[lazy="loading"] {
