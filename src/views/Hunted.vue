@@ -3,6 +3,9 @@
     <div
       class="page-container"
     >
+      <div class="score-master space-x-2">
+        <div v-html="imgCoin"></div>{{ getProfile.point }}
+      </div>
       <div class="profile container grid-cols-1 gap-10 self-center">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
@@ -18,26 +21,26 @@
             <i class="fas fa-map-marked-alt"></i>
             <span>IT KMITL{{ getProfile.branch ? ", " + getProfile.branch : '' }}{{ getProfile.year ? " ปี " + getProfile.year : '' }}</span>
           </div>
-          <div class="like space-x-4">
-             <span
-                 v-lazyload="{ selector: 'img' }"
-                 v-if="getProfile.gate !== '' || getProfile.year === '1'"
-                 class="flex flex-row space-x-2 justify-center items-center content-center text-primary-200"
-             >
-              <img class="object-cover w-full" :data-src="image" v-if="image !== null" />
-              <ion-icon name="skull-outline" v-else></ion-icon>
-              <p class="capitalize">{{ getProfile.status }}</p>
-            </span>
-          </div>
+<!--          <div class="like space-x-4">-->
+<!--             <span-->
+<!--                 v-lazyload="{ selector: 'img' }"-->
+<!--                 v-if="getProfile.gate !== '' || getProfile.year === '1'"-->
+<!--                 class="flex flex-row space-x-2 justify-center items-center content-center text-primary-200"-->
+<!--             >-->
+<!--              <img class="object-cover w-full" :data-src="image" v-if="image !== null" />-->
+<!--              <ion-icon name="skull-outline" v-else></ion-icon>-->
+<!--              <p class="capitalize">{{ getProfile.status }}</p>-->
+<!--            </span>-->
+<!--          </div>-->
         </div>
         <div class="stats">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">268</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
+            <span class="text-2xl font-semibold text-gray-200">{{ getProfile.count ? getProfile.count : 0 }}</span>
+            <span class="text-sm font-normal text-gray-400">คนที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">2K</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
+            <span class="text-2xl font-semibold text-gray-200">{{ getProfile.year === 1 ? getProfile.count ? Math.abs(235 - getProfile.count) : 235 : getProfile.count ? Math.abs(235 - getProfile.count) : 235 }}</span>
+            <span class="text-sm font-normal text-gray-400">คนที่คุณยังไม่ได้ล่า</span>
           </div>
         </div>
         <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8">
@@ -45,13 +48,14 @@
         </div>
       </div>
       <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-6 lg:gap-5 xl:gap-10 self-center container px-8 my-12 md:my-24"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-6 lg:gap-5 xl:gap-10 self-center container px-8 my-12 md:my-24
+sm:max-w-xl md:max-w-6xl max-w-xs"
       >
         <div class="col-start-1 md:col-end-3 lg:col-end-4">
           <div class="flex flex-row justify-center md:justify-between items-center content-center">
             <h2 class="text-2xl lg:text-3xl font-normal text-gray-200 lg:text-left py-1 md:py-0">
               ล่าไปแล้วทั้งหมด
-              <span class="text-primary font-semibold">{{ scanned }}</span> คน
+              <span class="text-primary font-semibold">{{ getScanned }}</span> คน
             </h2>
             <button
               class="hidden md:block btn btn-block bg-transparent border-primary border-4 hover:bg-primary text-primary-100 text-sm py-2 px-6"
@@ -67,7 +71,7 @@
         >
           <div class="img-place self-center sm:py-0 py-3">
             <img
-              :src="item.pic + '?width=120'"
+              :src="item.pic + '?width=180'"
               :alt="item.name"
               class="object-cover rounded-full w-32 h-32 md:w-full md:h-full"
             />
@@ -75,18 +79,17 @@
           <div class="profile-col justify-center sm:justify-start sm:text-left">
             <div class="bro-name space-y-1">
               <h2 class="text-gray-300 font-semibold">{{ item.name }}</h2>
-<!--              <span class="flex-1 text-gray-400 font-medium text-sm">test</span>-->
             </div>
             <div class="flex flex-col space-y-1 my-2">
               <span
                 class="flex-1 text-gray-500 font-medium text-xs"
               >{{ item.branch }} KMITL, Year {{ item.year }}</span>
-              <div class="flex-1 md:self-start space-x-2">
-                <i class="fas fa-pizza-slice text-gray-500 text-sm"></i>
-                <i class="fas fa-football-ball text-gray-500 text-sm"></i>
-                <i class="fab fa-spotify text-gray-500 text-sm"></i>
-                <i class="fas fa-film text-gray-500 text-sm"></i>
-              </div>
+<!--              <div class="flex-1 md:self-start space-x-2">-->
+<!--                <i class="fas fa-pizza-slice text-gray-500 text-sm"></i>-->
+<!--                <i class="fas fa-football-ball text-gray-500 text-sm"></i>-->
+<!--                <i class="fab fa-spotify text-gray-500 text-sm"></i>-->
+<!--                <i class="fas fa-film text-gray-500 text-sm"></i>-->
+<!--              </div>-->
             </div>
           </div>
         </div>
@@ -115,18 +118,15 @@ export default {
     return {
       image: null,
       loading: false,
-      scanned: 0
+      scanned: 0,
+      imgCoin: '<img src="img/icons/coin.png" alt="coin" class="w-6 h-6 object-cover mx-2 block" />'
     };
   },
   beforeUpdate() {
     if (this.getYear === "1") this.image = this.gatePic[0].smallImg;
-
   },
-  updated() {
-    this.scanned = this.getScanned;
-  },
-  methods: {
-
+  watch: {
+    getScanned(val, oldVal) {}
   },
   computed: {
     ...mapGetters("user", {
@@ -144,7 +144,7 @@ export default {
       });
     },
     getScanned() {
-      return this.getProfile.scanSave.length
+      return this.getProfile.scanSave ? this.getProfile.scanSave.length : 0
     }
   }
 };
@@ -155,7 +155,15 @@ export default {
 }
 
 .page-container {
-  @apply flex  flex-col content-center justify-center items-center h-full py-12;
+  @apply flex  flex-col content-center justify-center items-center h-full py-12 relative;
+}
+
+.score-master {
+  top: 0;
+  right: 5%;
+  transform: translateX(-5%);
+  text-shadow: 0 1px 0 rgb(0, 170, 100);
+  @apply absolute text-secondary_b flex flex-row justify-center items-center;
 }
 
 .profile-wrap {
@@ -171,7 +179,7 @@ export default {
 }
 
 .details {
-  @apply flex  flex-col flex-wrap justify-center content-center px-4;
+  @apply flex flex-col flex-wrap justify-center content-center px-4;
 }
 
 .like {
@@ -189,7 +197,7 @@ export default {
 
 .stats .chased {
   border-right: solid 1px;
-  @apply border-primary-900;
+  @apply border-gray-800;
 }
 
 .button-gp {

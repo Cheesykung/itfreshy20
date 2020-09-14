@@ -1,5 +1,6 @@
 <template>
-  <section
+<section>
+  <div
     v-if="$route.matched.some(({ path }) => path !== '/signin' && path !== '/continue')"
     class="relative"
   >
@@ -14,7 +15,7 @@
         </div>
       </div>
       <div
-        class="self-center flex-1 mx-auto md:ml-16 text-3xl sm:text-4xl font-normal uppercase text-gray-300 lucky-font"
+        class="self-center flex-1 mx-auto md:ml-16 text-2xl sm:text-4xl font-normal uppercase text-gray-300 lucky-font"
       >{{ this.$route.name }}</div>
       <div class="flex flex-row justify-center items-center md:space-x-8 text-2xl">
         <div @click="goProfile()">
@@ -55,7 +56,11 @@
       </ul>
       <div class="overlay bg-primary-1000 bg-opacity-75" @click="hidden = true"></div>
     </aside>
-  </section>
+  </div>
+  <div class="signout_btn" v-else-if="$route.matched.some(({ path }) => path == '/continue')">
+    t
+  </div>
+</section>
 </template>
 <style scoped>
 .basic-icon {
@@ -71,7 +76,7 @@ export default {
       hidden: true,
       navLinks: [
         { name: "Profile", link: "/profile", icon: "" },
-        //{ name: "Bounty", link: "/bounty", icon: "" },
+        { name: "Bounty", link: "/bounty", icon: "" },
         { name: "Hunted", link: "/hunted", icon: "" },
         { name: "Leaderboard", link: "/leaderboard", icon: "" }
       ]
@@ -88,6 +93,7 @@ export default {
 };
 </script>
 <style scoped>
+
 .overlay {
   position: absolute;
   top: 0;

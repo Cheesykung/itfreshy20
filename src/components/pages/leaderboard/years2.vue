@@ -9,8 +9,8 @@
         <span class="flex justify-center items-center my-2">
           <img :src="topPlayer[0].pic ? topPlayer[0].pic + '?width=180' : placeholder" :alt="topPlayer[0].name" class="object-cover rounded-full h-24 w-24" />
         </span>
-          <div class="text-primary-275 text-clamp">{{ topPlayer[0].name ? topPlayer[0].name : 'Waiting for Hunter...' }}</div>
-          <div class="text-primary-250 text-2xl">{{ topPlayer[0].point }}</div>
+          <div class="text-primary-100 text-clamp">{{ topPlayer[0].name ? topPlayer[0].name : 'Waiting for Hunter...' }}</div>
+          <div class="text-secondary_b text-2xl">{{ topPlayer[0].point }}</div>
         </div>
 
         <div class="topsec-player" v-if="secondPlayer">
@@ -20,8 +20,8 @@
          <span class="flex justify-center items-center my-2">
           <img :src="item.pic ? item.pic + '?width=180' : placeholder" :alt="item.name" class="object-cover rounded-full h-24 w-24" />
         </span>
-            <div class="text-primary-275 text-clamp">{{ item.name ? item.name : 'Waiting for Hunter...' }}</div>
-            <div class="text-primary-250 text-2xl">{{ item.point }}</div>
+            <div class="text-primary-100 text-clamp">{{ item.name ? item.name : 'Waiting for Hunter...' }}</div>
+            <div class="text-secondary_b text-2xl">{{ item.point }}</div>
           </div>
         </div>
       </div>
@@ -32,7 +32,7 @@
         <p class="rank">{{ item.rank }}</p>
         <img class="object-cover w-6 h-6 rounded-full img-rank" :src="item.pic !== null ? item.pic : placeholder" />
         <p class="text-xs player-txt text-clamp">{{ item.name ? item.name : 'Waiting for Hunter...' }}</p>
-        <p class="text-xs player-score">{{ item.point }}</p>
+        <p class="text-xs player-score text-secondary_b">{{ item.point }}</p>
       </div>
       <rank-me :item="selfRank" />
     </div>

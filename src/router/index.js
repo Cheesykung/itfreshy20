@@ -158,7 +158,7 @@ const routes = [
       requiresAuth: true,
     },
   },{
-    path: "/scan/",
+    path: "/scan/:id",
     name: "Scan",
     component: Scan,
     meta: {

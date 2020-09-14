@@ -16,7 +16,7 @@
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="ชื่อจริง"
-                v-model="secondStep.firstName"
+                v-model="secondStep[0].firstName"
                 autofocus
               />
             </span>
@@ -26,7 +26,7 @@
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="นามสกุล"
-                v-model="secondStep.Surname"
+                v-model="secondStep[0].Surname"
               />
             </span>
             <span class="space-y-3 flex flex-col">
@@ -35,7 +35,7 @@
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="ชื่อเล่น"
-                v-model="secondStep.Nickname"
+                v-model="secondStep[0].Nickname"
               />
             </span>
             <span class="space-y-3 flex flex-col">
@@ -44,34 +44,9 @@
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="รหัสนักศึกษา"
-                v-model="secondStep.id"
+                v-model="secondStep[0].id"
               />
             </span>
-            <!-- <span class="space-y-3 flex flex-col" v-if="getYear === 2">
-              <p class="text-left text-primary-200 text-opacity-100">คุณต้องการมีน้องรหัสใช่หรือไม่</p>
-              <div
-                class="flex flex-row space-x-2 text-primary-250 py-2 items-center justify-start flex-no-wrap content-center"
-              >
-                <input
-                  type="radio"
-                  id="yes"
-                  name="confirm"
-                  value="yes"
-                  v-model="confirm"
-                  class="px-1"
-                />
-                <label for="yes" class="mx-1">ใช่</label>
-                <input
-                  type="radio"
-                  id="no"
-                  name="confirm"
-                  value="no"
-                  v-model="confirm"
-                  class="px-1"
-                />
-                <label for="no" class="mx-1">ไม่ใช่</label>
-              </div>
-            </span>-->
           </div>
           <!--- Start step zone --->
           <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-4">
@@ -93,12 +68,6 @@
               <span class="bullet active" :class="!loading ? 'animate-bounce' : ''"></span>
               <span class="bullet"></span>
             </span>
-            <span class="flex flex-row flex-no-wrap">
-              <p
-                class="text-primary-300 underline cursor-pointer text-sm"
-                @click="$router.go(-1)"
-              >BACK</p>
-            </span>
           </div>
           <!--- End step zone --->
         </template>
@@ -119,13 +88,15 @@ export default {
   },
   data() {
     return {
-      secondStep: {
-        firstName: "",
-        Surname: "",
-        Nickname: "",
-        id: "",
-        player: ""
-      },
+      secondStep: [
+        {
+          firstName: "",
+          Surname: "",
+          Nickname: "",
+          id: "",
+          player: ""
+        }
+      ],
       confirm: "",
       loading: false,
       prevRoute: null
@@ -137,23 +108,19 @@ export default {
     });
     if (!store.getters["register/getFirstStep"]) {
       next({ name: "Step 1", replace: true });
-    } else if(store.getters["register/getYear"] !== 1) {
-      next({ name: "Profile", replace: true });
     } else {
       next();
     }
     next();
   },
   beforeRouteLeave(to, from, next) {
-    if (
-      to.path &&
-      !(
-        this.secondStep.firstName &&
-        this.secondStep.Surname &&
-        this.secondStep.Nickname &&
-        this.secondStep.id
-      )
-    ) {
+    let itemRoute = item =>
+      (item.firstName !== null || item.firstName !== "") &&
+      (item.Surname !== null || item.Surname !== "") &&
+      (item.Nickname !== null || item.Nickname !== "") &&
+      (item.id !== null || item.id !== "");
+      
+    if (to.path && !this.secondStep.every(itemRoute)) {
       alertify.notify("PLEASE FILL UP THE FORM!", "warning", 3);
       next(false);
     } else {
@@ -166,99 +133,91 @@ export default {
     ...mapActions("register", ["sendForm", "sendToken"]),
 
     nextStep() {
+      let itemRoute = item =>
+        (item.firstName !== null || item.firstName !== "") &&
+        (item.Surname !== null || item.Surname !== "") &&
+        (item.Nickname !== null || item.Nickname !== "") &&
+        (item.id !== null || item.id !== "");
+
       this.loading = true;
-      if (
-        !(
-          this.secondStep.firstName &&
-          this.secondStep.Surname &&
-          this.secondStep.Nickname &&
-          this.secondStep.id
-        )
-      ) {
+
+      if (!this.secondStep.every(itemRoute)) {
         alertify.notify("PLEASE FILL UP THE FORM!", "warning", 3);
         this.loading = false;
       } else if (this.checkStdId()) {
-          if (this.getYear === 1) {
-            this.$store.dispatch("register/setSecond", this.secondStep);
-            this.loading = false;
-            this.$router.push({ name: "Step 3" });
-          } else if (this.getYear === 2) {
-            alertify
-              .confirm(
-                "คุณต้องการมีน้องรหัสหรือไม่?",
-                "OK เพื่อไปต่อ CANCEL หากไม่ต้องการ",
-                async () => {
-                  //กรณีที่ต้องการเล่น
-                  this.secondStep.player = 1;
+        if (this.getYear === 1) {
+          this.$store.dispatch("register/setSecond", this.secondStep[0]);
+          this.loading = false;
+          this.$router.push({ name: "Step 3" });
+        } else if (this.getYear === 2) {
+          alertify.confirm(
+            "คุณต้องการมีน้องรหัสหรือไม่?",
+            "OK เพื่อไปต่อ CANCEL หากไม่ต้องการ",
+            async () => {
+              //กรณีที่ต้องการเล่น
+              this.secondStep[0].player = 1;
 
-                  await this.$store.dispatch(
-                    "register/setSecond",
-                    this.secondStep
-                  );
+              await this.$store.dispatch("register/setSecond", this.secondStep[0]);
+              this.loading = false;
+              this.$router.push({ name: "Step 3" });
+            },
+            async () => {
+              //กรณีที่ไม่ต้องการเล่น
+              this.secondStep[0].player = 0;
+              
+              await this.$store.dispatch("register/setSecond", this.secondStep[0]);
+
+              await this.sendForm()
+                .then(res => {
+                  if (res) {
+                    localStorage.setItem("firstTime", "false");
+                    alertify.notify("สำเร็จ!", "success", 3);
+                    this.loading = false;
+                    this.$router.replace("/profile");
+                  }
+                })
+                .catch(e => {
+                  console.log(e);
+                  alertify.notify("พบข้อผิดพลาด :(", "error", 3);
                   this.loading = false;
-                  this.$router.push({ name: "Step 3" });
-                },
-                async () => {
-                  //กรณีที่ไม่ต้องการเล่น
-                  this.secondStep.player = 0;
-                  this.$store.dispatch("register/setSecond", this.secondStep);
+                });
+            }
+          );
+        } else if (this.getYear === 3 || this.getYear === 4) {
+          this.$store.dispatch("register/setSecond", this.secondStep[0]);
 
-                  await this.sendForm()
-                    .then(res => {
-                      if (res) {
-                        localStorage.setItem("firstTime", "false");
-                        alertify.notify("สำเร็จ!", "success", 3);
-                        this.loading = false;
-                        this.$router.replace("/profile");
-                      }
-                    })
-                    .catch(e => {
-                      console.log(e);
-                      alertify.notify("พบข้อผิดพลาด :(", "error", 3);
-                      this.loading = false;
-                    });
-                }
-              )
-              .set("frameless", true);
-            // if (this.confirm === "yes") {
-            //   this.secondStep.player = 1;
-            // } else if (this.confirm === "no") {
-            //   this.secondStep.player = 0;
-            // } else if (!this.confirm) {
-            //   alertify.notify("PLEASE MAKE A CHOICE!", "warning", 3);
-            //   this.loading = false;
-            //   return;
-            // }
-          } else if (this.getYear === 3 || this.getYear === 4) {
-            this.sendForm()
-              .then(res => {
-                if (res) {
-                  localStorage.setItem("firstTime", "false");
-                  alertify.notify("สำเร็จ!", "success", 3);
-                  this.$router.replace("/profile");
-                }
-              })
-              .catch(e => {
-                console.log(e);
-                alertify.notify("พบข้อผิดพลาด :(", "error", 3);
-                this.loading = false;
-              });
-          }
+          this.sendForm()
+            .then(res => {
+              if (res) {
+                localStorage.setItem("firstTime", "false");
+                alertify.notify("สำเร็จ!", "success", 3);
+                this.$router.replace("/profile");
+              }
+            })
+            .catch(e => {
+              console.log(e);
+              alertify.notify("พบข้อผิดพลาด :(", "error", 3);
+              this.loading = false;
+            });
+        }
       } else {
-        alertify.notify("PLEASE MAKE A CHOICE!", "warning", 3);
+        alertify.notify("กรอกข้อมูลให้ถูกต้อง", "warning", 3);
         this.loading = false;
       }
     },
     checkStdId() {
-      if (this.secondStep.id.length !== 8) {
+      if (this.secondStep[0].id.length !== 8) {
         alertify.notify("รหัสนักศึกษาต้องมี 8 หลัก", "warning", 3);
         return false;
       } else {
-        let id = parseInt(this.secondStep.id);
+        let id = parseInt(this.secondStep[0].id);
         let idScope = id % 1000000;
         let getTwo = Math.floor((id * 0.1) / 100000);
         let year = parseInt(this.getYear);
-        let countLast = this.getYear === 1 ? Math.floor(id % 1000) > 251 : Math.floor(id % 1000) >= 300;
+        let countLast =
+          this.getYear === 1
+            ? Math.floor(id % 1000) > 255
+            : Math.floor(id % 1000) >= 379;
 
         if (Math.floor((idScope / 1000) % 10000) !== 70) {
           alertify.notify(
@@ -291,26 +250,6 @@ export default {
   },
   computed: {
     ...mapGetters("register", ["getYear"])
-    // checkStdId() {
-    //   if (this.secondStep.id.length !== 8) {
-    //     alertify.notify("รหัสนักศึกษาต้องมี 8 หลัก", "warning", 3);
-    //     return false;
-    //   } else {
-    //     //62070102
-    //     let id = parseInt(this.secondStep.id);
-    //     let idScope = id % 1000000;
-    //     if (Math.floor((idScope / 1000) % 10000) !== 70) {
-    //       alertify.notify(
-    //         "กรุณากรอกรหัสนักศึกษาของคณะไอทีเท่านั้น!",
-    //         "error",
-    //         3
-    //       );
-    //       return false;
-    //     } else {
-    //       return true;
-    //     }
-    //   }
-    // }
   }
 };
 </script>

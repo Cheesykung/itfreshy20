@@ -7,12 +7,16 @@
       </keep-alive>
     </transition>
     <div v-if="!online" @change="alertThis()"></div>
+  <div class="signout_btn"  @click="signOut" v-if="$route.matched.some(({ path }) => path == '/continue')">
+    <ion-icon name="log-out-outline"></ion-icon>
+  </div>
   </div>
 </template>
 <script>
 //import Footer from "@/components/util/Footer.vue";
 import Nav from "@/components/util/Nav.vue";
 import alertify from "alertifyjs";
+import { mapActions } from "vuex"
 
 export default {
   data() {
@@ -51,6 +55,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions("user", ["signOut"]),
     setNav(status) {
       this.showNav = status;
     },
@@ -109,6 +114,12 @@ body {
 #app[lazy="loaded"] {
   background-size: cover !important;
   animation: none !important;
+}
+
+.signout_btn {
+  bottom: 1.5rem;
+  right: 1.5rem;
+  @apply fixed flex flex-col justify-center cursor-pointer font-semibold items-center z-30  w-12 h-12 rounded-full bg-primary-400 text-primary-100 text-center p-3;
 }
 
 @-webkit-keyframes bgTransition {
@@ -199,6 +210,14 @@ body {
     rgba(11, 9, 49, 0.9) 45%,
     transparent 70%
   );
+}
+
+>>> .text-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-all;
 }
 
 button:focus {

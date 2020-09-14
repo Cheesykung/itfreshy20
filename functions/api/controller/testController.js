@@ -532,6 +532,19 @@ testController.get("/help", async (req, res) => {
   res.render("help");
 });
 
+testController.get("/query", async (req, res) => {
+  const que = db.collection("users").where('year', '==', '1').where('newuser', '==', 0)
+  .get()
+  .then((que) => {
+    res.json(que.size)
+  })
+  
+});
+
+testController.get("/help", async (req, res) => {
+  res.render("help");
+});
+
 // testController.get("/checka", (req, res) => {
 //   // res.json({ data: req.user, session: req.session });
 //   res.json(req.user)

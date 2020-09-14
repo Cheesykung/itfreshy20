@@ -67,8 +67,8 @@
           <div v-if="!dataRecieved.question">
             <button
               class="block mt-6 px-8 py-3 text-sm bg-secondary_b text-green-100 rounded-lg"
-              @click="$router.go(-1)"
-            >Go Back</button>
+              @click="$router.push('/profile')"
+            >Next</button>
           </div>
         </div>
         <div class="flex flex-col justify-center items-center space-y-12" v-else>
@@ -80,8 +80,8 @@
             <button
               v-if="!loading"
               class="block px-8 py-3 text-sm bg-complementary-treda text-gray-100 rounded-lg"
-              @click="$router.go(-1)"
-            >Go Back</button>
+              @click="$router.push('/profile')"
+            >Next</button>
           </span>
         </div>
       </div>

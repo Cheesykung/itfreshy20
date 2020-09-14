@@ -102,7 +102,7 @@ export default {
     submitGen: function(value) {
       if (value) {
         this.setGender(value);
-        this.$router.push({ path: "/continue/step1" });
+        this.$router.push({ name: "Step 1" });
       } else {
         alertify.notify("PLEASE MAKE A CHOICE!", 'custom-warning', 3);
       }

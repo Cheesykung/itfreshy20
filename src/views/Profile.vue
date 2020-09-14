@@ -1,6 +1,9 @@
 <template>
   <section class="w-screen min-h-screen profile-wrap">
     <div class="page-container">
+      <div class="score-master space-x-2">
+        <div v-html="imgCoin"></div>{{ getProfile.point }}
+      </div>
       <div class="profile container grid-cols-1 gap-10 self-center">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
@@ -51,13 +54,13 @@
             <span
               class="text-2xl font-semibold text-gray-200"
             >{{ getProfile.count ? getProfile.count : 0 }}</span>
-            <span class="text-sm font-normal text-gray-400">รุ่น{{ getProfile.year === '1' ? 'พี่' : 'น้อง'  }}ที่ล่าไปแล้ว</span>
+            <span class="text-sm font-normal text-gray-400">คนที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
             <span
               class="text-2xl font-semibold text-gray-200"
-            >{{ getProfile.year === 1 ? getProfile.count ? Math.abs(148 - getProfile.count) : 148 : getProfile.count ? Math.abs(251 - getProfile.count) : 251 }}</span>
-            <span class="text-sm font-normal text-gray-400">รุ่น{{ getProfile.year === '1' ? 'พี่' : 'น้อง'  }}ที่ยังไม่ได้ล่า</span>
+            >{{ getProfile.year === 1 ? getProfile.count ? Math.abs(235 - getProfile.count) : 235 : getProfile.count ? Math.abs(235 - getProfile.count) : 235 }}</span>
+            <span class="text-sm font-normal text-gray-400">คนที่คุณยังไม่ได้ล่า</span>
           </div>
         </div>
         <!--- Profile button --->
@@ -99,10 +102,11 @@ export default {
       image: null,
       loading: false,
       qr: new Array(1),
+      imgCoin: '<img src="img/icons/coin.png" alt="coin" class="w-6 h-6 object-cover mx-2 block" />'
     };
   },
   beforeUpdate() {
-    if (this.getYear === "1") this.image = this.gatePic[0].smallImg;
+    //if (this.getYear === "1") this.image = this.gatePic[0].smallImg;
   },
   methods: {
     Bounty() {
@@ -201,6 +205,11 @@ export default {
       this.$store.dispatch("user/signOut");
     }
   },
+  watch: {
+    gatePic(val, oldVal) {
+      if (this.getYear === "1") this.image = val[0].smallImg
+    }
+  },
   computed: {
     ...mapGetters("user", {
       getProfile: "getProfile",
@@ -228,7 +237,15 @@ export default {
 }
 
 .page-container {
-  @apply flex  flex-col content-center justify-center items-center h-full py-12;
+  @apply flex  flex-col content-center justify-center items-center h-full py-12 relative;
+}
+
+.score-master {
+  top: 0;
+  right: 5%;
+  transform: translateX(-5%);
+  text-shadow: 0 1px 0 rgb(0, 170, 100);
+  @apply absolute text-secondary_b flex flex-row justify-center items-center;
 }
 
 .profile-pic[lazy="loading"] {

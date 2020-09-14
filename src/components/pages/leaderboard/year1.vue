@@ -8,8 +8,8 @@
         <span class="flex justify-center items-center my-2">
           <img :src="topPlayer[0].pic + '?width=180'" :alt="topPlayer[0].name" class="object-cover rounded-full h-24 w-24" />
         </span>
-        <div class="text-primary-275 text-clamp">{{ topPlayer[0].name }}</div>
-        <div class="text-primary-250 text-2xl">{{ topPlayer[0].point }}</div>
+        <div class="text-primary-100 text-clamp">{{ topPlayer[0].name }}</div>
+        <div class="text-secondary_b text-2xl">{{ topPlayer[0].point }}</div>
       </div>
 
       <div class="topsec-player">
@@ -19,8 +19,8 @@
          <span class="flex justify-center items-center my-2">
           <img :src="item.pic + '?width=180'" :alt="item.name" class="object-cover rounded-full h-24 w-24" />
         </span>
-          <div class="text-primary-275 text-clamp">{{ item.name }}</div>
-          <div class="text-primary-250 text-2xl">{{ item.point }}</div>
+          <div class="text-primary-100 text-clamp">{{ item.name }}</div>
+          <div class="text-secondary_b text-2xl">{{ item.point }}</div>
         </div>
       </div>
     </div>
@@ -31,7 +31,7 @@
       <p class="rank">{{ item.rank }}</p>
       <img class="object-cover w-6 h-6 rounded-full img-rank" :src="item.pic" />
       <p class="text-xs player-txt text-clamp">{{ item.name }}</p>
-      <p class="text-xs player-score">{{ item.point }}</p>
+      <p class="text-xs player-score text-secondary_b">{{ item.point }}</p>
     </div>
     <rank-me :item="selfRank" />
   </div>
@@ -62,3 +62,59 @@ export default {
   }
 }
 </script>
+<style>
+.secondary-container {
+  @apply flex flex-col justify-center items-stretch px-4 my-6 max-w-lg mx-auto text-primary-300;
+}
+
+.secondary-card {
+  flex: 1 1;
+  @apply rounded-full py-3 px-4 bg-primary-1100 bg-opacity-75 flex flex-row justify-start items-center content-center;
+}
+
+.secondary-card:last-child {
+  @apply relative mt-24 mb-10;
+}
+
+.secondary-card:last-child:before {
+  content: 'Your Rank';
+  @apply absolute text-primary-200 text-2xl;
+  top: -3.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.secondary-card .rank {
+  flex: 0 1 5%;
+}
+
+.secondary-card .img-rank {
+  flex: 0 1 5%;
+}
+
+.secondary-card .player-txt {
+  flex: 1 1 50%;
+  @apply text-left;
+}
+
+.secondary-card .player-score {
+  flex: 1 1 10%;
+}
+
+.topsec-player {
+  @apply flex flex-row justify-center items-stretch;
+}
+
+.topsec-player .player-item {
+  flex: 1 1 50%;
+  @apply flex flex-col justify-start items-center px-2;
+}
+
+.text-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-all;
+}
+</style>
