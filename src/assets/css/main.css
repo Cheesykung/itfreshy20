@@ -183,3 +183,11 @@
 .small-contain-col {
   @apply bg-primary-1100 bg-opacity-75 px-8 max-w-xl rounded-lg text-primary-200 flex flex-col items-center justify-center;
 }
+
+.bounted-wrap {
+  @apply grid gap-8 mx-auto px-6 my-12;
+}
+
+.bounted-item {
+  @apply bg-primary-1100 bg-opacity-75 rounded-lg flex flex-col justify-center items-center px-8 py-16 text-primary-200;
+}

@@ -8,7 +8,7 @@
     </div>
     <h2 class="text-xl md:text-2xl mx-auto mt-12 -mb-3 text-gray-300">เลือกปี</h2>
      <div class="filter space-x-4 -mb-6">
-      <div class="filter-item bg-primary-1100 bg-opacity-75 h-8 w-8 flex flex-col justify-center"
+      <div class="filter-item bg-primary-1100 bg-opacity-75 w-10 h-10 flex flex-col justify-center"
            :class="year === i ? 'bg-secondary_b bg-opacity-100' : ''" v-for="i in 4" :key="i" @click="year = i; current = 'Year' + i">
         {{ i }}
       </div>
@@ -63,13 +63,12 @@ export default {
 };
 </script>
 
-<style>
-.bounted-wrap {
-  @apply grid gap-8 mx-auto px-6 my-12;
-}
+<style scoped>
 
-.bounted-item {
-  @apply bg-primary-1100 bg-opacity-75 rounded-lg flex flex-col justify-center items-center px-8 py-16 text-primary-200;
+.filter-item {
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  flex-basis: auto !important;
 }
 
 .text-clamp {

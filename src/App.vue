@@ -101,7 +101,7 @@ body {
   -moz-animation: bgTransition 3s ease infinite;
   animation: bgTransition 3s ease infinite;
   overflow: hidden;
-  @apply min-h-screen;
+  @apply min-h-full;
 }
 
 #app[lazy="loading"] {
