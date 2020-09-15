@@ -1,5 +1,5 @@
 <template>
-  <section class="w-screen min-h-screen main-wrap overflow-hidden">
+  <section class="w-screen min-h-screen main-wrap">
     <div class="filter space-x-4">
       <div class="filter-item bg-primary-1100 bg-opacity-75"
            :class="active === i ? 'bg-secondary_b bg-opacity-100' : ''" v-for="i in 2" :key="i" @click="active = i">
@@ -70,15 +70,10 @@ export default {
 </script>
 
 <style scoped>
-.filter {
-  @apply flex flex-row justify-center items-center flex-no-wrap px-4 py-8 max-w-sm mx-auto;
-}
 
 .filter .filter-item {
-  flex: 1 1 10%;
-  @apply text-primary-200 p-3 text-xs cursor-pointer rounded-full;
+  flex: 1 1 10% !important;
 }
-
 >>> .secondary-container {
   @apply flex flex-col justify-center items-stretch px-4 my-6 max-w-lg mx-auto text-primary-300;
 }

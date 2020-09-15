@@ -1,11 +1,17 @@
 <template>
-  <section class="w-screen min-h-screen profile-wrap">
+  <section class="w-screen min-h-screen main-wrap">
     <div
       class="page-container"
     >
-      <div class="score-master space-x-2">
-        <div v-html="imgCoin"></div>{{ getProfile.point }}
-      </div>
+      <v-popover offset="16"
+        class="score-master space-x-2 cursor-pointer"
+      >
+      <span class="flex flex-row">
+        <div v-html="imgCoin"></div>
+        {{ getProfile.point }}
+      </span>
+      <span slot="popover">เหรียญ <span class="text-primary-200">ที่ได้จากการล่า สามารถช่วยเพิ่มเปอร์เซ็นต์ในการจับคู่สายรหัสได้</span></span>
+      </v-popover>
       <div class="profile container grid-cols-1 gap-10 self-center">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
@@ -21,17 +27,6 @@
             <i class="fas fa-map-marked-alt"></i>
             <span>IT KMITL{{ getProfile.branch ? ", " + getProfile.branch : '' }}{{ getProfile.year ? " ปี " + getProfile.year : '' }}</span>
           </div>
-<!--          <div class="like space-x-4">-->
-<!--             <span-->
-<!--                 v-lazyload="{ selector: 'img' }"-->
-<!--                 v-if="getProfile.gate !== '' || getProfile.year === '1'"-->
-<!--                 class="flex flex-row space-x-2 justify-center items-center content-center text-primary-200"-->
-<!--             >-->
-<!--              <img class="object-cover w-full" :data-src="image" v-if="image !== null" />-->
-<!--              <ion-icon name="skull-outline" v-else></ion-icon>-->
-<!--              <p class="capitalize">{{ getProfile.status }}</p>-->
-<!--            </span>-->
-<!--          </div>-->
         </div>
         <div class="stats">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
@@ -48,7 +43,7 @@
         </div>
       </div>
       <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-6 lg:gap-5 xl:gap-10 self-center container px-8 my-12 md:my-24
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-6 lg:gap-5 xl:gap-10 self-center container px-8 my-6 md:my-12
 sm:max-w-xl md:max-w-6xl max-w-xs"
       >
         <div class="col-start-1 md:col-end-3 lg:col-end-4">
@@ -82,8 +77,8 @@ sm:max-w-xl md:max-w-6xl max-w-xs"
             </div>
             <div class="flex flex-col space-y-1 my-2">
               <span
-                class="flex-1 text-gray-500 font-medium text-xs"
-              >{{ item.branch }} KMITL, Year {{ item.year }}</span>
+                class="flex-1 text-gray-500 font-medium text-xs break-words whitespace-no-wrap"
+              ><i class="fas fa-map-marked-alt text-secondary_b"></i> {{ item.branch }} KMITL, Year {{ item.year }}</span>
 <!--              <div class="flex-1 md:self-start space-x-2">-->
 <!--                <i class="fas fa-pizza-slice text-gray-500 text-sm"></i>-->
 <!--                <i class="fas fa-football-ball text-gray-500 text-sm"></i>-->
@@ -155,7 +150,7 @@ export default {
 }
 
 .page-container {
-  @apply flex  flex-col content-center justify-center items-center h-full py-12 relative;
+  @apply flex  flex-col content-center justify-center items-center min-h-screen py-12 relative;
 }
 
 .score-master {
@@ -193,11 +188,6 @@ export default {
 .stats .un-chased,
 .stats .chased {
   flex: 0 1 20%;
-}
-
-.stats .chased {
-  border-right: solid 1px;
-  @apply border-gray-800;
 }
 
 .button-gp {

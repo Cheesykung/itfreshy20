@@ -7,7 +7,7 @@ import store from "../store";
 import Axios from "axios";
 
 /* Declare and import routes */
-const Dashboard = () => import("../views/Dashboard.vue");
+const QrDecode = () => import("../views/QrDecode.vue");
 const Signin = () => import("../views/Login.vue");
 const Profile = () => import("../views/Profile.vue");
 const Hunted = () => import("../views/Hunted.vue");
@@ -25,7 +25,6 @@ const step4 = () => import("../components/pages/callBackForm/lastStep.vue");
 
 Vue.use(VueRouter);
 
-
 const routes = [
   {
     path: "/",
@@ -37,9 +36,9 @@ const routes = [
     },
   },
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    component: Dashboard,
+    path: "/qrscan",
+    name: "QR Scanner",
+    component: QrDecode,
     meta: {
       title: "IT@KMITL FRESHY 2020",
       requiresAuth: true,

@@ -2,7 +2,7 @@
   <div id="app" v-lazy:background-image="bgObj">
     <Nav v-if="showNav" />
     <transition name="animated">
-      <keep-alive max="10">
+      <keep-alive max="12">
         <router-view :key="$route.fullPath" />
       </keep-alive>
     </transition>
@@ -23,7 +23,7 @@ export default {
     return {
       showNav: true,
       bgObj: {
-        src: "/img/bg.jpg"
+        src: "/img/bg1.jpg"
       },
       online: navigator.onLine,
       showOnline: false
@@ -81,6 +81,7 @@ export default {
 html,
 body {
   @apply h-full;
+  
 }
 
 #app {
@@ -93,13 +94,14 @@ body {
   color: #2c3e50;
   background-repeat: no-repeat;
   background-position: center top;
+  background-attachment: fixed;
   background: linear-gradient(270deg, #33deb2, #7295d3, #dc9b62);
   background-size: 600% 600%;
   -webkit-animation: bgTransition 3s ease infinite;
   -moz-animation: bgTransition 3s ease infinite;
   animation: bgTransition 3s ease infinite;
   overflow: hidden;
-  @apply min-h-full;
+  @apply min-h-screen;
 }
 
 #app[lazy="loading"] {
@@ -112,14 +114,14 @@ body {
 }
 
 #app[lazy="loaded"] {
-  background-size: cover !important;
+  background: no-repeat fixed bottom center / cover ;
   animation: none !important;
 }
 
 .signout_btn {
   bottom: 1.5rem;
   right: 1.5rem;
-  @apply fixed flex flex-col justify-center cursor-pointer font-semibold items-center z-30  w-12 h-12 rounded-full bg-primary-400 text-primary-100 text-center p-3;
+  @apply fixed flex flex-col justify-center cursor-pointer font-bold items-center z-30  w-12 h-12 rounded-full bg-primary-400 text-primary-100 text-center p-3;
 }
 
 @-webkit-keyframes bgTransition {
@@ -210,6 +212,11 @@ body {
     rgba(11, 9, 49, 0.9) 45%,
     transparent 70%
   );
+  @apply overflow-hidden;
+}
+
+.main-wrap::-webkit-scrollbar {
+  display: none;
 }
 
 >>> .text-clamp {
@@ -260,5 +267,65 @@ button:focus {
   top: 50%;
   transform: translateY(-50%);
   margin: auto;
+}
+.alertify .ajs-body .ajs-content {
+  padding: 0 !important;
+}
+
+.tooltip {
+  display: block !important;
+  z-index: 10000;
+}
+ 
+.tooltip .tooltip-inner {
+  border-radius: 16px;
+  padding: .4rem 1rem;
+  font-family: 'Prompt';
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 300px;
+  @apply bg-primary-1100 bg-opacity-75 text-primary-200;
+}
+ 
+.tooltip .tooltip-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  margin: 5px;
+  border-color: black;
+  z-index: 1;
+}
+
+.tooltip[aria-hidden='false'] {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity .15s;
+}
+
+.tooltip[x-placement^="bottom"] {
+  margin-top: 5px;
+}
+ 
+.tooltip[x-placement^="bottom"] .tooltip-arrow {
+  border-width: 0 5px 5px 5px;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-top-color: transparent !important;
+  top: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tooltip.popover .popover-inner {
+  @apply bg-primary-1100 text-secondary_b border-secondary_b border-2 mx-2;  
+  padding: 24px;
+  border-radius: 5px;
+  box-shadow: 0 5px 30px rgba(black, .1);
+}
+ 
+.tooltip.popover .popover-arrow {
+  @apply border-secondary_b;
 }
 </style>

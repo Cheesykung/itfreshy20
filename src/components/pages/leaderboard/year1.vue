@@ -33,11 +33,13 @@
       <p class="text-xs player-txt text-clamp">{{ item.name }}</p>
       <p class="text-xs player-score text-secondary_b">{{ item.point }}</p>
     </div>
-    <rank-me :item="selfRank" />
+    <rank-me :item="selfRank" v-if="getYear < 3" />
   </div>
   </section>
 </template>
 <script>
+import { mapGetters } from "vuex"
+
 export default {
   components: {
     RankMe: () => import("./rankMe")
@@ -50,6 +52,7 @@ export default {
   },
   props: ["player_data", "self_rank"],
   computed: {
+    ...mapGetters("user", ["getYear"]),
     getPlayer() {
       return this.player.filter((item) => { return item.rank >= 4 })
     },
@@ -72,11 +75,11 @@ export default {
   @apply rounded-full py-3 px-4 bg-primary-1100 bg-opacity-75 flex flex-row justify-start items-center content-center;
 }
 
-.secondary-card:last-child {
+.secondary-card.isme {
   @apply relative mt-24 mb-10;
 }
 
-.secondary-card:last-child:before {
+.secondary-card.isme:before {
   content: 'Your Rank';
   @apply absolute text-primary-200 text-2xl;
   top: -3.5rem;
