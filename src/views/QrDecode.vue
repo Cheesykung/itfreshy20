@@ -7,7 +7,11 @@
         class="text-primary font-semibold text-xl border-2 border-primary rounded-full py-2 px-6"
         :class="(success && !error ) ? 'text-secondary_b border-secondary_b' : 'text-complementary-treda border-complementary-treda'"
       >SCAN YOUR QR</h2>
-      <qrcode-stream @decode="onDecode" @init="onInit" class="transform md:scale-75" />
+
+      <qrcode-stream @decode="onDecode" @init="onInit" class=" transition-all ease-linear duration-300 transform md:scale-75" v-if="!destroy" >
+        <grid-loader v-if="loading"/>
+      </qrcode-stream>
+
       <div
         class="text-gray-400 border-complementary-treda border-2 w-full py-3 flex flex-col space-y-2 text-sm px-6 rounded-lg max-w-sm"
         v-if="!result"
@@ -37,17 +41,21 @@
 <script>
 import { QrcodeStream } from "vue-qrcode-reader";
 import alertify from "alertifyjs"
+import GridLoader from "@/components/util/gridLoader";
 
 /* eslint-disable */
 export default {
   components: {
-    QrcodeStream
+    QrcodeStream,
+    GridLoader
   },
   data() {
     return {
       result: "",
       success: false,
-      error: ""
+      error: "",
+      loading: false,
+      destroy: false
     };
   },
   /* eslint-disable  */
@@ -59,6 +67,17 @@ export default {
       this.error = "";
     }
   },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      vm.destroy = false;
+    })
+    next();
+  },
+  beforeRouteLeave(to, from, next) {
+    if(to.path)
+      this.destroy = true;
+    next();
+  },
   methods: {
     onDecode(result) {
       var urlPattern = new URL(result);
@@ -66,15 +85,17 @@ export default {
       if (urlPattern.hostname === "itfreshy2020.web.app") {
         this.success = true;
         this.result = urlPattern;
-        alertify.notify("Success! Redirecting...", "success", 3)
+        alertify.notify("Success! Redirecting...", "success", 2)
         setTimeout(() => {
           window.open(urlPattern, "_self")
-        }, 2000)
+        }, 1600)
       } else {
         this.result = "failed";
-      }
+      } 
     },
     async onInit(promise) {
+      this.loading = true;
+
       try {
         await promise;
       } catch (error) {
@@ -91,6 +112,9 @@ export default {
         } else if (error.name === "StreamApiNotSupportedError") {
           this.error = "ERROR: Stream API is not supported in this browser";
         }
+      }
+      finally {
+        this.loading = false;
       }
     },
     goUrl() {
