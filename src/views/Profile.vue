@@ -1,9 +1,15 @@
 <template>
   <section class="w-screen min-h-screen profile-wrap">
     <div class="page-container">
-      <div class="score-master space-x-2">
-        <div v-html="imgCoin"></div>{{ getProfile.point }}
-      </div>
+      <v-popover offset="16"
+        class="score-master space-x-2 cursor-pointer"
+      >
+      <span class="flex flex-row">
+        <div v-html="imgCoin"></div>
+        {{ getProfile.point }}
+      </span>
+      <span slot="popover">เหรียญ <span class="text-primary-200">ที่ได้จากการล่า สามารถช่วยเพิ่มเปอร์เซ็นต์ในการจับคู่สายรหัสได้</span></span>
+      </v-popover>
       <div class="profile container grid-cols-1 gap-10 self-center">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
@@ -49,8 +55,10 @@
         </div>
         <!--- Profile Stats --->
         <div class="stats items-stretch">
-          <div class="chased flex flex-col space-y-2 justify-center content-center cursor-pointer"
-               @click="$router.push('/hunted')">
+          <div
+            class="chased flex flex-col space-y-2 justify-center content-center cursor-pointer"
+            @click="$router.push('/hunted')"
+          >
             <span
               class="text-2xl font-semibold text-gray-200"
             >{{ getProfile.count ? getProfile.count : 0 }}</span>
@@ -66,14 +74,15 @@
         <!--- Profile button --->
         <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8 py-6">
           <button
-            class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm animate-pulse"
-            @click="!loading ? Bounty() : null"
-          >ล่ารายชื่อเลย!</button>
+            class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm w-full"
+            id="qrscan"
+            @click='$router.push({ path: "/qrscan"})'
+          >สแกน QR Code<span class="notify animate-pulse">new!</span></button>
           <button
-            class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm"
+            class="px-2 py-3 bg-primary-800 text-primary-200 rounded text-sm"
             @click="genQr()"
           >
-            <span :class="loading ? 'loading text-sm' : ''">{{ !loading? 'สร้างลิงค์ใหม่' : ''}}</span>
+            <span :class="loading ? 'loading text-sm' : ''">{{ !loading? 'รับลิงค์เพื่อสแกน' : ''}}</span>
           </button>
         </div>
       </div>
@@ -90,19 +99,18 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import store from "../store";
 import QRCode from "qrcode";
-import API from "../middleware/api/userApi"
+import API from "../middleware/api/userApi";
 
 var vm = this;
 
 export default {
-  components: {
-  },
   data() {
     return {
       image: null,
       loading: false,
       qr: new Array(1),
-      imgCoin: '<img src="img/icons/coin.png" alt="coin" class="w-6 h-6 object-cover mx-2 block" />'
+      imgCoin:
+        '<img src="img/icons/coin.png" alt="coin" class="w-6 h-6 object-cover mx-2 block" />'
     };
   },
   beforeUpdate() {
@@ -128,15 +136,12 @@ export default {
           .currentUser.getIdToken(/* forceRefresh */ true)
           .then(idToken => {
             axios
-              .get(
-                API + "test/genqrcode/",
-                {
-                  withCredentials: true,
-                  headers: {
-                    FIREBASE_AUTH_TOKEN: idToken
-                  }
+              .get(API + "test/genqrcode/", {
+                withCredentials: true,
+                headers: {
+                  FIREBASE_AUTH_TOKEN: idToken
                 }
-              )
+              })
               .then(setQr => {
                 if (setQr.status === 200) {
                   let data = setQr.data;
@@ -149,13 +154,12 @@ export default {
 
                   alertify
                     .alert(
-                      '<div id="qr-code" class="flex flex-col space-y-6 content-center items-center py-6">\
-                      <div id="url" class=" user-select-all bg-gray-300 text-gray-700 p-4 text-xs rounded-lg cursor-pointer select-text border-2 font-medium border-gray-400">\
+                      '<div id="qr-code" class="flex flex-col space-y-6 justify-center content-center items-center py-6">\
+                      <div id="url" class=" break-all block user-select-all bg-gray-300 text-gray-700 p-4 text-xs rounded-lg cursor-pointer select-text border-2 font-medium border-gray-400">\
                       ' +
                         newUrl +
                         "\
-                      </div>\
-                      </div>"
+                      </div> " + '<div class="text-red-600 font-semibold text-xs text-left">ทุกปีสามารถสแกนกันได้</div> </div>'
                     )
                     .setHeader("Your QR Code");
 
@@ -171,21 +175,20 @@ export default {
                     });
 
                     qrUrl.addEventListener("click", () => {
-                    qrUrl.classList.add("bg-green-200");
-                    qrUrl.classList.add("border-green-300");
-                    qrUrl.classList.add("text-green-700");
-                    alertify.success("Copied!")
-                    
-                    var range = document.createRange();
-                    range.selectNode(qrUrl);
-                    window.getSelection().removeAllRanges(); // clear current selection
-                    window.getSelection().addRange(range); // to select text
-                    document.execCommand("copy");
-                    window.getSelection().removeAllRanges();
-                    
-                  });
+                      qrUrl.classList.add("bg-green-200");
+                      qrUrl.classList.add("border-green-300");
+                      qrUrl.classList.add("text-green-700");
+                      alertify.success("Copied!");
+
+                      var range = document.createRange();
+                      range.selectNode(qrUrl);
+                      window.getSelection().removeAllRanges(); // clear current selection
+                      window.getSelection().addRange(range); // to select text
+                      document.execCommand("copy");
+                      window.getSelection().removeAllRanges();
+                    });
                   }
-                  
+
                   this.loading = false;
                   alertify.success("สร้าง Qr Code สำเร็จ!");
                   store.commit("user/setLink", data.qrcode);
@@ -207,7 +210,7 @@ export default {
   },
   watch: {
     gatePic(val, oldVal) {
-      if (this.getYear === "1") this.image = val[0].smallImg
+      if (this.getYear === "1") this.image = val[0].smallImg;
     }
   },
   computed: {
@@ -232,6 +235,17 @@ export default {
 };
 </script>
 <style scoped>
+#qrscan {
+  position: relative;
+}
+
+#qrscan .notify {
+  position: absolute;
+  top: -1rem;
+  right: -1rem;
+  @apply bg-complementary-treda px-2 py-1 rounded-full text-xs;
+}
+
 .profile {
   @apply grid;
 }
@@ -242,26 +256,35 @@ export default {
 
 .score-master {
   top: 0;
-  right: 5%;
-  transform: translateX(-5%);
+  right: 4%;
+  transform: translateX(-4%);
   text-shadow: 0 1px 0 rgb(0, 170, 100);
   @apply absolute text-secondary_b flex flex-row justify-center items-center;
 }
 
+.tooltip {
+  font-family: 'Prompt';
+}
+
 .profile-pic[lazy="loading"] {
   position: relative;
-  background-color: #E2E2E2;
+  background-color: #e2e2e2;
 }
 
 .profile-pic[lazy="loading"]::after {
   display: block;
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transform: translateY(-100%);
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .2), transparent);
-    animation: loading 1s infinite;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: translateY(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: loading 1s infinite;
 }
 
 @keyframes loading {

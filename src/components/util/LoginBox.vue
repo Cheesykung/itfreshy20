@@ -48,6 +48,7 @@ export default {
         .catch(e => {
           console.log(e);
           this.loading = false;
+          this.isClick = false;
           alertify.error("เกิดข้อผิดพลาด");
         });
     }

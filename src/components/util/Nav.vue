@@ -15,17 +15,12 @@
         </div>
       </div>
       <div
-        class="self-center flex-1 mx-auto md:ml-16 text-2xl sm:text-4xl font-normal uppercase text-gray-300 lucky-font"
+        class="self-center flex-1 mx-auto text-2xl sm:text-4xl font-normal uppercase text-gray-300 lucky-font"
       >{{ this.$route.name }}</div>
       <div class="flex flex-row justify-center items-center md:space-x-8 text-2xl">
         <div @click="goProfile()">
           <i
-            class="fas fa-user-alt basic-icon hidden md:block ease delay-50 duration-200 hover:scale-125"
-          ></i>
-        </div>
-        <div>
-          <i
-            class="fas fa-cog basic-icon ease delay-50 duration-200 hover:scale-125 hover:rotate-90"
+            class="fas fa-user-alt basic-icon ease delay-50 duration-200 hover:scale-125"
           ></i>
         </div>
       </div>
@@ -45,7 +40,6 @@
           v-for="(item, i) in navLinks"
           :key="i"
           class="capitalize transform duration-150 delay-50 hover:scale-125"
-          @click="hidden = true"
         >
           <router-link :to="{ path: item.link, replace: true}">{{ item.name }}</router-link>
         </li>
@@ -56,9 +50,6 @@
       </ul>
       <div class="overlay bg-primary-1000 bg-opacity-75" @click="hidden = true"></div>
     </aside>
-  </div>
-  <div class="signout_btn" v-else-if="$route.matched.some(({ path }) => path == '/continue')">
-    t
   </div>
 </section>
 </template>
@@ -82,12 +73,18 @@ export default {
       ]
     };
   },
+  /* eslint-disable */
+  watch: {
+    "$route.path" (to, from) {
+        this.hidden = true
+    }
+  },
   methods: {
     ...mapActions("user", ["signOut"]),
     goProfile() {
       return this.$route.path !== "/profile"
         ? this.$router.push({ path: "/profile" })
-        : this.$router.go();
+        : '';
     }
   }
 };
@@ -128,6 +125,10 @@ export default {
   flex: 0;
   width: 100%;
   @apply py-4 px-6 text-xl cursor-pointer transition-all ease-linear;
+}
+
+.nav-content ul li a {
+  @apply block w-full;
 }
 
 .nav-content ul li:hover {

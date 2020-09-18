@@ -68,7 +68,7 @@
             <button
               class="block mt-6 px-8 py-3 text-sm bg-secondary_b text-green-100 rounded-lg"
               @click="$router.push('/profile')"
-            >Next</button>
+            >Finish</button>
           </div>
         </div>
         <div class="flex flex-col justify-center items-center space-y-12" v-else>
@@ -81,7 +81,7 @@
               v-if="!loading"
               class="block px-8 py-3 text-sm bg-complementary-treda text-gray-100 rounded-lg"
               @click="$router.push('/profile')"
-            >Next</button>
+            >Finish</button>
           </span>
         </div>
       </div>
