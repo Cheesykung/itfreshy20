@@ -40,6 +40,8 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
             let snapshot = await userRef.orderBy('point', 'desc').get(); //sort users
             let arrayScoreY1 = []; // Create array to store the sequence
             let arrayScoreY2 = []; //year2
+            let arrayScoreY3 = [];
+            let arrayScoreY4 = [];
             //console.log(snapshot)
 
             //Add data to the array
@@ -55,6 +57,12 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
                 else if (isYear === 2) {
                     arrayScoreY2.push({'uid':isUID, 'point':isPoint, 'name':isName, 'pic': isPic});
                 }
+                else if (isYear === 3) {
+                    arrayScoreY3.push({'uid':isUID, 'point':isPoint, 'name':isName, 'pic': isPic});
+                }
+                else if (isYear === 4) {
+                    arrayScoreY4.push({'uid':isUID, 'point':isPoint, 'name':isName, 'pic': isPic});
+                }
             });
 
             //Update arrayScore to the 'ranking'
@@ -64,20 +72,34 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
             ranksRef.doc('year2Ranking').update({
                 'ranking': arrayScoreY2
             });
+            ranksRef.doc('year3Ranking').update({
+                'ranking': arrayScoreY3
+            });
+            ranksRef.doc('year4Ranking').update({
+                'ranking': arrayScoreY4
+            });
 
             //find index of user
-            let indexY1, indexY2;
-            if (year === 1 || year === 2) {
+            let indexY1, indexY2, indexY3, indexY4;
+            if (year === 1 || year === 2 || year === 3 || year === 4) {
                 indexY1 = await arrayScoreY1.findIndex((item, id) => {
                     return item.uid === uid;
                 });
                 indexY2 = await arrayScoreY2.findIndex((item, id) => {
                     return item.uid === uid;
                 });
+                indexY3 = await arrayScoreY3.findIndex((item, id) => {
+                    return item.uid === uid;
+                });
+                indexY4 = await arrayScoreY4.findIndex((item, id) => {
+                    return item.uid === uid;
+                });
             }
             else {
                 indexY1 = -1;
                 indexY2 = -1;
+                indexY3 = -1;
+                indexY4 = -1;
             }
 
             // Create data for the response.
@@ -85,6 +107,8 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
             //console.log(rankingY1)
 
             let rankingY2 = setRanking(arrayScoreY2, indexY2);
+            let rankingY3 = setRanking(arrayScoreY3, indexY3);
+            let rankingY4 = setRanking(arrayScoreY4, indexY4);
             //console.log(indexY2)
             let rankMe = {};
             if (year == 1) {
@@ -104,6 +128,22 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
                     "rank": indexY2 + 1
                 };
             }
+            else if (year == 3) {
+                rankMe = {
+                    "name": arrayScoreY3[indexY3].name,
+                    "point": arrayScoreY3[indexY3].point,
+                    "pic": arrayScoreY3[indexY3].pic,
+                    "rank": indexY3 + 1
+                };
+            }
+            else if (year == 4) {
+                rankMe = {
+                    "name": arrayScoreY4[indexY4].name,
+                    "point": arrayScoreY4[indexY4].point,
+                    "pic": arrayScoreY4[indexY4].pic,
+                    "rank": indexY4 + 1
+                };
+            }
             else {
                 await userRef.doc(uid).get().then(doc => {
                     rankMe = {
@@ -120,6 +160,8 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
             res.status(200).send({
                     'year1': rankingY1,
                     'year2': rankingY2,
+                    'year3': rankingY3,
+                    'year4': rankingY4,
                     'rankMe': rankMe
                 });
         }
