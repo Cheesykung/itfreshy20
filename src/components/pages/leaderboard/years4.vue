@@ -34,7 +34,7 @@
         <p class="text-xs player-txt text-clamp">{{ item.name ? item.name : 'Waiting for Hunter...' }}</p>
         <p class="text-xs player-score text-secondary_b">{{ item.point }}</p>
       </div>
-      <rank-me :item="selfRank" v-if="getYear == 2"  />
+      <rank-me :item="selfRank" v-if="getYear === 4"  />
     </div>
   </section>
 </template>
@@ -42,7 +42,6 @@
 import { mapGetters } from "vuex"
 
 export default {
-  name: 'years2',
   components: {
     RankMe: () => import("./rankMe")
   },

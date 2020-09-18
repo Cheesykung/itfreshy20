@@ -7,16 +7,21 @@
       </keep-alive>
     </transition>
     <div v-if="!online" @change="alertThis()"></div>
-  <div class="signout_btn"  @click="signOut" v-if="$route.matched.some(({ path }) => path == '/continue')">
-    <ion-icon name="log-out-outline"></ion-icon>
-  </div>
+    <div
+      class="signout_btn"
+      @click="signOut"
+      v-if="$route.matched.some(({ path }) => path == '/continue')"
+    >
+      <ion-icon name="log-out-outline"></ion-icon>
+    </div>
   </div>
 </template>
 <script>
 //import Footer from "@/components/util/Footer.vue";
 import Nav from "@/components/util/Nav.vue";
 import alertify from "alertifyjs";
-import { mapActions } from "vuex"
+import { mapActions } from "vuex";
+import "aos/dist/aos.css";
 
 export default {
   data() {
@@ -81,7 +86,6 @@ export default {
 html,
 body {
   @apply h-full;
-  
 }
 
 #app {
@@ -114,7 +118,7 @@ body {
 }
 
 #app[lazy="loaded"] {
-  background: no-repeat fixed bottom center / cover ;
+  background: no-repeat fixed bottom center / cover;
   animation: none !important;
 }
 
@@ -170,7 +174,7 @@ body {
 }
 
 .hover\:shadow-outline:hover {
-  box-shadow: 0 0 0 3px rgba(49,40,207, 0.8) !important;
+  box-shadow: 0 0 0 3px rgba(49, 40, 207, 0.8) !important;
 }
 
 .loading {
@@ -212,11 +216,7 @@ body {
     rgba(11, 9, 49, 0.9) 45%,
     transparent 70%
   );
-  @apply overflow-hidden;
-}
-
-.main-wrap::-webkit-scrollbar {
-  display: none;
+  @apply overflow-hidden pb-12;
 }
 
 >>> .text-clamp {
@@ -229,22 +229,6 @@ body {
 
 button:focus {
   outline: 0 !important;
-}
-
-::-webkit-scrollbar {
-  width: 0.5rem;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-primary-1100;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-primary-900;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary-600;
 }
 
 .lucky-font {
@@ -276,17 +260,17 @@ button:focus {
   display: block !important;
   z-index: 10000;
 }
- 
+
 .tooltip .tooltip-inner {
   border-radius: 16px;
-  padding: .4rem 1rem;
-  font-family: 'Prompt';
+  padding: 0.4rem 1rem;
+  font-family: "Prompt";
   word-wrap: break-word;
   word-break: break-word;
   max-width: 300px;
   @apply bg-primary-1100 bg-opacity-75 text-primary-200;
 }
- 
+
 .tooltip .tooltip-arrow {
   width: 0;
   height: 0;
@@ -297,16 +281,16 @@ button:focus {
   z-index: 1;
 }
 
-.tooltip[aria-hidden='false'] {
+.tooltip[aria-hidden="false"] {
   visibility: visible;
   opacity: 1;
-  transition: opacity .15s;
+  transition: opacity 0.15s;
 }
 
 .tooltip[x-placement^="bottom"] {
   margin-top: 5px;
 }
- 
+
 .tooltip[x-placement^="bottom"] .tooltip-arrow {
   border-width: 0 5px 5px 5px;
   border-left-color: transparent !important;
@@ -319,12 +303,12 @@ button:focus {
 }
 
 .tooltip.popover .popover-inner {
-  @apply bg-primary-1100 text-secondary_b border-secondary_b border-2 mx-2;  
+  @apply bg-primary-1100 text-secondary_b border-secondary_b border-2 mx-2;
   padding: 24px;
   border-radius: 5px;
-  box-shadow: 0 5px 30px rgba(black, .1);
+  box-shadow: 0 5px 30px rgba(black, 0.1);
 }
- 
+
 .tooltip.popover .popover-arrow {
   @apply border-secondary_b;
 }

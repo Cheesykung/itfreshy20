@@ -6,14 +6,23 @@
   </section>
 </template>
 <script>
-//import LoginBox from "@/components/util/LoginBox.vue";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default {
   data() {
     return {};
   },
-  methods: {
-    
+  /* eslint-disable */
+  beforeRouteEnter (to, from, next) {
+    next((vm) => {
+      if(firebase.auth().currentUser) {
+        next('/profile');
+      } else {
+        next();
+      }
+      next();
+    })
   },
   components: {
     LoginBox: () => import("@/components/util/LoginBox")

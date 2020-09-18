@@ -1,27 +1,28 @@
 <template>
   <section class="w-screen min-h-screen main-wrap">
-    <div
-      class="page-container"
-    >
-      <v-popover offset="16"
-        class="score-master space-x-2 cursor-pointer"
-      >
-      <span class="flex flex-row">
-        <div v-html="imgCoin"></div>
-        {{ getProfile.point }}
-      </span>
-      <span slot="popover">เหรียญ <span class="text-primary-200">ที่ได้จากการล่า สามารถช่วยเพิ่มเปอร์เซ็นต์ในการจับคู่สายรหัสได้</span></span>
+    <div class="page-container">
+      <v-popover offset="16" class="score-master space-x-2 cursor-pointer">
+        <span class="flex flex-row">
+          <div v-html="imgCoin"></div>
+          {{ getProfile.point }}
+        </span>
+        <span slot="popover">
+          เหรียญ
+          <span
+            class="text-primary-200"
+          >ที่ได้จากการล่า สามารถช่วยเพิ่มเปอร์เซ็นต์ในการจับคู่สายรหัสได้</span>
+        </span>
       </v-popover>
       <div class="profile container grid-cols-1 gap-10 self-center">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
-              :data-src="getProfile.photoURL? getProfile.photoURL + '?width=226' : getProfile.pic + '?width=226'"
-              class="profile-pic object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
+            :data-src="getProfile.photoURL? getProfile.photoURL + '?width=226' : getProfile.pic + '?width=226'"
+            class="profile-pic object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
           />
           <div class="details space-y-2 items-center">
-            <h1 class="text-3xl text-primary-100 font-thin" >
-              {{ getProfile.displayName ? getProfile.displayName : getProfile.name }}
-            </h1>
+            <h1
+              class="text-3xl text-primary-100 font-thin"
+            >{{ getProfile.displayName ? getProfile.displayName : getProfile.name }}</h1>
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
             <i class="fas fa-map-marked-alt"></i>
@@ -30,21 +31,22 @@
         </div>
         <div class="stats">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">{{ getProfile.count ? getProfile.count : 0 }}</span>
+            <span
+              class="text-2xl font-semibold text-gray-200"
+            >{{ getProfile.count ? getProfile.count : 0 }}</span>
             <span class="text-sm font-normal text-gray-400">คนที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">{{ getProfile.year === 1 ? getProfile.count ? Math.abs(235 - getProfile.count) : 235 : getProfile.count ? Math.abs(235 - getProfile.count) : 235 }}</span>
+            <span
+              class="text-2xl font-semibold text-gray-200"
+            >{{ getProfile.year === 1 ? getProfile.count ? Math.abs(235 - getProfile.count) : 235 : getProfile.count ? Math.abs(235 - getProfile.count) : 235 }}</span>
             <span class="text-sm font-normal text-gray-400">คนที่คุณยังไม่ได้ล่า</span>
           </div>
         </div>
-        <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8">
-
-        </div>
+        <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8"></div>
       </div>
       <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-6 lg:gap-5 xl:gap-10 self-center container px-8 my-6 md:my-12
-sm:max-w-xl md:max-w-6xl max-w-xs"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-6 lg:gap-5 xl:gap-10 self-center container px-8 my-6 md:my-12 sm:max-w-xl md:max-w-6xl max-w-xs"
       >
         <div class="col-start-1 md:col-end-3 lg:col-end-4">
           <div class="flex flex-row justify-center md:justify-between items-center content-center">
@@ -62,7 +64,8 @@ sm:max-w-xl md:max-w-6xl max-w-xs"
         </div>
         <div
           class="card px-8 sm:space-x-4 xl:px-10 py-12 sm:py-8 justify-center items-center flex-col sm:justify-between sm:flex-row cursor-pointer hover:shadow-outline"
-          v-for="(item, i) in getProfile.scanSave" :key="i"
+          v-for="(item, i) in getProfile.scanSave"
+          :key="i"
         >
           <div class="img-place self-center sm:py-0 py-3">
             <img
@@ -76,15 +79,10 @@ sm:max-w-xl md:max-w-6xl max-w-xs"
               <h2 class="text-gray-300 font-semibold">{{ item.name }}</h2>
             </div>
             <div class="flex flex-col space-y-1 my-2">
-              <span
-                class="flex-1 text-gray-500 font-medium text-xs break-words whitespace-no-wrap"
-              ><i class="fas fa-map-marked-alt text-secondary_b"></i> {{ item.branch }} KMITL, Year {{ item.year }}</span>
-<!--              <div class="flex-1 md:self-start space-x-2">-->
-<!--                <i class="fas fa-pizza-slice text-gray-500 text-sm"></i>-->
-<!--                <i class="fas fa-football-ball text-gray-500 text-sm"></i>-->
-<!--                <i class="fab fa-spotify text-gray-500 text-sm"></i>-->
-<!--                <i class="fas fa-film text-gray-500 text-sm"></i>-->
-<!--              </div>-->
+              <span class="flex-1 text-gray-500 font-medium text-xs break-words whitespace-no-wrap">
+                <i class="fas fa-map-marked-alt text-secondary_b"></i>
+                {{ item.branch }} KMITL, Year {{ item.year }}
+              </span>
             </div>
           </div>
         </div>
@@ -102,26 +100,26 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import store from "../store";
 import QRCode from "qrcode";
-import API from "../middleware/api/userApi"
+import API from "../middleware/api/userApi";
 
 var vm = this;
 
 export default {
-  components: {
-  },
+  components: {},
   data() {
     return {
       image: null,
       loading: false,
       scanned: 0,
-      imgCoin: '<img src="img/icons/coin.png" alt="coin" class="w-6 h-6 object-cover mx-2 block" />'
+      imgCoin:
+        '<img src="img/icons/coin.png" alt="coin" class="w-6 h-6 object-cover mx-2 block" />'
     };
   },
   beforeUpdate() {
     if (this.getYear === "1") this.image = this.gatePic[0].smallImg;
   },
   watch: {
-    getScanned(val, oldVal) {}
+    getScanned(val, oldVal) {},
   },
   computed: {
     ...mapGetters("user", {
@@ -139,7 +137,7 @@ export default {
       });
     },
     getScanned() {
-      return this.getProfile.scanSave ? this.getProfile.scanSave.length : 0
+      return this.getProfile.scanSave ? this.getProfile.scanSave.length : 0;
     }
   }
 };
@@ -163,9 +161,9 @@ export default {
 
 .profile-wrap {
   background-image: linear-gradient(
-      to top,
-      rgba(11, 9, 49, 0.9) 45%,
-      transparent 70%
+    to top,
+    rgba(11, 9, 49, 0.9) 45%,
+    transparent 70%
   );
 }
 

@@ -1,15 +1,17 @@
 <template>
   <section class="w-screen min-h-screen main-wrap">
     <div class="filter space-x-4">
-      <div class="filter-item bg-primary-1100 bg-opacity-75"
-           :class="active === i ? 'bg-secondary_b bg-opacity-100' : ''" v-for="i in 2" :key="i" @click="active = i">
-        Year {{ i }}
+      <div class="filter-item bg-primary-1100 bg-opacity-75 w-10 h-10"
+           :class="active === i ? 'bg-secondary_b bg-opacity-100' : ''" v-for="i in 4" :key="i" @click="active = i;">
+        {{ i }}
       </div>
     </div>
-
-    <keep-alive max="2" v-if="leaderList">
+    
+    <keep-alive max="4" v-if="leaderList">
       <year1 v-if="active === 1" :player_data="leaderList.year1" :self_rank="leaderList.rankMe"/>
-      <year2 v-else :player_data="leaderList.year2" :self_rank="leaderList.rankMe" />
+      <year2 v-else-if="active === 2" :player_data="leaderList.year2" :self_rank="leaderList.rankMe" />
+      <year3 v-else-if="active === 3" :player_data="leaderList.year3" :self_rank="leaderList.rankMe" />
+      <year4 v-else-if="active === 4" :player_data="leaderList.year4" :self_rank="leaderList.rankMe" />
     </keep-alive>
     <div class="flex flex-row justify-center items-center h-full my-24" v-else>
       <grid-loader />
@@ -28,11 +30,13 @@ export default {
     GridLoader,
     year1: () => import("../components/pages/leaderboard/year1"),
     year2: () => import("../components/pages/leaderboard/years2"),
+    year3: () => import("../components/pages/leaderboard/years3"),
+    year4: () => import("../components/pages/leaderboard/years4"),
   },
   data() {
     return {
       leaderList: null,
-      active: 1
+      active: 1,
     };
   },
   mounted() {
@@ -40,9 +44,6 @@ export default {
   },
   methods: {
     ...mapActions("user", ["getToken"]),
-    getDataByYear(year) {
-      return year
-    },
     getLeader() {
       this.getToken().then(async res => {
         try {
@@ -83,11 +84,11 @@ export default {
   @apply rounded-full py-3 px-4 bg-primary-1100 bg-opacity-75 flex flex-row justify-start items-center content-center;
 }
 
->>> .secondary-card:last-child {
+>>> .secondary-card.isme#last {
   @apply relative mt-24 mb-10;
 }
 
->>> .secondary-card:last-child:before {
+>>> .secondary-card.isme#last:before {
   content: 'Your Rank';
   @apply absolute text-primary-200 text-2xl;
   top: -3.5rem;

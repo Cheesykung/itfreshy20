@@ -1,21 +1,26 @@
 <template>
   <section class="w-screen min-h-screen main-wrap py-12 px-6">
     <div v-if="bountyList !== null">
-    <div class="announcement mx-4 max-w-xs sm:max-w-lg lg:max-w-3xl space-y-3">
-      <h2 class="text-secondary_b font-semibold text-2xl md:text-3xl">นักล่า..ค่าหัวสูง</h2>
-      <p class="font-light text-gray-300 text-sm">แหล่งรวมนักล่ามือฉมัง หากคุณล่าพวกเขาได้ จะได้รับเหรียญมากกว่าเรทปกติ</p>
-      <p class="text-xs text-gray-400">**รายชื่อจะถูกสุ่มขึ้นมาตามระยะเวลาที่กำหนด</p>
-    </div>
-    <h2 class="text-xl md:text-2xl mx-auto mt-12 -mb-3 text-gray-300">เลือกปี</h2>
-     <div class="filter space-x-4 -mb-6">
-      <div class="filter-item bg-primary-1100 bg-opacity-75 w-10 h-10 flex flex-col justify-center"
-           :class="year === i ? 'bg-secondary_b bg-opacity-100' : ''" v-for="i in 4" :key="i" @click="year = i; current = 'Year' + i">
-        {{ i }}
+      <div class="announcement mx-4 max-w-xs sm:max-w-lg lg:max-w-3xl space-y-3">
+        <h2 class="text-secondary_b font-semibold text-2xl md:text-3xl">นักล่า..ค่าหัวสูง</h2>
+        <p
+          class="font-light text-gray-300 text-sm"
+        >แหล่งรวมนักล่ามือฉมัง หากคุณล่าพวกเขาได้ จะได้รับเหรียญมากกว่าเรทปกติ</p>
+        <p class="text-xs text-gray-400">**รายชื่อจะถูกสุ่มขึ้นมาตามระยะเวลาที่กำหนด</p>
       </div>
-    </div>
-    <keep-alive max="4" :key="year">
-      <component v-bind="{player_data: getBountyByYear(year)}" :is="current" ></component>
-    </keep-alive>
+      <h2 class="text-xl md:text-2xl mx-auto mt-12 -mb-3 text-gray-300">เลือกปี</h2>
+      <div class="filter space-x-4 -mb-6">
+        <div
+          class="filter-item bg-primary-1100 bg-opacity-75 w-10 h-10 flex flex-col justify-center"
+          :class="year === i ? 'bg-secondary_b bg-opacity-100' : ''"
+          v-for="i in 4"
+          :key="i"
+          @click="year = i; current = 'Year' + i"
+        >{{ i }}</div>
+      </div>
+      <keep-alive max="4" :key="year">
+        <component v-bind="{player_data: getBountyByYear(year)}" :is="current"></component>
+      </keep-alive>
     </div>
     <grid-loader v-else />
   </section>
@@ -32,7 +37,7 @@ export default {
       bountyList: null,
       filteredYear: [],
       year: 1,
-      current: 'Year1'
+      current: "Year1"
     };
   },
   components: {
@@ -40,7 +45,7 @@ export default {
     Year1: () => import("../components/pages/bounty/year1"),
     Year2: () => import("../components/pages/bounty/year2"),
     Year3: () => import("../components/pages/bounty/year3"),
-    Year4: () => import("../components/pages/bounty/year4"),
+    Year4: () => import("../components/pages/bounty/year4")
   },
   mounted() {
     this.getBounty();
@@ -51,20 +56,20 @@ export default {
         const connections = await axios.get(API + "bounty");
         let data = connections.data;
         this.bountyList = data.data;
-
       } catch (e) {
         console.log(e);
       }
     },
-      getBountyByYear(year) {
-      return this.bountyList.filter((item) => { return parseInt(item.year) === year })
+    getBountyByYear(year) {
+      return this.bountyList.filter(item => {
+        return parseInt(item.year) === year;
+      });
     }
-  },
+  }
 };
 </script>
 
 <style scoped>
-
 .filter-item {
   flex-grow: 0 !important;
   flex-shrink: 0 !important;

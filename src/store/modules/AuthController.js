@@ -12,35 +12,72 @@ const actions = {
     commit("user/setLink", payload, { root: true });
   },
 
-  signInWithFB({ dispatch }) {
-    let provider = new firebase.auth.FacebookAuthProvider();
-    provider.addScope("public_profile");
-    return new Promise((resolve, reject) => {
-      firebase
-        .auth()
-        .signInWithPopup(provider)
-        .then((result) => {
+  signProfile({ dispatch }) {
+    firebase
+      .auth()
+      .getRedirectResult()
+      .then(function(result) {
+        if (result.credential) {
           let token = result.credential.accessToken;
           Cookies.set("user", token, {
             sameSite: "none",
             secure: true,
           });
-          if (result.credential.accessToken) {
-            dispatch("setAuth", result.user.providerData[0]);
-            dispatch("sendToken").then((res) => {
-              if (res.data.data === "newuser") {
-                router.go({ path: "/continue", params: { next: true } });
-              } else {
-                router.go({ path: "/profile", params: { next: "_self" } });
-              }
-            });
-          }
-          resolve(result);
-        })
-        .catch((e) => {
-          reject(e);
-        });
-    });
+
+          //dispatch("setAuth", result.user.providerData[0]);
+          // dispatch("sendToken").then((res) => {
+          //   if (res.data.data === "newuser") {
+          //     router.go({ path: "/continue", params: { next: true } });
+          //   } else {
+          //     router.go({ path: "/profile", params: { next: "_self" } });
+          //   }
+          // });
+        } else {
+          console.log("false")
+        }
+      })
+      .catch((e) => {
+        throw e;
+      });
+  },
+  signInWithFB({ dispatch }) {
+    if (!firebase.auth().currentUser) {
+      dispatch("signProfile");
+
+      let provider = new firebase.auth.FacebookAuthProvider();
+      provider.addScope("public_profile");
+
+      firebase.auth().signInWithRedirect(provider);
+    } else {
+      dispatch("signOut")
+    }
+
+    // return new Promise((resolve, reject) => {
+    //   firebase
+    //     .auth()
+    //     .signInWithPopup(provider)
+    //     .then((result) => {
+    //       let token = result.credential.accessToken;
+    //       Cookies.set("user", token, {
+    //         sameSite: "none",
+    //         secure: true,
+    //       });
+    //       if (result.credential.accessToken) {
+    //         dispatch("setAuth", result.user.providerData[0]);
+    //         dispatch("sendToken").then((res) => {
+    //           if (res.data.data === "newuser") {
+    //             router.go({ path: "/continue", params: { next: true } });
+    //           } else {
+    //             router.go({ path: "/profile", params: { next: "_self" } });
+    //           }
+    //         });
+    //       }
+    //       resolve(result);
+    //     })
+    //     .catch((e) => {
+    //       reject(e);
+    //     });
+    // });
   },
 
   setAuth({ commit }, payload) {
@@ -85,12 +122,13 @@ const actions = {
         .auth()
         .currentUser.getIdToken()
         .then((res) => {
-          resolve(res)
-        }).catch((e) => {
+          resolve(res);
+        })
+        .catch((e) => {
           reject(e);
           throw e;
-        })
-    })
+        });
+    });
   },
 
   sendToken({ commit, dispatch, getters }) {
@@ -135,7 +173,7 @@ const actions = {
   },
 
   setAnswer({ getters }, payload) {
-    let answer = JSON.stringify({answer: payload});
+    let answer = JSON.stringify({ answer: payload });
 
     return new Promise((resolve, reject) => {
       firebase
@@ -145,10 +183,16 @@ const actions = {
           axios
             .put(API + "/profile/answer", JSON.parse(answer), {
               headers: {
-                'FIREBASE_AUTH_TOKEN': res,
-                'id': parseInt(getters.getProfile.year) === 1 ? getters.getProfile.uid : getters.getQrData.uid,
-                'uid': parseInt(getters.getProfile.year) === 1 ? getters.getQrData.uid : getters.getProfile.uid,
-                "year": parseInt(getters.getProfile.year),
+                FIREBASE_AUTH_TOKEN: res,
+                id:
+                  parseInt(getters.getProfile.year) === 1
+                    ? getters.getProfile.uid
+                    : getters.getQrData.uid,
+                uid:
+                  parseInt(getters.getProfile.year) === 1
+                    ? getters.getQrData.uid
+                    : getters.getProfile.uid,
+                year: parseInt(getters.getProfile.year),
               },
             })
             .then((ans) => {

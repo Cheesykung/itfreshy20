@@ -33,7 +33,7 @@
       <p class="text-xs player-txt text-clamp">{{ item.name }}</p>
       <p class="text-xs player-score text-secondary_b">{{ item.point }}</p>
     </div>
-    <rank-me :item="selfRank" v-if="getYear < 3" />
+    <rank-me :item="selfRank" v-if="getYear === 1" />
   </div>
   </section>
 </template>

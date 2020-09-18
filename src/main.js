@@ -4,6 +4,7 @@ import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
 import firebase from "./middleware/services/AuthHeaders";
+import AOS from 'aos';
 
 import "@/assets/css/main.css";
 import "@fortawesome/fontawesome-free/css/all.css";
@@ -32,9 +33,11 @@ Vue.use(VueLazyLoad, {
 
 let app;
 
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged( (user) => {
   if (user) {
     store.dispatch("user/sendToken");
+
+    console.log("eeeeeeee")
   }
 
   console.log("Hello Script Kiddies :p");
@@ -43,6 +46,10 @@ firebase.auth().onAuthStateChanged(function(user) {
     app = new Vue({
       router,
       store,
+      created() {
+        AOS.init(),
+        store.dispatch("user/signProfile");
+      },
       render: (h) => h(App),
     }).$mount("#app");
   }

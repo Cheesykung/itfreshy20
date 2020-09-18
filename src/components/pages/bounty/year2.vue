@@ -2,7 +2,11 @@
   <div
     class="bounted-wrap max-w-xs sm:max-w-lg grid-cols-1 sm:grid-cols-2 lg:max-w-3xl lg:grid-cols-3"
   >
-    <div class="bounted-item space-y-6" v-for="(item, i) in player_data" :key="i">
+    <div
+      class="bounted-item space-y-6"
+      v-for="(item, i) in player_data"
+      :key="i"
+    >
       <img
         :src="item.pic + '?width=200'"
         class="object-cover w-32 h-32 sm:w-24 sm:h-24 rounded-full"
@@ -24,7 +28,7 @@
 </template>
 <script>
 export default {
-  name: 'year2',
+  name: "year2",
   props: ["player_data"]
 };
 </script>
