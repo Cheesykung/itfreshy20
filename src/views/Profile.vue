@@ -150,7 +150,7 @@ export default {
                     .toString()
                     .substring(url.pathname.lastIndexOf("qrcode"));
                   newUrl = newUrl.replace("qrcode/", "scan/");
-                  newUrl = new URL("https://itfreshy2020.web.app/" + newUrl);
+                  newUrl = new URL("https://hunter.war.in.th/" + newUrl);
 
                   alertify
                     .alert(
