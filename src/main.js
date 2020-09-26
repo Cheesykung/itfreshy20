@@ -36,8 +36,6 @@ let app;
 firebase.auth().onAuthStateChanged( (user) => {
   if (user) {
     store.dispatch("user/sendToken");
-
-    console.log("eeeeeeee")
   }
 
   console.log("Hello Script Kiddies :p");

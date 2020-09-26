@@ -17,7 +17,7 @@ const actions = {
       .auth()
       .getRedirectResult()
       .then(function(result) {
-        if (result.credential) {
+        if (result.credential || firebase.auth().currentUser) {
           let token = result.credential.accessToken;
           Cookies.set("user", token, {
             sameSite: "none",
