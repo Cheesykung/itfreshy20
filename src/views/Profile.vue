@@ -77,7 +77,7 @@
             class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm w-full"
             id="qrscan"
             @click='$router.push({ path: "/qrscan"})'
-          >สแกน QR Code<span class="notify animate-pulse">new!</span></button>
+          >สแกน QR Code</button>
           <button
             class="px-2 py-3 bg-primary-800 text-primary-200 rounded text-sm"
             @click="genQr()"
