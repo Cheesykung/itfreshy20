@@ -1,29 +1,44 @@
 <template>
   <section class="w-screen min-h-screen profile-wrap">
     <div class="page-container">
-      <v-popover offset="16"
-        class="score-master space-x-2 cursor-pointer"
-      >
-      <span class="flex flex-row">
-        <div v-html="imgCoin"></div>
-        {{ getProfile.point }}
-      </span>
-      <span slot="popover">เหรียญ <span class="text-primary-200">ที่ได้จากการล่า สามารถช่วยเพิ่มเปอร์เซ็นต์ในการจับคู่สายรหัสได้</span></span>
+      <v-popover offset="16" class="score-master space-x-2 cursor-pointer">
+        <span class="flex flex-row">
+          <div v-html="imgCoin"></div>
+          {{ getProfile.point }}
+        </span>
+        <span slot="popover"
+          >เหรียญ
+          <span class="text-primary-200"
+            >ที่ได้จากการล่า
+            สามารถช่วยเพิ่มเปอร์เซ็นต์ในการจับคู่สายรหัสได้</span
+          ></span
+        >
       </v-popover>
       <div class="profile container grid-cols-1 gap-10 self-center">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
-            :data-src="getProfile.photoURL? getProfile.photoURL + '?width=226' : getProfile.pic + '?width=226'"
+            :data-src="
+              getProfile.photoURL
+                ? getProfile.photoURL + '?width=226'
+                : getProfile.pic + '?width=226'
+            "
             class="profile-pic object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
           />
           <div class="details space-y-2 items-center">
-            <h1
-              class="text-3xl text-primary-100 font-thin"
-            >{{ getProfile.displayName ? getProfile.displayName : getProfile.name }}</h1>
+            <h1 class="text-3xl text-primary-100 font-thin">
+              {{
+                getProfile.displayName
+                  ? getProfile.displayName
+                  : getProfile.name
+              }}
+            </h1>
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
             <i class="fas fa-map-marked-alt"></i>
-            <span>IT KMITL{{ getProfile.branch ? ", " + getProfile.branch : '' }}{{ getProfile.year ? " ปี " + getProfile.year : '' }}</span>
+            <span
+              >IT KMITL{{ getProfile.branch ? ", " + getProfile.branch : ""
+              }}{{ getProfile.year ? " ปี " + getProfile.year : "" }}</span
+            >
           </div>
           <div class="like space-x-4">
             <i
@@ -47,7 +62,11 @@
               v-if="getProfile.gate !== '' || getProfile.year === '1'"
               class="flex flex-row space-x-2 justify-center items-center content-center text-primary-200"
             >
-              <img class="object-cover w-full" :data-src="image" v-if="image !== null" />
+              <img
+                class="object-cover w-full"
+                :data-src="image"
+                v-if="image !== null"
+              />
               <ion-icon name="skull-outline" v-else></ion-icon>
               <p class="capitalize">{{ getProfile.status }}</p>
             </span>
@@ -59,16 +78,28 @@
             class="chased flex flex-col space-y-2 justify-center content-center cursor-pointer"
             @click="$router.push('/hunted')"
           >
-            <span
-              class="text-2xl font-semibold text-gray-200"
-            >{{ getProfile.count ? getProfile.count : 0 }}</span>
-            <span class="text-sm font-normal text-gray-400">คนที่ล่าไปแล้ว</span>
+            <span class="text-2xl font-semibold text-gray-200">{{
+              getProfile.count ? getProfile.count : 0
+            }}</span>
+            <span class="text-sm font-normal text-gray-400"
+              >คนที่ล่าไปแล้ว</span
+            >
           </div>
-          <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span
-              class="text-2xl font-semibold text-gray-200"
-            >{{ getProfile.year === 1 ? getProfile.count ? Math.abs(235 - getProfile.count) : 235 : getProfile.count ? Math.abs(235 - getProfile.count) : 235 }}</span>
-            <span class="text-sm font-normal text-gray-400">คนที่คุณยังไม่ได้ล่า</span>
+          <div
+            class="un-chased flex flex-col space-y-2 justify-center content-center"
+          >
+            <span class="text-2xl font-semibold text-gray-200">{{
+              getProfile.year === 1
+                ? getProfile.count
+                  ? Math.abs(235 - getProfile.count)
+                  : 235
+                : getProfile.count
+                ? Math.abs(235 - getProfile.count)
+                : 235
+            }}</span>
+            <span class="text-sm font-normal text-gray-400"
+              >คนที่คุณยังไม่ได้ล่า</span
+            >
           </div>
         </div>
         <!--- Profile button --->
@@ -76,14 +107,67 @@
           <button
             class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm w-full"
             id="qrscan"
-            @click='$router.push({ path: "/qrscan"})'
-          >สแกน QR Code</button>
+            @click="$router.push({ path: '/qrscan' })"
+          >
+            สแกนคิวอาร์โค้ด
+          </button>
           <button
             class="px-2 py-3 bg-primary-800 text-primary-200 rounded text-sm"
             @click="genQr()"
           >
-            <span :class="loading ? 'loading text-sm' : ''">{{ !loading? 'รับลิงค์เพื่อสแกน' : ''}}</span>
+            <span :class="loading ? 'loading text-sm' : ''">{{
+              !loading ? "รับลิงค์เพื่อสแกน" : ""
+            }}</span>
           </button>
+        </div>
+        <span class="hero">
+          จำนวนที่ล่าได้ในวันนี้
+        </span>
+        <div class="daily_stats">
+          <div class="stats_item space-y-4">
+            <span
+              :class="
+                getProfile.year1 != 0 ? 'text-secondary_b' : 'text-primary-300'
+              "
+              >{{
+                getProfile.year1 != 0 ? getProfile.year1 : "ยังไม่ได้ล่า"
+              }}</span
+            >
+            <p>ปีหนึ่ง</p>
+          </div>
+          <div class="stats_item space-y-4">
+            <span
+              :class="
+                getProfile.year2 != 0 ? 'text-secondary_b' : 'text-primary-300'
+              "
+              >{{
+                getProfile.year2 != 0 ? getProfile.year2 : "ยังไม่ได้ล่า"
+              }}</span
+            >
+            <p>ปีสอง</p>
+          </div>
+          <div class="stats_item space-y-4">
+            <span
+              :class="
+                getProfile.year3 != 0 ? 'text-secondary_b' : 'text-primary-300'
+              "
+              >{{
+                getProfile.year3 != 0 ? getProfile.year3 : "ยังไม่ได้ล่า"
+              }}</span
+            >
+            <p>ปีสาม</p>
+          </div>
+          <div class="stats_item space-y-4">
+            <span
+              :class="
+                getProfile.year4 != 0 ? 'text-secondary_b' : 'text-primary-300'
+              "
+              >{{
+                getProfile.year4 != 0 ? getProfile.year4 : "ยังไม่ได้ล่า"
+              }}</span
+            >
+            <p>ปีสี่</p>
+          </div>
         </div>
       </div>
     </div>
@@ -159,7 +243,8 @@ export default {
                       ' +
                         newUrl +
                         "\
-                      </div> " + '<div class="text-red-600 font-semibold text-xs text-left">ทุกปีสามารถสแกนกันได้</div> </div>'
+                      </div> " +
+                        '<div class="text-red-600 font-semibold text-xs text-left">ทุกปีสามารถสแกนกันได้</div> </div>'
                     )
                     .setHeader("Your QR Code");
 
@@ -211,7 +296,8 @@ export default {
   watch: {
     gatePic(val, oldVal) {
       if (this.getYear === "1") this.image = val[0].smallImg;
-    }
+    },
+    getProfile(val, oldVal) {}
   },
   computed: {
     ...mapGetters("user", {
@@ -246,16 +332,42 @@ export default {
   @apply bg-complementary-treda px-2 py-1 rounded-full text-xs;
 }
 
+.daily_stats {
+  @apply grid grid-cols-2 gap-8 max-w-xl w-full mx-auto text-purple-200 my-4;
+}
+
+.daily_stats .stats_item {
+  @apply flex flex-col justify-center items-stretch;
+}
+
+.daily_stats .stats_item span {
+  @apply text-2xl;
+}
+
+.daily_stats .stats_item p {
+  @apply text-sm font-thin;
+}
+
+@screen md {
+  .daily_stats {
+    @apply grid grid-cols-4;
+  }
+}
+
+.hero {
+  @apply max-w-2xl mx-auto text-3xl text-secondary_b text-center;
+}
+
 .profile {
   @apply grid;
 }
 
 .page-container {
-  @apply flex  flex-col content-center justify-center items-center h-full py-12 relative;
+  @apply flex  flex-col content-center justify-center items-center h-full pb-12 relative;
 }
 
 .score-master {
-  top: 0;
+  top: -50px;
   right: 4%;
   transform: translateX(-4%);
   text-shadow: 0 1px 0 rgb(0, 170, 100);
@@ -263,7 +375,7 @@ export default {
 }
 
 .tooltip {
-  font-family: 'Prompt';
+  font-family: "Prompt";
 }
 
 .profile-pic[lazy="loading"] {
@@ -299,6 +411,7 @@ export default {
     rgba(11, 9, 49, 0.9) 45%,
     transparent 70%
   );
+  @apply py-12;
 }
 
 .img-wrap {

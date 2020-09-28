@@ -89,7 +89,7 @@ body {
 }
 
 #app {
-  font-family: "Righteous", Helvetica, cursive, "Prompt";
+  font-family: "Righteous","Prompt",  Helvetica, cursive;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
