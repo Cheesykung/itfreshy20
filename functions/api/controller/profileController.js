@@ -590,6 +590,40 @@ profileController.put('/answer', async (req, res) => {
 //     }
 // });
 
+profileController.post('/nubyear', async(req, res) => {
+    try {
+        let users = await firestore.collection('scans').get();
+        users.forEach(async function (element) {
+            let user = element.data();
+            let year1 = 0;
+            let year2 = 0;
+            let year3 = 0;
+            let year4 = 0;
+            // for (let i = 1; i < user.scan.length; i++) {
+            //     all++;
+            //     scan_ref = firestore.collection('users').doc(user.scan[i]);
+            //     scan_get = await scan_ref.get();
+            //     scan_data = scan_get.data();
+            //     year = scan_data.year;
+            //     year == "1" ? year1++ : null;
+            //     year == "2" ? year2++ : null;
+            //     year == "3" ? year3++ : null;
+            //     year == "4" ? year4++ : null;
+            // }
+            await firestore.collection('users').doc(user.uid).update({
+                'year1' : year1,
+                'year2' : year2,
+                'year3' : year3,
+                'year4' : year4
+            });
+        });
+        res.status(200).send('ok'); return;
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('error'); return;
+    }
+});
+
 //exports this function to index.js
 async function isLoggedIn(req, res, next) {
     const idToken = req.header('FIREBASE_AUTH_TOKEN');

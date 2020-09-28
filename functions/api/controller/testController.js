@@ -428,7 +428,29 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                         count: userUpdate.data().count + 1,
                         scanSave: arrayDataLink,
                       });
+                      if (linkYear === 1) {
+                        userRef.doc(userUID).update({
+                          year1: userUpdate.data().year1? userUpdate.data().year1+ 1: 1,
+                        });
+                      }
+                      else if (linkYear === 2) {
+                        userRef.doc(userUID).update({
+                          year2: userUpdate.data().year2? userUpdate.data().year2+ 1: 1,
+                        });
+                      }
+                      else if (linkYear === 3) {
+                        userRef.doc(userUID).update({
+                          year3: userUpdate.data().year3? userUpdate.data().year3+ 1: 1,
+                        });
+                      }
+                      else if (linkYear === 4) {
+                        userRef.doc(userUID).update({
+                          year4: userUpdate.data().year4? userUpdate.data().year4+ 1: 1,
+                        });
+                      }
                     });
+
+
 
                   //อัพเดทใน scan ของตัวเอง เพิ่ม uid ที่เราไปสแกน
                   let updateScan = scanUserData.data().scan;

@@ -82,7 +82,7 @@ export default {
     onDecode(result) {
       var urlPattern = new URL(result);
 
-      if (urlPattern.hostname === "itfreshy2020.web.app") {
+      if (urlPattern.hostname === "hunter.war.in.th") {
         this.success = true;
         this.result = urlPattern;
         alertify.notify("Success! Redirecting...", "success", 2)
