@@ -431,21 +431,25 @@ testController.post("/scan/:id", isLoggedIn, async (req, res) => {
                       if (linkYear === 1) {
                         userRef.doc(userUID).update({
                           year1: userUpdate.data().year1? userUpdate.data().year1+ 1: 1,
+                          all_year1: userUpdate.data().all_year1? userUpdate.data().all_year1+ 1: 1,
                         });
                       }
                       else if (linkYear === 2) {
                         userRef.doc(userUID).update({
                           year2: userUpdate.data().year2? userUpdate.data().year2+ 1: 1,
+                          all_year2: userUpdate.data().all_year2? userUpdate.data().all_year2+ 1: 1,
                         });
                       }
                       else if (linkYear === 3) {
                         userRef.doc(userUID).update({
                           year3: userUpdate.data().year3? userUpdate.data().year3+ 1: 1,
+                          all_year3: userUpdate.data().all_year3? userUpdate.data().all_year3+ 1: 1,
                         });
                       }
                       else if (linkYear === 4) {
                         userRef.doc(userUID).update({
                           year4: userUpdate.data().year4? userUpdate.data().year4+ 1: 1,
+                          all_year4: userUpdate.data().all_year4? userUpdate.data().all_year4+ 1: 1,
                         });
                       }
                     });
@@ -634,6 +638,74 @@ function isAdmin(req, res, next) {
   }
 }
 
+// testController.get("/query", async (req, res) => {
+//   let save = []
+//   const plai = USERSRef.where('year', '==', '2').where('newuser', '==', 0).get()
+//       .then((plai) => {
+//         plai.forEach(function (doc) {
+//           // doc.data() is never undefined for query doc snapshots
+//           save.push({
+//             stdid: doc.data().id,
+//             fname: doc.data().fname,
+//             surname: doc.data().surname,
+//             nickname: doc.data().nickname,
+//             branch: doc.data().branch,
+//             name: doc.data().name,
+//             pic: doc.data().pic + "?type=large",
+//             year1: doc.data().year1,
+//             year2: doc.data().year2,
+//             year3: doc.data().year3,
+//             year4: doc.data().year4,
+//             dayscan: doc.data().year1+doc.data().year2+doc.data().year3+doc.data().year4,
+//             all_year1: doc.data().all_year1,
+//             all_year2: doc.data().all_year2,
+//             all_year3: doc.data().all_year3,
+//             all_year4: doc.data().all_year4,
+//             allscan: doc.data().all_year1+doc.data().all_year2+doc.data().all_year3+doc.data().all_year4,
+//           })
+//           console.log("run")
+//           return save
+//         })
+//       })
+//       .then(() => {
+//         console.log(save)
+//         res.send(save) })
+  // // const que = db.collection("users").where('year', '==', '1').where('newuser', '==', 0)
+  // // .get()
+  // // .then((que) => {
+  // //   res.json(que.size)
+  // // }) .where("uid", "==", "fy4KYPnrVKUM76w6hcEAvhEPlv02")
+  // let bigCities = [];
+  // function check(num){
+  //   for (let i = 0; i < num.length; i++) {
+  //     console.log(num[i].uid)
+  //     if (num[i].uid ==  "62070159") {
+  //       return true
+  //     }
+  //   }
+  //   return false;
+  // }
+
+  // db.collection("secretfromuser")
+  //   .get()
+  //   .then(query => {
+  //     let data = query.docs.map(doc => {
+  //       if(doc.data().score != undefined){
+  //       if(check(doc.data().score)){
+  //       let x = doc.data()
+  //       console.log("hey")
+  //       x['_id'] = doc.id;
+  //       return x;
+  //       }
+  //       }
+  //     })
+  //     res.status(200).json(data);
+  //   })
+// });
+
+
 
 
 module.exports = testController;
+
+
