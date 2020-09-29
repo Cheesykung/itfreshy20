@@ -53,6 +53,51 @@ testController.set("views", path.join(__dirname, "views"));
 testController.set("view engine", "ejs");
 log.info("Server start");
 
+testController.get('/getsecert', isLoggedIn, async (req, res) => {
+  const uid = req.user.uid;
+  let userFamily;
+  console.log(uid)
+  const secretRef = await db.collection('backupSFUser');
+  let userData = await secretRef.where("uid", "==", uid).get();
+  await userData.forEach(doc => {
+    userFamily = doc.data().family;
+  })
+  const getsec = await db.collection("form17").doc(userFamily)
+      .get()
+      .then((getsec) => {
+        if (getsec.exists) {
+          res.status(200).json({
+            hinttext: getsec.data().hintText? getsec.data().hintText: null,
+            hunterid: getsec.data().hunterID? getsec.data().hunterID: null,
+            socialfake: getsec.data().socialFake? getsec.data().socialFake: null,
+          });
+        }
+        else {
+          res.status(500).json({ data: "notfound" })
+        }
+      })
+});
+
+testController.get("/older", async (req, res) => {
+  let save = []
+  const plai = db.collection("backupSFUser").get()
+      .then((plai) => {
+        plai.forEach(function (doc) {
+          // doc.data() is never undefined for query doc snapshots
+          save.push({
+            id: doc.id,
+            family: doc.data().family,
+            uid: doc.data().uid
+          })
+          console.log("run")
+          return save
+        })
+      })
+      .then(() => {
+        console.log(save)
+        res.send(save) })
+});
+
 testController.post('/backup', isLoggedIn, async (req, res) => {
   const testRandom = await firestore.collection('users').get();
   const backup = await firestore.collection('backupUser');
