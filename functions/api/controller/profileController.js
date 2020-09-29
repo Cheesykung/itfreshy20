@@ -595,12 +595,11 @@ profileController.post('/nubyear', async(req, res) => {
         let users = await firestore.collection('scans').get();
         users.forEach(async function (element) {
             let user = element.data();
-            let year1 = 0;
-            let year2 = 0;
-            let year3 = 0;
-            let year4 = 0;
+            // let year1 = 0;
+            // let year2 = 0;
+            // let year3 = 0;
+            // let year4 = 0;
             // for (let i = 1; i < user.scan.length; i++) {
-            //     all++;
             //     scan_ref = firestore.collection('users').doc(user.scan[i]);
             //     scan_get = await scan_ref.get();
             //     scan_data = scan_get.data();
@@ -610,17 +609,35 @@ profileController.post('/nubyear', async(req, res) => {
             //     year == "3" ? year3++ : null;
             //     year == "4" ? year4++ : null;
             // }
+            // await firestore.collection('users').doc(user.uid).update({
+            //     'all_year1' : 0,
+            //     'all_year2' : 0,
+            //     'all_year3' : 0,
+            //     'all_year4' : 0
+            // });
             await firestore.collection('users').doc(user.uid).update({
-                'year1' : year1,
-                'year2' : year2,
-                'year3' : year3,
-                'year4' : year4
+                'year1' : 0,
+                'year2' : 0,
+                'year3' : 0,
+                'year4' : 0
             });
         });
-        res.status(200).send('ok'); return;
+
+        res.status(200).send({
+            'statusCode' : '200',
+            'statusText' : 'OK',
+            'error' : false,
+            'message' : 'Random Complete',
+            }); 
+        return ;
     } catch (e) {
         console.log(e);
-        res.status(500).send('error'); return;
+        res.status(500).send({
+            'statusCode' : '500',
+            'statusText' : 'Internal Server Error',
+            'error' : true
+        });
+        return ;
     }
 });
 

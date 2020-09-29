@@ -54,7 +54,7 @@
       }
 
       .select{
-        background-color: none;
+        background-color: rgba(0, 0, 0, 0);
       }
 
       .graph{
@@ -76,6 +76,7 @@
       .bar{
         background-color: gray;
         text-align: right;
+        transition: 0.75s;
       }
 
       #number{
@@ -84,11 +85,11 @@
 
     </style>
   </head>
-<body onload="changeData(4)">
+<body onload="loadData(4)">
   <div class="container">
       <h2 class="head">DASHBOARD</h2>
       <div calss="row menu">
-        <button class="col-4 col-lg-3 menuBox" onclick="changeData(4)" id="visit">Visitor</button>
+        <button class="col-4 col-lg-3 menuBox select" onclick="changeData(4)" id="visit">Visitor</button>
         <button class="col-4 col-lg-2 menuBox" onclick="changeData(3)" id="user">User</button>
         <button class="col-4 col-lg-2 menuBox" onclick="changeData(2)" id="scan">Scan</button>
         <button class="col-6 col-lg-2 menuBox" onclick="changeData(0)" id="bounty">Bounty</button>
@@ -96,28 +97,11 @@
       </div>
       
       <div class="detail">
-        <h4>Update Last</h4><h4> Date: 8/9 Time: 00:01</h4>
+        <h4>= Last Update =</h4><h4 id="update"></h4>
         <h1 id="number"></h1>
         <h4 id="topic">Total</h4><br>
         <div class="graph">
-          <div class="row ">
-            
-            <div class="col-2 date barDate">0</div>
-            <div class="col-10 barBox">
-              <div class="bar"></div>
-            </div>
-
-            <div class="col-2 date barDate">0</div>
-            <div class="col-10 barBox">
-              <div class="bar"></div>
-            </div>
-
-            <div class="col-2 date barDate">0</div>
-            <div class="col-10 barBox">
-              <div class="bar"></div>
-            </div>
-            
-          </div>
+          <div class="row" id="graphBar"> </div>
         </div>
       </div>
   </div>
@@ -125,34 +109,73 @@
 
 <script>
 
-  function changeData(topic){
+  var topics = ['Bounties', 'Generate QR Codes', 'Scans', 'Users', 'Visitors']
+  var dateUpdate = ['29/9', '00:00']
+  var total = [1044, 4943, 4947, 660, 27106]
+  var listData = [[4, 7, 10, 141, 3462], [0, 0, 0, 19, 317], [0, 0, 0, 14, 157], [0, 38, 0, 28, 426], [14, 75, 15, 13, 438],
+                  [101, 12, 77, 15, 351], [0, 4, 0, 3, 148], [9, 2, 43, 1, 100], [0, 10, 5, 0, 194], [148, 970, 1056, 185, 5260],
+                  [90, 1395, 1043, 85, 4808], [135, 206, 518, 30, 2233], [132, 526, 487, 30, 1934], [166, 399, 421, 46, 1860], 
+                  [70, 79, 110, 7, 688], [36, 91, 82, 9, 460], [103, 195, 241, 7, 808], [12, 52, 55, 4, 298], [15, 36, 29, 0, 212],
+                  [6, 121, 96, 1, 343], [3, 34, 26, 1, 209], [9, 64, 39, 6, 365], [41, 627, 597, 15, 2065]
+                ];
+  var listDate = ['5/9', '6/9', '7/9', '8/9', '9/9', '10/9', '11/9', '12/9', '13/9', '14/9',
+                  '15/9', '16/9', '17/9', '18/9', '19/9', '20/9', '21/9', '22/9', '23/9', 
+                  '24/9', '25/9', '26-27/9', '28/9'
+                ];
+  var numList = listData.length;
 
-    var topics = ['Bounties', 'Generate QR Codes', 'Scans', 'Users', 'Visitors']
-    var total = [4,7, 10, 174, 3936]
-    var listData = [[4, 7, 10, 141, 3462], [0, 0, 0, 19, 317], [0, 0, 0, 14, 157]];
-    var listDate = ['5/9', '6/9', '7/9'];
-    var numList = listData.length;
-
+  function loadData(topic){
+    var htmlText = "";
     var maxNum = listData[0][topic];
     for (i = 1; i < numList; i++)
     {
-      if (listData[i][topic]  > maxNum)
+      if (listData[i][topic] > maxNum)
       {
         maxNum = listData[i][topic];
       }
     }
 
-    for (i = 0; i < numList; i++)
+    for (i = numList-1; i >= 0; i--)
     {
       var num = listData[i][topic];
-      document.getElementsByClassName("bar")[i].innerHTML = num;
-      document.getElementsByClassName("barDate")[i].innerHTML = listDate[i];
-      document.getElementsByClassName("bar")[i].style = "width: "+parseInt((num*1.0/total[topic])*100)+"%;"
+      htmlText += "<div class='col-2 date barDate'>"+listDate[i]+"</div>"
+      htmlText += "<div class='col-10 barBox'><div class='bar' style='width: "+parseInt((num*1.0/maxNum)*100)+"%;'>"+num+"</div></div>"
+    }
+
+    document.getElementById("update").innerHTML = "Date: "+dateUpdate[0]+" Time: "+dateUpdate[1]+"";
+    document.getElementById("graphBar").innerHTML = htmlText;
+    document.getElementById("number").innerText = total[topic];
+  }
+
+  function changeData(topic){
+    var maxNum = listData[0][topic];
+    for (i = 1; i < numList; i++)
+    {
+      if (listData[i][topic] > maxNum)
+      {
+        maxNum = listData[i][topic];
+      }
+    }
+
+    for (i = numList-1; i >= 0; i--)
+    {
+      var num = listData[i][topic];
+      document.getElementsByClassName("bar")[numList-1-i].innerHTML = num;
+      document.getElementsByClassName("barDate")[numList-1-i].innerHTML = listDate[i];
+      document.getElementsByClassName("bar")[numList-1-i].style = "width: "+parseInt((num*1.0/maxNum)*100)+"%;"
     }
 
     document.getElementById("number").innerText = total[topic];
     document.getElementById("topic").innerText = "Total "+topics[topic];
 
+    var listId = ['bounty', 'qr', 'scan', 'user', 'visit'];
+
+    for (i = 0; i < 5; i++)
+    {
+      document.getElementById(listId[i]).classList.remove("select");
+    }
+
+    document.getElementById(listId[topic]).className += " select";
   }
 </script>
 </html>
