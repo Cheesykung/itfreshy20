@@ -3,53 +3,96 @@ const express = require('express');
 const admin = require('../config/admin');
 const firestore = admin.firestore();
 
+
 const randomController = express();
 
-randomController.use(cors({ origin: true }));
+randomController.use(cors({
+    origin: true
+}));
 randomController.get('/random', async (req, res) => {
-    try {
-        const secretRef = firestore.collection('testRandom');
-        const snapShot = await secretRef.get();
-        let arrayY2 = [];
-        let randomSuccess = [];
-        let arrayY1Failed = []; //น้องไม่มีพี่ โดนคนกอ่นหนน้าแย่งงงงงงงงงง
-        await snapShot.forEach(doc => {
+    // try {
+    //const userRef = await firestore.collection("user");
+    const secretRef = await firestore.collection('backupSFUser');
+    const snapShot = await secretRef.orderBy('point', 'desc').get()
+    const userRef = await firestore.collection("users");
 
-            if (doc.data().scoreMe[0]) { //เช็คน้องที่ไม่เล่นอะไรเลย
-                let data = doc.data().scoreMe;
+
+    let arrayY2 = ["62070007", "62070080", "62070140", "62070149", "62070234", "62070237", "62070264", "62070272", "62070262"]; //array ของพี่ที่โดนสุ่มแล้ว
+    let arrayR2T = [] // เก็บ คนที่สุ่ม 2 ครั้ง
+    let randomSuccess = [];
+    let arrayY1Failed = []; //น้องไม่มีพี่ โดนคนกอ่นหนน้าแย่งงงงงงงงงง
+    let userFail = [];
+
+    //สร้างน้องปี 1 ทั้งหมด
+    // const backupRef = await firestore.collection('backupSFUser').get();
+    // let snapBackref = backupRef;
+
+    let data = {
+        "user": [],
+        // player ของรุ่นพี่
+        "player": ["60070153","61070163","61070287","62070001","62070002","62070003","62070004","62070005","62070006","62070008","62070010","62070011","62070012","62070013","62070014","62070015","62070018","62070019","62070021","62070023","62070026","62070027","62070029","62070030","62070031","62070032","62070033","62070035","62070036","62070037","62070039","62070040","62070041","62070043","62070044","62070045","62070046","62070047","62070048","62070049","62070050","62070051","62070054","62070055","62070056","62070057","62070059","62070060","62070061","62070062","62070063","62070065","62070066","62070067","62070069","62070071","62070072","62070073","62070074","62070077","62070081","62070082","62070084","62070085","62070086","62070087","62070088","62070089","62070090","62070092","62070093","62070095","62070096","62070098","62070099","62070101","62070102","62070103","62070105","62070106","62070107","62070108","62070110","62070111","62070113","62070114","62070115","62070116","62070118","62070119","62070120","62070121","62070122","62070123","62070124","62070125","62070126","62070127","62070128","62070130","62070131","62070132","62070133","62070134","62070135","62070136","62070137","62070138","62070139","62070141","62070144","62070145","62070146","62070147","62070148","62070150","62070151","62070152","62070153","62070154","62070155","62070156","62070157","62070158","62070159","62070160","62070165","62070166","62070169","62070170","62070171","62070173","62070174","62070175","62070177","62070178","62070179","62070180","62070181","62070182","62070184","62070185","62070187","62070188","62070189","62070190","62070191","62070192","62070193","62070195","62070196","62070197","62070198","62070200","62070202","62070203","62070204","62070205","62070206","62070207","62070208","62070210","62070211","62070212","62070214","62070216","62070217","62070218","62070219","62070220","62070222","62070223","62070224","62070226","62070229","62070230","62070231","62070232","62070236","62070238","62070240","62070241","62070244","62070245","62070247","62070248","62070249","62070251","62070252","62070253","62070255","62070256","62070257","62070258","62070259","62070260","62070263","62070265","62070266","62070267","62070270","62070271","62070273","62070274","62070275","62070276","62070277","62070280","62070281","62070282","62070283","62070284","62070286","62070288","62070291","62070292","62070297"], //not year 1
+        "random2Times": ["60070153","62070005","62070041","62070057","62070065","62070066","62070086","62070102","62070108","62070137"], //มีนสิทธ์ได้น้องสองคน
+        "test": [],
+        "sort": [],
+        "top": [],
+        "randomSuccessY1": [],
+        "randomSuccessY2": [],
+        "randomFailY1": [],
+        "randomFailY2": [],
+        "blank": [], // คนที่ไม่ได้สแกนรุ่นพี่เลย,
+    }
+
+    //เพิ่ม point ลงใน secretfromuser
+    // let orderList = await userRef.orderBy('point', 'desc').get();
+    // await orderList.forEach(doc => {
+    //     if (parseInt(doc.data().year) == 1 && doc.data().id[1] === "3") {
+    //         let userID = doc.data().id;
+    //         let userUID = doc.data().uid;
+    //         let userPoint = parseInt(doc.data().point);
+    //         secretRef.doc(userID).update({
+    //             "point": userPoint
+    //         })
+    //     }
+    // })
+
+    //Step1
+    await snapShot.forEach(doc => {
+        if (doc.data().uid != "") {
+            if (doc.data().score[0]) {
+                let userID = doc.id;
+                let dataScore = doc.data().score;
+                //console.log(data)
                 // sort จัดอันดับพี่ที่แสกน
-                let sortData = data.sort((a, b) => {
+                let sortData = dataScore.sort((a, b) => {
                     return (a.point > b.point) ? -1 : 1;
                 });
-                console.log(sortData)
 
-                // นำ sortData มาทำ arraySort
+                //นำ sortData มาทำ arraySort โดยมีแค่ ID นักศึกษา
                 let arraySort = [];
                 sortData.find(doc => {
                     arraySort.push(doc.uid);
                 })
 
-                //console.log(arraySort)
+
                 // ตัดรายชื่อพี่ที่โดนสุ่มไปแล้ว
                 sortData.forEach(doc => {
-                    for (let i=0; i< arrayY2.length; i++) {
+                    for (let i = 0; i < arrayY2.length; i++) {
                         if (arrayY2[i] == doc.uid) {
                             let index = arraySort.indexOf(doc.uid);
                             if (index > -1) {
                                 arraySort.splice(index, 1);
                             }
-                            //arrayRandom.push(doc);
                         }
                     }
-                    //console.log(doc)
                 });
-                console.log('new--->'+arraySort);
+                //console.log(userID + ': new--->'+arraySort);
+                data.sort.push(arraySort)
 
                 // เรียกพี่ที่มีแต้มสูงสุดออกมา
-                console.log(sortData.findIndex(x => x.uid === arraySort[0]))
+                //console.log(sortData.findIndex(x => x.uid === arraySort[0]))
                 let arrayTop = [] //เก็บใน array
                 if (arraySort.length == 0) {
-                    console.log('not passssss')
+                    //console.log(userID+': arraySort length 0')
                 } else {
                     let indexMax = sortData.findIndex(x => x.uid === arraySort[0]);
                     let max = sortData[indexMax].point;
@@ -58,35 +101,11 @@ randomController.get('/random', async (req, res) => {
                             arrayTop.push(obj.uid)
                         }
                     })
-
                 }
-
-                console.log('arrayData-->'+arrayTop)
-
-                // let arrayRandom = ['uid20'];
-                // let test = sortData - arrayRandom;
-                // console.log('testttt-->'+test)
-                // ตัดรายชื่อพี่ที่โดนสุ่มไปแล้ว
-                // arrayData.forEach(doc => {
-                //     for (let i=0; i< arrayY2.length; i++) {
-                //         if (arrayY2[i] == doc) {
-                //             let index = arrayData.indexOf(doc);
-                //             if (index > -1) {
-                //                 arrayData.splice(index, 1);
-                //             }
-                //             //arrayRandom.push(doc);
-                //         }
-                //     }
-                //     //console.log(doc)
-                // });
-                // console.log('new--->'+arrayData);
-
-                // if (arrayData.length == 0) {
-                //
-                // }
+                //console.log('arrayData-->'+arrayTop)
+                data.top.push(arrayTop)
 
                 //random
-                //console.log('arrayRandom-->'+arrayRandom);
                 if (arrayTop.length > 0) {
                     const random = Math.floor(Math.random() * arrayTop.length);
                     arrayY2.push(arrayTop[random]);
@@ -94,131 +113,174 @@ randomController.get('/random', async (req, res) => {
                         'uid': doc.id,
                         'family': arrayTop[random]
                     })
-                    console.log(doc.id+'---->'+ arrayTop[random])
+                    //console.log(doc.id+' Success: ----> '+ arrayTop[random])
+                    data.randomSuccessY1.push({
+                        "family": arrayTop[random],
+                        "user": userID
+                    });
+                    data.randomSuccessY2.push({
+                        "family": userID,
+                        "userY2": arrayTop[random]
+                    });
+
                 } else {
                     arrayY1Failed.push(doc.id);
-                    console.log('mai me peeee-->'+arrayY1Failed)
+                    //console.log(doc.id+' Fail: ----> '+arrayY1Failed)
+                    data.randomFailY1.push(userID);
+                    userFail.push(userID);
                 }
-                console.log("arraY2 Jaaaaa-->"+arrayY2);
-                console.log('-------------------------------------')
+                //console.log('-------------------------------------')
+
             } else {
-                console.log('not pass'+ doc.id)
+                data.randomFailY1.push(doc.id)
+                userFail.push(doc.id);
+                //console.log(doc.id)
             }
-        });
+        } else {
+            data.blank.push(doc.id);
+        }
+    })
 
+    await arrayY2.forEach(doc => {
+        if (data.player.includes(doc)) {
+            let index = data.player.indexOf(doc);
+            if (index > -1) {
+                data.player.splice(index, 1);
+            }
+        }
+    });
 
+    //Step2  //จับคู่ของ random fail
 
-        //find someone year2 has not been random
-        const year2Ref = await firestore.collection('ranks').doc('year2Ranking');
-        let arrayY2Failed = [];
+    let count = 0
+    let copyUserFail = [...userFail]
+    await copyUserFail.forEach(userID => {
 
-        await year2Ref.get().then(doc => {
-            let rankingData = doc.data().ranking;
-            rankingData.find(item => {
-                arrayY2Failed.push(item.uid)
+        if (data.player.length > 0) {
+            count += 1;
+
+            let isRandom = randomT(data.player, arrayY2);
+            arrayY2.push(isRandom);
+            data.randomSuccessY1.push({
+                "family": isRandom,
+                "user": userID
+            })
+            data.randomSuccessY2.push({
+                "family": userID,
+                "userY2": isRandom
             });
-            rankingData.forEach(doc => {
-                for (let i=0; i< arrayY2.length; i++) {
-                    if (arrayY2[i] == doc.uid) {
-                        let index = arrayY2Failed.indexOf(doc.uid);
-                        if (index > -1) {
-                            arrayY2Failed.splice(index, 1);
-                        }
-                    }
-                }
+            let indexPlayer = data.player.indexOf(isRandom);
+            let indexFail = userFail.indexOf(userID);
+            console.log("index: " + indexPlayer + " --" + data.player[indexPlayer])
+            if (indexPlayer > -1) {
+                data.player.splice(indexPlayer, 1);
+            }
+            if (indexFail > -1) {
+                userFail.splice(indexFail, 1);
+            }
+            console.log({
+                "count": count,
+                "lenArrayY2": arrayY2.length,
+                "lenPlayer": data.player.length,
+                "success": data.randomSuccessY1.length,
             });
-            console.log('last-->'+arrayY2Failed);
-            if (arrayY1Failed.length <= arrayY2Failed.length) {
-                arrayY1Failed.forEach(year1 => {
-                    const random = Math.floor(Math.random() * arrayY2Failed.length);
-                    arrayY2.push(arrayY2Failed[random]);
-                    randomSuccess.push({
-                        'uid': year1,
-                        'family': arrayY2Failed[random]
-                    });
+        }
+    })
 
-                    rankingData.forEach(doc => {
-                        for (let i=0; i< arrayY2.length; i++) {
-                            if (arrayY2[i] == doc.uid) {
-                                let index = arrayY2Failed.indexOf(doc.uid);
-                                if (index > -1) {
-                                    arrayY2Failed.splice(index, 1);
-                                }
-                            }
-                        }
-                    });
-                    console.log('---->'+arrayY2Failed);
-                });
+    //step 3 น้องคนที่เหลือมาสุ่มกับพี่รหัสที่รับสองคน
+
+    if (userFail.length > 0) {
+        copyUserFail = [...userFail]
+        await copyUserFail.forEach(userID => {
+            let isRandom = randomT(data.random2Times, arrayR2T)
+            arrayR2T.push(isRandom)
+            data.randomSuccessY1.push({
+                "family": isRandom,
+                "user": userID
+            })
+            data.randomSuccessY2.push({
+                "family": userID,
+                "userY2": isRandom
+            });
+            let indexPlayer = data.random2Times.indexOf(isRandom);
+            let indexFail = userFail.indexOf(userID);
+            console.log("index: " + indexPlayer + " --" + data.random2Times[indexPlayer])
+            if (indexPlayer > -1) {
+                data.random2Times.splice(indexPlayer, 1);
+            }
+            if (indexFail > -1) {
+                userFail.splice(indexFail, 1);
             }
         })
-
-        res.status(200).send({
-            'statusCode': 200,
-            'randomSuccessY1': randomSuccess,
-            'randomSuccessY2': arrayY2,
-            'randomFailedY1': arrayY1Failed,
-            'randomFailedY2': arrayY2Failed,
-        });
-    } catch (e) {
-        res.status(500).send('nooooooooooo');
     }
+
+    await data.randomSuccessY1.forEach(user => {
+        secretRef.doc(user.user).update({"family": user.family});
+    })
+
+
+    console.log({
+        "success": data.randomSuccessY1.length,
+        "fail": userFail.length,
+        "random2Times": arrayR2T,
+        "blank": data.blank.length,
+        "player": data.player.length,
+        "userFail": userFail,
+    })
+
+    res.send(data)
+
+    // } catch (e) {
+    //     res.status(500).send('nooooooooooo');
+    // }
 })
 
-randomController.post('/scan/:id',async (req, res) => {
-    try {
-        //เราไปสแกนเค้า
-        const scanID = req.params.id;
-        const userUID = req.body.uid;
-        const userRef = firestore.collection('users');
-        const linkRef = firestore.collection('links');
-        const scanRef = firestore.collection('scans');
-        let test = scanRef.doc(userUID).get()
-        let findLink = await linkRef.where('link', "==", scanID).get();
-        if (!findLink.empty) {
-            await findLink.forEach( doc => {
-                let linkUID = doc.data().uid;
-                let linkYear = doc.data().year;
-                let linkTime = doc.data().time;
-                if (linkTime <= 0) {
-                    res.send('time out link');
-                } else {
-                    scanRef.doc(userUID).get().then(async scanUserData => {
-                        //หา link ใน collection scans ตรวจว่าสแกนยัง
-                        if (scanUserData.data().scan.indexOf(linkUID) != -1) {
-                            console.log('have scan');
-                        } else {
-                            console.log('mai mee scan');
-                            //year 1 scan year2 or year 2 scan year1 return
-                            const bounty = firestore.collection('bounty').doc('list')
-                            if (bounty.get().data().list.indexOf(linkUID) != -1) {
+// randomController.get('/backupSFUser', async (req, res) => {
+//     try {
+//         const  role = req.body.role
+//         const sfUser = await firestore.collection("backupSFUser");
+//         const secretUser = await firestore.collection("secretfromuser").get();
+//         if (role == "King") {
+//             await secretUser.forEach(doc => {
+//                 sfUser.doc(doc.id).set(doc.data())
+//
+//             })
+//         }
+//         res.send({
+//             "status": "ok"
+//         })
+//     }
+//     catch (err) {
+//         res.status(500).send({
+//             "err": err
+//         })
+//     }
+// })
 
-                            }
-                            //ถ้ามีใน bounty =>
-                            //1 ให้ res name, year, pic, point ของ linnkUID
-                            //2 ให้เรา update point + 6 และ count + 1 ให้ตัวเอง
+randomController.get('/backupSecret', async (req, res) => {
+    let secretRef = firestore.collection('secretfromuser').get();
+    let scretBack = firestore.collection('backupSFUser');
+    (await secretRef).forEach(doc => {
+        console.log(doc.id)
+        let backDoc = scretBack.doc(doc.id);
+        backDoc.update(doc.data())
+        console.log(doc.data())
+    })
 
-                            //else ถ้าไม่มีใน bounty =>
-                            //1 ให้ res name, year, pic, point ของ linnkUID
-                            //2 ให้เรา update point + 3 และ count + 1 ให้ตัวเอง
 
-                            //then time - 1 ของ linkUID
-                            //อัพเดทใน scan ของตัวเอง เพิ่ม uid ที่เราไปสแกน
-                            // scan: admin.firestore.FieldValue.arrayUnion(
-                            //     linkdata.data().uid
-                            // )
-                        }
-                    })
-                }
-            })
+})
+
+function randomT(array, arrayY2) {
+    let key = true;
+    while (key == true) {
+        const random = Math.floor(Math.random() * array.length);
+        if (arrayY2.includes(array[random])) {
+            key = true;
         } else {
-            res.send('mai mee naa jaaaa')
+            return array[random]
         }
-
-        console.log(scanID)
-        res.status(200).send('ok jaaaaa');
-    } catch(e) {
-        res.status(500).send('mai dai jaaaa')
     }
-})
+
+}
 
 module.exports = randomController;
