@@ -1,129 +1,86 @@
 <template>
-
-    <section class="w-screen min-h-screen main-wrap">
-      <p class="text-s ">Find For Points</p>
-       <div class="overflow-y-auto h-screen">
-       <div class="grid grid-cols-2 grid-rows-1 flex items-center justify-center max-w-md mx-auto gap-2 px-5 py-2">
-          <div class="flex content-center justify-center items-center max-w-md mx-auto">
-            <div class="rounded bg-gray-700 ">
-                  <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-                    <p class="text-s">2</p>
-                    <p class="text-xs">Film Kanlaya</p>
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-                    <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center">
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-                    <p>SCORE</p>
-                </div>
-            </div>
-          </div>
-
-          <div class="flex content-center justify-center items-center max-w-md mx-auto">
-            <div class="rounded bg-gray-700 ">
-                  <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-                    <p class="text-s">2</p>
-                    <p class="text-xs">Film Kanlaya</p>
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-                    <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center">
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-                    <p>SCORE</p>
-                </div>
-            </div>
-          </div>
-       </div>
-
-      <div class="grid grid-cols-2 grid-rows-1 flex items-center justify-center max-w-md mx-auto gap-2 px-5 py-2">
-          <div class="flex content-center justify-center items-center max-w-md mx-auto">
-            <div class="rounded bg-gray-700 ">
-                  <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-                    <p class="text-s">2</p>
-                    <p class="text-xs">Film Kanlaya</p>
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-                    <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center">
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-                    <p>SCORE</p>
-                </div>
-            </div>
-          </div>
-          <div class="flex content-center justify-center items-center max-w-md mx-auto">
-            <div class="rounded bg-gray-700 ">
-                  <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-                    <p class="text-s">2</p>
-                    <p class="text-xs">Film Kanlaya</p>
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-                    <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center">
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-                    <p>SCORE</p>
-                </div>
-            </div>
-          </div>
-       </div>
-
-      <div class="grid grid-cols-2 grid-rows-1 flex items-center justify-center max-w-md mx-auto gap-2 px-5 py-2">
-
-          <div class="flex content-center justify-center items-center max-w-md mx-auto">
-            <div class="rounded bg-gray-700 ">
-                  <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-                    <p class="text-s">2</p>
-                    <p class="text-xs">Film Kanlaya</p>
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-                    <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center">
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-                    <p>SCORE</p>
-                </div>
-            </div>
-          </div>
-
-          <div class="flex content-center justify-center items-center max-w-md mx-auto">
-            <div class="rounded bg-gray-700 ">
-                  <div class="grid grid-cols-2 grid-rows-1 flex py-2 px-2">
-                    <p class="text-s">2</p>
-                    <p class="text-xs">Film Kanlaya</p>
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 py-2 md:px-16">
-                    <img class="rounded-full h-16 w-16 bg-gray-500 items-center justify-center">
-                  </div>
-                  <div class="grid grid-cols-1 grid-rows-1 flex py-2">
-                    <p>SCORE</p>
-                </div>
-            </div>
-          </div>
-       </div>
-       </div>
-
-       <div class="flex flex-col items-center justify-center space-y-10 text-gray-400 px-5 py-5">
-        <button
-          type="submit"
-          class="btn bg-primary-500 hover:bg-opacity-75 text-primary-200 px-12 py-3 md:px-12 md:py-4 capitalize font-medium text-sm rounded-md flex items-center"
-        >
-          random
-         
-        </button>
-       </div>
-
-       
-  
-
-
-    </section>
- 
+  <section class="w-screen min-h-screen main-wrap py-12 px-6">
+    <div v-if="bountyList !== null">
+      <div class="announcement mx-4 max-w-xs sm:max-w-lg lg:max-w-3xl space-y-3">
+        <h2 class="text-secondary_b font-semibold text-2xl md:text-3xl">นักล่า..ค่าหัวสูง</h2>
+        <p
+          class="font-light text-gray-300 text-sm"
+        >แหล่งรวมนักล่ามือฉมัง หากคุณล่าพวกเขาได้ จะได้รับเหรียญมากกว่าเรทปกติ</p>
+        <p class="text-xs text-gray-400">**รายชื่อจะถูกสุ่มขึ้นมาตามระยะเวลาที่กำหนด</p>
+      </div>
+      <h2 class="text-xl md:text-2xl mx-auto mt-12 -mb-3 text-gray-300">เลือกปี</h2>
+      <div class="filter space-x-4 -mb-6">
+        <div
+          class="filter-item bg-primary-1100 bg-opacity-75 w-10 h-10 flex flex-col justify-center"
+          :class="year === i ? 'bg-secondary_b bg-opacity-100' : ''"
+          v-for="i in 4"
+          :key="i"
+          @click="year = i; current = 'Year' + i"
+        >{{ i }}</div>
+      </div>
+      <keep-alive max="4" :key="year">
+        <component v-bind="{player_data: getBountyByYear(year)}" :is="current"></component>
+      </keep-alive>
+    </div>
+    <grid-loader v-else />
+  </section>
 </template>
 
 <script>
-  export default {
-    
+import API from "../middleware/api/userApi";
+import axios from "axios";
+import GridLoader from "@/components/util/gridLoader";
+/* eslint-disable */
+export default {
+  data() {
+    return {
+      bountyList: null,
+      filteredYear: [],
+      year: 1,
+      current: "Year1"
+    };
+  },
+  components: {
+    GridLoader,
+    Year1: () => import("../components/pages/bounty/year1"),
+    Year2: () => import("../components/pages/bounty/year2"),
+    Year3: () => import("../components/pages/bounty/year3"),
+    Year4: () => import("../components/pages/bounty/year4")
+  },
+  mounted() {
+    this.getBounty();
+  },
+  methods: {
+    async getBounty() {
+      try {
+        const connections = await axios.get(API + "bounty");
+        let data = connections.data;
+        this.bountyList = data.data;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    getBountyByYear(year) {
+      return this.bountyList.filter(item => {
+        return parseInt(item.year) === year;
+      });
+    }
   }
+};
 </script>
 
 <style scoped>
+.filter-item {
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  flex-basis: auto !important;
+}
 
+.text-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-all;
+}
 </style>

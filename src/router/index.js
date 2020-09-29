@@ -4,15 +4,17 @@ import VueRouter from "vue-router";
 import firebase from "../middleware/services/AuthHeaders";
 import Cookies from "js-cookie";
 import store from "../store";
+import Axios from "axios";
 
 /* Declare and import routes */
-const Dashboard = () => import("../views/Dashboard.vue");
+const QrDecode = () => import("../views/QrDecode.vue");
 const Signin = () => import("../views/Login.vue");
 const Profile = () => import("../views/Profile.vue");
 const Hunted = () => import("../views/Hunted.vue");
 const Bounty = () => import("../views/Bounty.vue");
 const Leaderboard = () => import("../views/Leaderboard.vue");
-const Edit = () => import("../views/Edit.vue")
+const Edit = () => import("../views/Edit.vue");
+const Scan = () => import("../views/Scan.vue");
 
 const callback = () => import("../views/Callback.vue");
 const gender = () => import("../components/pages/callBackForm/gender.vue");
@@ -23,22 +25,23 @@ const step4 = () => import("../components/pages/callBackForm/lastStep.vue");
 
 Vue.use(VueRouter);
 
-
 const routes = [
   {
     path: "/",
-    name: "Dashboard",
-    component: Dashboard,
-    redirect: firebase.auth().currentUser ? "/dashboard" : "/signin",
+    name: "Home",
+    redirect: Cookies.get("user") ? "/profile" : "/signin",
     meta: {
       title: "IT@KMITL FRESHY 2020",
       requiresAuth: true,
-      metaTags: [
-        {
-          name: "description",
-          content: "For IT KMITL Freshy 17th only",
-        },
-      ],
+    },
+  },
+  {
+    path: "/qrscan",
+    name: "QR Scanner",
+    component: QrDecode,
+    meta: {
+      title: "IT@KMITL FRESHY 2020",
+      requiresAuth: true,
     },
   },
   {
@@ -153,15 +156,22 @@ const routes = [
       title: "Hunted | IT@KMITL FRESHY 2020",
       requiresAuth: true,
     },
-  },
-  {
-    path: "/edit/:id",
+  },{
+    path: "/scan/:id",
+    name: "Scan",
+    component: Scan,
+    meta: {
+      title: "QR Scan | IT@KMITL FRESHY 2020",
+      requiresAuth: true,
+    }
+  },{
+    path: "/edit",
     name: "Edit",
     component: Edit,
     meta: {
-      title: "Edit Profile",
-      rquiresAuth: true
-    }
+      title: "Edit | IT@KMITL FRESHY 2020",
+      requiresAuth: true,
+    },
   },
   {
     path: "/signin",
@@ -182,17 +192,14 @@ const routes = [
       title: "Sign in | IT@KMITL FRESHY 2020",
       requiresAuth: false,
       hideNavigation: true,
-      metaTags: [
-        {
-          name: "description",
-          content: "Sign in page for IT KMITL Freshy 17th only",
-        },
-      ],
     },
   },
   {
     path: "*",
-    redirect: "/",
+    redirect: Cookies.get("user") ? "/": "/signin",
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 

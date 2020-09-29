@@ -178,10 +178,10 @@ profileController.post('/create', isLoggedIn, async (req, res) => {
     return;
 });
 
-profileController.put('/edit', async (req, res) => {
+profileController.put('/edit',isLoggedIn, async (req, res) => {
     //Edit(Change info) users profile on db
     try {
-        let uid = req.headers.uid; //require front-end send uid to know where to update the info
+        let uid = req.user.uid; //require front-end send uid to know where to update the info
         let {fname, surname, nickname, age, sex, religion, contact} = req.body;
         // อันไหนที่ไม่ต้องการให้แก้ให้ก็ให้ frontend lock ไว้ เอาเเล้วกันนะ!
 
@@ -347,15 +347,15 @@ profileController.put('/scaned', async (req, res) => {
 });
 
 profileController.put('/answer', async (req, res) => {
-    try {
+    // try {
         
         // นายต้องส่งกลับมาเป็น object นะ เเล้วก็บอกด้วยว่าอันไหนคือคำตอบของข้อไหน
         // let answer = {
-        // first : 1-5 (number)
-        // second : 1-5 (number)
-        // third : 1-5 (number)
-        // fourth : 1-5 (number)
-        // fifth : 1-5 (number)
+        // first : (number)
+        // second : (number)
+        // third : (number)
+        // fourth : (number)
+        // fifth : (number)
         // };
         let answer = req.body.answer;
         let year = req.headers.year; //require ปีของคนที่ตอบคำถามอ่ะ หมายถึง คนที่ทำอยู่นะไม่ใช่เจ้าของคำถามนั้นๆ
@@ -366,26 +366,35 @@ profileController.put('/answer', async (req, res) => {
         score += answer.third *  1.5;
         score += answer.fourth * 1.25;
         score += answer.fifth;
-        console.log(score);
+
+        let id = req.headers.id; // uid น้องบน firebase ไม่ใช่ Token ยาวๆนะ ชื่อ DOC ใน 'users' อ่ะ
+        let uid = req.headers.uid;  // uid พี่บน firebase ไม่ใช่ Token ยาวๆนะ ชื่อ DOC ใน 'users' อ่ะ
+        //owner = ของน้อง in every อันเลย
+        //scorer = ของพี่ in every อันเลย
 
         //if he/she is 1st year
         if (year == 1) {
-            let id = req.headers.id; // id ของน้อง
-            let uid = req.headers.uid // uid,id ของพี่
-
             if (id != undefined) {
-                let userRef = firestore.collection('secretfromuser').doc(id);
+                let owner = await firestore.collection('users').doc(id).get();
+                let owner_data = owner.data();
+                let owner_id = owner_data.id;
+
+                let scorer = await firestore.collection('users').doc(uid).get();
+                let scorer_data = scorer.data();
+                let scorer_id = scorer_data.id;                
+
+                let userRef = firestore.collection('secretfromuser').doc(owner_id);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
 
-                let user = userData.score.filter(element => element.uid == uid);
+                let user = userData.score.filter(element => element.uid == scorer_id);
 
                 if (user.length != 0) {
                     let total = user[0].point;
                     if (total != 0) {
                         score += total;
                         let remove = {
-                            'uid' : uid,
+                            'uid' : scorer_id,
                             'point' : total
                         }
                         await userRef.update({
@@ -394,7 +403,7 @@ profileController.put('/answer', async (req, res) => {
                     }
                 }
                     let payload = {
-                        'uid' : uid,
+                        'uid' : scorer_id,
                         'point' : score
                     }
                     console.log(payload);
@@ -421,27 +430,32 @@ profileController.put('/answer', async (req, res) => {
                 return ;
             }
         }
-        else if (year == 2) {
-            let id = req.headers.id; // uid ,id ของพี่
-            let uid = req.headers.uid; // uid ของน้อง
-
+        else if (year >= 2) {
             if (uid != undefined) {
-                let owner = await firestore.collection('users').doc(uid).get();
-                let data = owner.data();
-                let ref = data.id;
+                let x = uid; // uid พี่ สลับค่ากัน
+                uid = id; // id น้อง nws
+                id = x; // uid พี่ 1tx
 
-                let userRef = firestore.collection('secretfromuser').doc(ref);
+                let owner = await firestore.collection('users').doc(uid).get();
+                let owner_data = owner.data();
+                let owner_id = owner_data.id;
+
+                let scorer = await firestore.collection('users').doc(id).get();
+                let scorer_data = scorer.data();
+                let scorer_id = scorer_data.id;
+
+                let userRef = firestore.collection('secretfromuser').doc(owner_id);
                 let userGet = await userRef.get();
                 let userData = userGet.data();
 
-                let user = userData.score.filter(element => element.uid == id);
+                let user = userData.score.filter(element => element.uid === scorer_id);
                 
                 if (user.length != 0) {
                     let total = user[0].point;
                     if (total != 0) {
                         score += total;
                         let remove = {
-                            'uid' : id,
+                            'uid' : scorer_id,
                             'point' : total
                         }
                         await userRef.update({
@@ -450,7 +464,7 @@ profileController.put('/answer', async (req, res) => {
                     }
                 }
                 let payload = {
-                    'uid' : id,
+                    'uid' : scorer_id,
                     'point' : score
                 }
                 console.log(payload);
@@ -477,15 +491,15 @@ profileController.put('/answer', async (req, res) => {
             }
         }
 
-    } catch (e) {
-        console.log(e);
-        res.status(500).send({
-            'statusCode' : '500',
-            'statusText' : 'Internal Server Error',
-            'error' : true,
-        });
-        return ;
-    }
+    // } catch (e) {
+    //     console.log(e);
+    //     res.status(500).send({
+    //         'statusCode' : '500',
+    //         'statusText' : 'Internal Server Error',
+    //         'error' : true,
+    //     });
+    //     return ;
+    // }
 });
 
 
@@ -575,6 +589,57 @@ profileController.put('/answer', async (req, res) => {
 //         return ;
 //     }
 // });
+
+profileController.post('/nubyear', async(req, res) => {
+    try {
+        let users = await firestore.collection('scans').get();
+        users.forEach(async function (element) {
+            let user = element.data();
+            // let year1 = 0;
+            // let year2 = 0;
+            // let year3 = 0;
+            // let year4 = 0;
+            // for (let i = 1; i < user.scan.length; i++) {
+            //     scan_ref = firestore.collection('users').doc(user.scan[i]);
+            //     scan_get = await scan_ref.get();
+            //     scan_data = scan_get.data();
+            //     year = scan_data.year;
+            //     year == "1" ? year1++ : null;
+            //     year == "2" ? year2++ : null;
+            //     year == "3" ? year3++ : null;
+            //     year == "4" ? year4++ : null;
+            // }
+            // await firestore.collection('users').doc(user.uid).update({
+            //     'all_year1' : 0,
+            //     'all_year2' : 0,
+            //     'all_year3' : 0,
+            //     'all_year4' : 0
+            // });
+            await firestore.collection('users').doc(user.uid).update({
+                'year1' : 0,
+                'year2' : 0,
+                'year3' : 0,
+                'year4' : 0
+            });
+        });
+
+        res.status(200).send({
+            'statusCode' : '200',
+            'statusText' : 'OK',
+            'error' : false,
+            'message' : 'Random Complete',
+            }); 
+        return ;
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({
+            'statusCode' : '500',
+            'statusText' : 'Internal Server Error',
+            'error' : true
+        });
+        return ;
+    }
+});
 
 //exports this function to index.js
 async function isLoggedIn(req, res, next) {

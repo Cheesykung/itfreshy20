@@ -13,6 +13,7 @@ export default {
 };
 </script>
 <style scoped>
+
 .animated-form-enter-active {
   transition: all 0.3s ease;
 }

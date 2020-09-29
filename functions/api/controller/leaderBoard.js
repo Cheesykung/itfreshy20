@@ -28,17 +28,20 @@ ldrBoardController.use(cors({ origin: true }));
 ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
     try {
         const uid = req.user.uid;
-        const year = parseInt(req.body.year);
+        //const year = parseInt(req.body.year);
 
         const ranksRef = await firestore.collection('ranks');
         const userRef = await firestore.collection("users");
+        //let year = await userRef.doc(uid).get();
         const haveUID = await userRef.doc(uid).get();
-        console.log(haveUID.exists)
+        let year = parseInt(await haveUID.data().year);
 
         if (haveUID.exists) {
             let snapshot = await userRef.orderBy('point', 'desc').get(); //sort users
             let arrayScoreY1 = []; // Create array to store the sequence
             let arrayScoreY2 = []; //year2
+            let arrayScoreY3 = [];
+            let arrayScoreY4 = [];
             //console.log(snapshot)
 
             //Add data to the array
@@ -46,12 +49,19 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
                 let isYear = doc.data().year ? parseInt(doc.data().year): 0;
                 let isPoint = doc.data().point ? parseInt(doc.data().point): 0;
                 let isName = doc.data().name ? doc.data().name: null;
+                let isPic = doc.data().pic? doc.data().pic: null;
                 let isUID = doc.data().uid;
                 if (isYear === 1){
-                    arrayScoreY1.push({'uid':isUID, 'point':isPoint, 'name':isName});
+                    arrayScoreY1.push({'uid':isUID, 'point':isPoint, 'name':isName, 'pic': isPic});
                 }
                 else if (isYear === 2) {
-                    arrayScoreY2.push({'uid':isUID, 'point':isPoint, 'name':isName});
+                    arrayScoreY2.push({'uid':isUID, 'point':isPoint, 'name':isName, 'pic': isPic});
+                }
+                else if (isYear === 3) {
+                    arrayScoreY3.push({'uid':isUID, 'point':isPoint, 'name':isName, 'pic': isPic});
+                }
+                else if (isYear === 4) {
+                    arrayScoreY4.push({'uid':isUID, 'point':isPoint, 'name':isName, 'pic': isPic});
                 }
             });
 
@@ -62,33 +72,50 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
             ranksRef.doc('year2Ranking').update({
                 'ranking': arrayScoreY2
             });
+            ranksRef.doc('year3Ranking').update({
+                'ranking': arrayScoreY3
+            });
+            ranksRef.doc('year4Ranking').update({
+                'ranking': arrayScoreY4
+            });
 
             //find index of user
-            let indexY1, indexY2;
-            if (year === 1 || year === 2) {
+            let indexY1, indexY2, indexY3, indexY4;
+            if (year === 1 || year === 2 || year === 3 || year === 4) {
                 indexY1 = await arrayScoreY1.findIndex((item, id) => {
                     return item.uid === uid;
                 });
                 indexY2 = await arrayScoreY2.findIndex((item, id) => {
                     return item.uid === uid;
                 });
+                indexY3 = await arrayScoreY3.findIndex((item, id) => {
+                    return item.uid === uid;
+                });
+                indexY4 = await arrayScoreY4.findIndex((item, id) => {
+                    return item.uid === uid;
+                });
             }
             else {
                 indexY1 = -1;
                 indexY2 = -1;
+                indexY3 = -1;
+                indexY4 = -1;
             }
 
             // Create data for the response.
             let rankingY1 = setRanking(arrayScoreY1, indexY1);
-            console.log(rankingY1)
+            //console.log(rankingY1)
 
             let rankingY2 = setRanking(arrayScoreY2, indexY2);
-            console.log(indexY2)
+            let rankingY3 = setRanking(arrayScoreY3, indexY3);
+            let rankingY4 = setRanking(arrayScoreY4, indexY4);
+            //console.log(indexY2)
             let rankMe = {};
             if (year == 1) {
                 rankMe = {
                     "name": arrayScoreY1[indexY1].name,
                     "point": arrayScoreY1[indexY1].point,
+                    "pic": arrayScoreY1[indexY1].pic,
                     "rank": indexY1 + 1
                 };
             }
@@ -97,7 +124,24 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
                 rankMe = {
                     "name": arrayScoreY2[indexY2].name,
                     "point": arrayScoreY2[indexY2].point,
+                    "pic": arrayScoreY2[indexY2].pic,
                     "rank": indexY2 + 1
+                };
+            }
+            else if (year == 3) {
+                rankMe = {
+                    "name": arrayScoreY3[indexY3].name,
+                    "point": arrayScoreY3[indexY3].point,
+                    "pic": arrayScoreY3[indexY3].pic,
+                    "rank": indexY3 + 1
+                };
+            }
+            else if (year == 4) {
+                rankMe = {
+                    "name": arrayScoreY4[indexY4].name,
+                    "point": arrayScoreY4[indexY4].point,
+                    "pic": arrayScoreY4[indexY4].pic,
+                    "rank": indexY4 + 1
                 };
             }
             else {
@@ -105,6 +149,7 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
                     rankMe = {
                         "name": doc.data().name,
                         "point": doc.data().point,
+                        "pic": doc.data().pic,
                         "rank": null
                     };
                 });
@@ -115,6 +160,8 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
             res.status(200).send({
                     'year1': rankingY1,
                     'year2': rankingY2,
+                    'year3': rankingY3,
+                    'year4': rankingY4,
                     'rankMe': rankMe
                 });
         }
@@ -138,24 +185,27 @@ ldrBoardController.post('/ranking',isLoggedIn, async (req, res) => {
 });
 
 function setRanking(array, index) {
-    let data = {};
+    let data = [];
     //let end = (array.length <= 9) ? array.length - 1: 9;
     for (let i=0;i<=9;i++) {
         if (i === 9 && index > 9) {
-            data["rank10"] = {
+            data[i] = {
                 "name": array[index].name ? array[index].name: null,
                 "point": array[index].point ? array[index].point: null,
+                "pic": array[index].pic ? array[index].pic: null,
                 "rank": index + 1
             }
         }
         else {
-            data["rank"+(i+1)] = (i < array.length) ? {
+            data[i] = (i < array.length) ? {
                 "name": array[i].name,
                 "point": array[i].point,
+                "pic": array[i].pic ? array[i].pic: null,
                 "rank": i + 1
             } : {
                 "name": null,
                 "point": 0,
+                "pic": null,
                 "rank": i+1
             };
         }

@@ -15,8 +15,8 @@
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                name="age"
-                v-model="firstStep.age"
+                id="age"
+                v-model="firstStep[0].age"
                 placeholder="อายุของคุณ"
                 required
                 autofocus
@@ -30,8 +30,8 @@
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                name="religion"
-                v-model="firstStep.religion"
+                id="religion"
+                v-model="firstStep[0].religion"
                 placeholder="ศาสนา: พุทธ, คริสต์, อิสลาม และวากานด้า"
                 required
               />
@@ -40,8 +40,8 @@
               <label for="branch" class="text-left text-primary-200 text-opacity-100">Your Branch</label>
               <select
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                name="branch"
-                v-model="firstStep.branch"
+                id="branch"
+                v-model="firstStep[0].branch"
                 required
               >
                 <option value disabled selected hidden class="text-primary-400">เลือกสาขา</option>
@@ -55,8 +55,8 @@
               >Your College Years</label>
               <select
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                name="year"
-                v-model="firstStep.year"
+                id="year"
+                v-model="firstStep[0].year"
                 required
               >
                 <option value disabled selected hidden class="text-primary-400">เลือกชั้นปี</option>
@@ -68,8 +68,8 @@
               <input
                 type="text"
                 class="base-input rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                name="contact"
-                v-model="firstStep.contact"
+                id="contact"
+                v-model="firstStep[0].contact"
                 placeholder="Facebook, Line, Tel, etc."
                 required
               />
@@ -95,14 +95,6 @@
               <span class="bullet"></span>
               <span class="bullet"></span>
             </span>
-            <span class="flex flex-row flex-no-wrap">
-              <p
-                class="text-primary-300 underline capitalize cursor-pointer text-sm"
-                @click="$router.push({ path: prevRoute.path })"
-              >Back</p>
-              <!-- <span class="bullet"></span>
-              <span class="bullet"></span>-->
-            </span>
           </div>
           <!--- End step zone --->
         </template>
@@ -122,23 +114,23 @@ export default {
   },
   data() {
     return {
-      firstStep: {
+      firstStep: [{
         age: "",
         religion: "",
         branch: "",
         year: "",
         contact: null
-      },
-      branch: ["IT", "DATA", "BIT"],
+      }],
+      branch: ["IT", "DSBA", "BIT"],
       year: [1, 2, 3, 4],
       loading: false,
       prevRoute: null
     };
   },
   beforeRouteEnter(to, from, next) {
-     next(vm => {
-        vm.prevRoute = from
-      });
+    next(vm => {
+      vm.prevRoute = from;
+    });
     if (!store.getters["register/getGender"]) {
       next({ path: "/gender", replace: true });
     } else {
@@ -146,16 +138,15 @@ export default {
     }
   },
   beforeRouteLeave(to, from, next) {
-    if (
-      to.path &&
-      !(
-        this.firstStep.branch &&
-        this.firstStep.year === '1' &&
-        this.firstStep.contact &&
-        this.firstStep.age &&
-        this.firstStep.religion
-    )) {
-      alertify.notify("PLEASE FILLED UP THE FORM & THIS FORM IS FOR FIRST YEAR STUDENTS ONLY!", "warning", 3);
+    let itemRoute = item =>
+        item.branch !== null &&
+        item.year.length === 1 &&
+        item.contact.length >= 1 &&
+        item.religion.length >= 1 &&
+        item.age !== null;
+
+    if (to.path && !this.firstStep.every(itemRoute)) {
+      alertify.notify("PLEASE FILL UP THE FORM!", "warning", 3);
       next(false);
     } else {
       next();
@@ -163,33 +154,34 @@ export default {
   },
   methods: {
     nextStep() {
+      let itemRoute = item =>
+        item.branch !== null &&
+        item.year.length === 1 &&
+        item.contact.length >= 1 &&
+        item.religion.length >= 1 &&
+        item.age !== null;
+
       this.loading = true;
-      if (
-        !(
-          this.firstStep.branch &&
-          this.firstStep.year.length === 1 &&
-          this.firstStep.contact.length >= 4 &&
-          this.firstStep.age &&
-          this.firstStep.religion.length >= 3
-        )
-      ) {
+
+      if (!this.firstStep.every(itemRoute)) {
         this.loading = false;
-        alertify.notify("PLEASE FILLED UP THE FORM! (FOR FIRST YEAR ONLY)", "warning", 3);
+        alertify.notify("กรอกข้อมูลให้ถูกต้อง", "warning", 3);
       } else {
         if (this.checkLength()) {
-          this.$store.dispatch("register/setFirstStep", this.firstStep);
+          this.$store.dispatch("register/setFirstStep", this.firstStep[0]);
           this.$router.push({ name: "Step 2" });
         }
         this.loading = false;
       }
     },
     checkLength() {
-      let intAge = parseInt(this.firstStep.age);
+      let intAge = parseInt(this.firstStep[0].age);
 
       if (
-        this.firstStep.age.length !== 2 ||
+        this.firstStep[0].age.length !== 2 ||
         !intAge ||
-        intAge > 26 || intAge < 17
+        intAge > 26 ||
+        intAge < 17
       ) {
         alertify.notify("กรอกอายุที่ถูกต้อง", "error", 3);
         return false;
@@ -197,8 +189,7 @@ export default {
         return true;
       }
     }
-  },
-  computed: {}
+  }
 };
 </script>
 

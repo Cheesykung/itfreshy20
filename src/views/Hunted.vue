@@ -1,92 +1,88 @@
 <template>
-  <section class="w-screen min-h-screen profile-wrap">
-    <div
-      class="flex flex-col content-center justify-center items-center h-full py-12"
-      v-if="!this.$route.params.id"
-    >
-      <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
-        <div class="img-wrap space-y-4">
+  <section class="w-screen min-h-screen main-wrap">
+    <div class="page-container">
+      <v-popover offset="16" class="score-master space-x-2 cursor-pointer">
+        <span class="flex flex-row">
+          <div v-html="imgCoin"></div>
+          {{ getProfile.point }}
+        </span>
+        <span slot="popover">
+          เหรียญ
+          <span
+            class="text-primary-200"
+          >ที่ได้จากการล่า สามารถช่วยเพิ่มเปอร์เซ็นต์ในการจับคู่สายรหัสได้</span>
+        </span>
+      </v-popover>
+      <div class="profile container grid-cols-1 gap-10 self-center">
+        <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
-            :src="getProfile.pic"
-            class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
+            :data-src="getProfile.photoURL? getProfile.photoURL + '?width=226' : getProfile.pic + '?width=226'"
+            class="profile-pic object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
           />
           <div class="details space-y-2 items-center">
-            <!-- <span class="text-gray-500 font-normal text-sm">#6207002</span> -->
-            <h1 class="text-3xl text-gray-100 font-thin">{{ getProfile.name }}</h1>
+            <h1
+              class="text-3xl text-primary-100 font-thin"
+            >{{ getProfile.displayName ? getProfile.displayName : getProfile.name }}</h1>
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
             <i class="fas fa-map-marked-alt"></i>
-            <span>IT KMITL, รุ่น 18</span>
-          </div>
-          <div class="like space-x-4">
-            <i class="fas fa-pizza-slice text-gray-400"></i>
-            <i class="fas fa-football-ball text-gray-400"></i>
-            <i class="fab fa-spotify text-gray-400"></i>
-            <i class="fas fa-film text-gray-400"></i>
+            <span>IT KMITL{{ getProfile.branch ? ", " + getProfile.branch : '' }}{{ getProfile.year ? " ปี " + getProfile.year : '' }}</span>
           </div>
         </div>
         <div class="stats">
           <div class="chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">268</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
+            <span
+              class="text-2xl font-semibold text-gray-200"
+            >{{ getProfile.count ? getProfile.count : 0 }}</span>
+            <span class="text-sm font-normal text-gray-400">คนที่ล่าไปแล้ว</span>
           </div>
           <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span class="text-2xl font-semibold text-gray-200">2K</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
+            <span
+              class="text-2xl font-semibold text-gray-200"
+            >{{ getProfile.year === 1 ? getProfile.count ? Math.abs(235 - getProfile.count) : 235 : getProfile.count ? Math.abs(235 - getProfile.count) : 235 }}</span>
+            <span class="text-sm font-normal text-gray-400">คนที่คุณยังไม่ได้ล่า</span>
           </div>
         </div>
-        <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8">
-          <button
-            class="px-2 py-3 bg-blue-600 text-blue-100 rounded text-sm animate-pulse"
-          >ล่ารายชื่อเลย!</button>
-          <button class="px-2 py-3 bg-blue-900 text-blue-100 rounded text-sm">สร้างลิงค์ใหม่</button>
-        </div>
+        <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8"></div>
       </div>
       <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-6 lg:gap-5 xl:gap-10 self-center container px-8 my-20 md:my-24"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-6 lg:gap-5 xl:gap-10 self-center container px-8 my-6 md:my-12 sm:max-w-xl md:max-w-6xl max-w-xs"
       >
         <div class="col-start-1 md:col-end-3 lg:col-end-4">
           <div class="flex flex-row justify-center md:justify-between items-center content-center">
             <h2 class="text-2xl lg:text-3xl font-normal text-gray-200 lg:text-left py-1 md:py-0">
               ล่าไปแล้วทั้งหมด
-              <span class="text-blue-600 font-semibold">{{ getBro.length }}</span> คน
+              <span class="text-primary font-semibold">{{ getScanned }}</span> คน
             </h2>
             <button
-              class="hidden md:block btn btn-block bg-transparent border-blue-600 border-4 hover:bg-blue-600 text-blue-100 text-sm py-2 px-6"
-              @click="goBack()"
+              class="hidden md:block btn btn-block bg-transparent border-primary border-4 hover:bg-primary text-primary-100 text-sm py-2 px-6"
+              @click="$router.go(-1)"
             >
               <i class="fas fa-chevron-left"></i> ย้อนกลับ
             </button>
           </div>
         </div>
         <div
-          class="card px-8 xl:px-10 py-12 md:py-8 justify-center flex-col md:justify-between md:flex-row cursor-pointer hover:shadow-outline"
-          v-for="item in getBro"
-          @click="goProfile(item.id)"
-          :key="item.id"
+          class="card px-8 sm:space-x-4 xl:px-10 py-12 sm:py-8 justify-center items-center flex-col sm:justify-between sm:flex-row cursor-pointer hover:shadow-outline"
+          v-for="(item, i) in getProfile.scanSave"
+          :key="i"
         >
-          <div class="img-place self-center md:py-0 py-3">
+          <div class="img-place self-center sm:py-0 py-3">
             <img
-              :src="item.img"
-              alt="profile picture"
-              class="object-cover rounded-full w-32 h-32 md:w-24 md:h-24"
+              :src="item.pic + '?width=180'"
+              :alt="item.name"
+              class="object-cover rounded-full w-32 h-32 md:w-full md:h-full"
             />
           </div>
-          <div class="profile-col justify-center md:justify-start md:text-left">
+          <div class="profile-col justify-center sm:justify-start sm:text-left">
             <div class="bro-name space-y-1">
               <h2 class="text-gray-300 font-semibold">{{ item.name }}</h2>
-              <span class="flex-1 text-gray-400 font-medium text-sm">{{ item.nickName }}</span>
             </div>
             <div class="flex flex-col space-y-1 my-2">
-              <span
-                class="flex-1 text-gray-500 font-medium text-xs"
-              >{{ item.branch }} KMITL, Year {{ item.year }}</span>
-              <div class="flex-1 md:self-start space-x-2">
-                <i class="fas fa-pizza-slice text-gray-500 text-sm"></i>
-                <i class="fas fa-football-ball text-gray-500 text-sm"></i>
-                <i class="fab fa-spotify text-gray-500 text-sm"></i>
-                <i class="fas fa-film text-gray-500 text-sm"></i>
-              </div>
+              <span class="flex-1 text-gray-500 font-medium text-xs break-words whitespace-no-wrap">
+                <i class="fas fa-map-marked-alt text-secondary_b"></i>
+                {{ item.branch }} KMITL, Year {{ item.year }}
+              </span>
             </div>
           </div>
         </div>
@@ -95,36 +91,53 @@
   </section>
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
+/* eslint-disable */
+import { mapGetters } from "vuex";
+import axios from "axios";
+import alertify from "alertifyjs";
+import gate from "../store/modules/gateModule";
+import firebase from "firebase/app";
+import "firebase/auth";
+import store from "../store";
+import QRCode from "qrcode";
+import API from "../middleware/api/userApi";
+
+var vm = this;
 
 export default {
+  components: {},
   data() {
-    return {};
+    return {
+      image: null,
+      loading: false,
+      scanned: 0,
+      imgCoin:
+        '<img src="img/icons/coin.png" alt="coin" class="w-6 h-6 object-cover mx-2 block" />'
+    };
   },
-  created() {
-    this.getFacebookAuth();
+  beforeUpdate() {
+    if (this.getYear === "1") this.image = this.gatePic[0].smallImg;
   },
-  methods: {
-    ...mapActions("user", { getFacebookAuth: "getFacebookAuth" }),
-    goProfile(id) {
-      this.$router.push({ path: "/profile/" + id });
-    },
-    goBack() {
-      return this.$router.go(-1);
-    }
+  watch: {
+    getScanned(val, oldVal) {},
   },
   computed: {
     ...mapGetters("user", {
       getProfile: "getProfile",
-      getBro: "getBro",
-      getProfileById: "getProfileById"
+      getYear: "getYear",
+      getLink: "getLink",
+      getGate: "getGate"
     }),
     routeId() {
       return parseInt(this.$route.params.id);
     },
-    showProfile() {
-      //let route = this.$route.params.id;
-      return this.getProfileById(this.routeId);
+    gatePic() {
+      return gate.filter(item => {
+        return item.name === this.getGate;
+      });
+    },
+    getScanned() {
+      return this.getProfile.scanSave ? this.getProfile.scanSave.length : 0;
     }
   }
 };
@@ -134,10 +147,22 @@ export default {
   @apply grid;
 }
 
+.page-container {
+  @apply flex  flex-col content-center justify-center items-center min-h-screen py-12 relative;
+}
+
+.score-master {
+  top: 0;
+  right: 5%;
+  transform: translateX(-5%);
+  text-shadow: 0 1px 0 rgb(0, 170, 100);
+  @apply absolute text-secondary_b flex flex-row justify-center items-center;
+}
+
 .profile-wrap {
   background-image: linear-gradient(
     to top,
-    rgba(23, 35, 59, 0.9) 45%,
+    rgba(11, 9, 49, 0.9) 45%,
     transparent 70%
   );
 }
@@ -147,7 +172,7 @@ export default {
 }
 
 .details {
-  @apply flex  flex-col flex-wrap justify-center content-center px-4;
+  @apply flex flex-col flex-wrap justify-center content-center px-4;
 }
 
 .like {
@@ -161,11 +186,6 @@ export default {
 .stats .un-chased,
 .stats .chased {
   flex: 0 1 20%;
-}
-
-.stats .chased {
-  border-right: solid 1px;
-  @apply border-gray-800;
 }
 
 .button-gp {
@@ -186,16 +206,18 @@ export default {
 }
 
 .card {
-  @apply bg-gray-800 rounded-md bg-opacity-50 text-gray-300 flex content-center items-stretch;
+  @apply bg-primary-1100 rounded-md bg-opacity-75 text-primary-200 flex content-center items-stretch;
 }
 
 .card .img-place {
   flex: 1 0 25%;
+  display: flex;
+  justify-content: center;
 }
 
 .card .profile-col {
-  flex: 1 1 50%;
-  @apply flex flex-col content-start py-3 px-4;
+  flex: 1 1 60%;
+  @apply flex flex-col content-start p-3;
 }
 
 .card .bro-name {

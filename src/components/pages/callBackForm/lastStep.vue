@@ -78,7 +78,7 @@ export default {
     };
   },
   beforeRouteEnter(to, from, next) {
-
+    
     if (store.getters["register/getYear"] !== 1) {
       next({ path: "/profile" });
     } else {

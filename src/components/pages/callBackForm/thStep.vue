@@ -44,12 +44,6 @@
               <span class="bullet"></span>
               <span class="bullet active" :class="!loading ? 'animate-bounce' : ''"></span>
             </span>
-            <span class="flex flex-row flex-no-wrap">
-              <p
-                class="text-primary-300 underline cursor-pointer text-sm"
-                @click="$router.push({ path: prevRoute.path })"
-              >BACK</p>
-            </span>
           </div>
           <!--- End step zone --->
         </template>
@@ -99,12 +93,10 @@ export default {
     }
   },
   beforeRouteLeave(to, from, next) {
+    let itemRoute = (item) => item.length > 2 && item !== null && item !== "" && !item.length < 3
     if (
       to.path &&
-      !this.likes.every(
-        item =>
-          item.length > 2 && item !== null && item !== "" && !item.length < 3
-      )
+      !this.likes.every(itemRoute)
     ) {
       alertify.notify("PLEASE FILL UP THE FORM!", "warning", 3);
       next(false);
@@ -117,33 +109,26 @@ export default {
     ...mapActions("user", ["sendToken"]),
     async submit() {
       this.loading = true;
-      const ifArrayEmpty = item =>
-        item.length > 2 && item !== null && item !== "" && item.length;
-      // if (this.getYear === 2) {
-      //   if (this.likes.every(ifArrayEmpty)) {
-      //     this.setLikes(this.likes);
-      //     this.sendForm()
-      //       .then(res => {
-      //         this.loading = false;
-      //         if (res) {
-      //           this.sendToken().then((res) => {
-      //             localStorage.setItem("firstTime", "false");
-      //             this.$router.push({ path: "/profile" });
-      //           })
-      //         }
-      //       })
-      //       .catch(e => {
-      //         console.log(e);
-      //         alertify.notify("พบข้อผิดพลาด :(", "error", 3);
-      //         this.loading = false;
-      //       });
-      //   } else {
-      //     this.loading = false
-      //     alertify.notify("ATLEAST 3 CHARACTERS", "warning", 3);
-      //     return;
-      //   }
-      // } else
-      if (this.getYear === 1 && this.likes.every(ifArrayEmpty) === true) {
+      let ifArrayEmpty = (item) => item.length > 2 && item !== null && item !== "" && item.length;
+      if (this.getYear >= 2  && this.likes.every(ifArrayEmpty) === true) {
+          this.setLikes(this.likes);
+          this.sendForm()
+            .then(res => {
+              this.loading = false;
+              if (res) {
+                this.sendToken().then((res) => {
+                  localStorage.setItem("firstTime", "false");
+                  alertify.notify("สำเร็จ!", "success", 3);
+                  this.$router.push({ path: "/profile" });
+                })
+              }
+            })
+            .catch(e => {
+              console.log(e);
+              alertify.notify("พบข้อผิดพลาด :(", "error", 3);
+              this.loading = false;
+            });
+      } else if (this.getYear === 1 && this.likes.every(ifArrayEmpty) === true) {
         await this.setLikes(this.likes);
         await this.getGate().then(gate => {
           if (gate.data.length > 0 && this.likes.every(ifArrayEmpty)) {
@@ -168,7 +153,7 @@ export default {
       } else {
         this.loading = false;
         alertify.notify(
-          "ATLEAST 4 CHARACTERS AND FILL UP THE FORM",
+          "Something went wrong or fill atleast 3 characters.",
           "warning",
           3
         );

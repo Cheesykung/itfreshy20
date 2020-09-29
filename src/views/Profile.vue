@@ -1,20 +1,44 @@
 <template>
   <section class="w-screen min-h-screen profile-wrap">
-    <div class="flex flex-col content-center justify-center items-center h-full py-12">
-      <div class="profile container grid-cols-1 md:gap-10 gap-12 self-center">
+    <div class="page-container">
+      <v-popover offset="16" class="score-master space-x-2 cursor-pointer">
+        <span class="flex flex-row">
+          <div v-html="imgCoin"></div>
+          {{ getProfile.point }}
+        </span>
+        <span slot="popover"
+          >เหรียญ
+          <span class="text-primary-200"
+            >ที่ได้จากการล่า
+            สามารถช่วยเพิ่มเปอร์เซ็นต์ในการจับคู่สายรหัสได้</span
+          ></span
+        >
+      </v-popover>
+      <div class="profile container grid-cols-1 gap-10 self-center">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
-            :data-src="getProfile.photoURL? getProfile.photoURL + '?width=500' : getProfile.pic + '?width=500'"
-            class="object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
+            :data-src="
+              getProfile.photoURL
+                ? getProfile.photoURL + '?width=226'
+                : getProfile.pic + '?width=226'
+            "
+            class="profile-pic object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
           />
           <div class="details space-y-2 items-center">
-            <h1
-              class="text-3xl text-primary-100 font-thin"
-            >{{ getProfile.displayName ? getProfile.displayName : getProfile.name }}</h1>
+            <h1 class="text-3xl text-primary-100 font-thin">
+              {{
+                getProfile.displayName
+                  ? getProfile.displayName
+                  : getProfile.name
+              }}
+            </h1>
           </div>
           <div class="faculty space-x-2 font-normal uppercase">
             <i class="fas fa-map-marked-alt"></i>
-            <span>IT KMITL{{ getProfile.branch ? ", " + getProfile.branch : '' }}{{ getProfile.year ? " ปี " + getProfile.year : '' }}</span>
+            <span
+              >IT KMITL{{ getProfile.branch ? ", " + getProfile.branch : ""
+              }}{{ getProfile.year ? " ปี " + getProfile.year : "" }}</span
+            >
           </div>
           <div class="like space-x-4">
             <i
@@ -38,7 +62,11 @@
               v-if="getProfile.gate !== '' || getProfile.year === '1'"
               class="flex flex-row space-x-2 justify-center items-center content-center text-primary-200"
             >
-              <img class="object-cover w-full" :data-src="image" v-if="image !== null" />
+              <img
+                class="object-cover w-full"
+                :data-src="image"
+                v-if="image !== null"
+              />
               <ion-icon name="skull-outline" v-else></ion-icon>
               <p class="capitalize">{{ getProfile.status }}</p>
             </span>
@@ -46,31 +74,100 @@
         </div>
         <!--- Profile Stats --->
         <div class="stats items-stretch">
-          <div class="chased flex flex-col space-y-2 justify-center content-center">
-            <span
-              class="text-2xl font-semibold text-gray-200"
-            >{{ getProfile.count ? getProfile.count : 0 }}</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ล่าไปแล้ว</span>
+          <div
+            class="chased flex flex-col space-y-2 justify-center content-center cursor-pointer"
+            @click="$router.push('/hunted')"
+          >
+            <span class="text-2xl font-semibold text-gray-200">{{
+              getProfile.count ? getProfile.count : 0
+            }}</span>
+            <span class="text-sm font-normal text-gray-400"
+              >คนที่ล่าไปแล้ว</span
+            >
           </div>
-          <div class="un-chased flex flex-col space-y-2 justify-center content-center">
-            <span
-              class="text-2xl font-semibold text-gray-200"
-            >{{ getProfile.count ? Math.abs(148 - getProfile.count) : 148 }}</span>
-            <span class="text-sm font-normal text-gray-400">รุ่นพี่ที่ยังไม่ได้ล่า</span>
+          <div
+            class="un-chased flex flex-col space-y-2 justify-center content-center"
+          >
+            <span class="text-2xl font-semibold text-gray-200">{{
+              getProfile.year === 1
+                ? getProfile.count
+                  ? Math.abs(235 - getProfile.count)
+                  : 235
+                : getProfile.count
+                ? Math.abs(235 - getProfile.count)
+                : 235
+            }}</span>
+            <span class="text-sm font-normal text-gray-400"
+              >คนที่คุณยังไม่ได้ล่า</span
+            >
           </div>
         </div>
         <!--- Profile button --->
         <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8 py-6">
           <button
-            class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm animate-pulse"
-            @click="Bounty()"
-          >ล่ารายชื่อเลย!</button>
+            class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm w-full"
+            id="qrscan"
+            @click="$router.push({ path: '/qrscan' })"
+          >
+            สแกนคิวอาร์โค้ด
+          </button>
           <button
-            class="px-2 py-3 bg-primary-850 text-primary-200 rounded text-sm"
+            class="px-2 py-3 bg-primary-800 text-primary-200 rounded text-sm"
             @click="genQr()"
-          >สร้างลิงค์ใหม่</button>
-          <span class="loading" v-if="loading"></span>
-          <!-- <h3 class="text-2xl animate-pulse text-primary-200 font-semibold">เตรียมออกล่าเร็วๆนี้!</h3> -->
+          >
+            <span :class="loading ? 'loading text-sm' : ''">{{
+              !loading ? "รับลิงค์เพื่อสแกน" : ""
+            }}</span>
+          </button>
+        </div>
+        <span class="hero">
+          จำนวนที่ล่าได้ในวันนี้
+        </span>
+        <div class="daily_stats">
+          <div class="stats_item space-y-4">
+            <span
+              :class="
+                getProfile.year1 != 0 ? 'text-secondary_b' : 'text-primary-300'
+              "
+              >{{
+                getProfile.year1 != 0 ? getProfile.year1 : "ยังไม่ได้ล่า"
+              }}</span
+            >
+            <p>ปีหนึ่ง</p>
+          </div>
+          <div class="stats_item space-y-4">
+            <span
+              :class="
+                getProfile.year2 != 0 ? 'text-secondary_b' : 'text-primary-300'
+              "
+              >{{
+                getProfile.year2 != 0 ? getProfile.year2 : "ยังไม่ได้ล่า"
+              }}</span
+            >
+            <p>ปีสอง</p>
+          </div>
+          <div class="stats_item space-y-4">
+            <span
+              :class="
+                getProfile.year3 != 0 ? 'text-secondary_b' : 'text-primary-300'
+              "
+              >{{
+                getProfile.year3 != 0 ? getProfile.year3 : "ยังไม่ได้ล่า"
+              }}</span
+            >
+            <p>ปีสาม</p>
+          </div>
+          <div class="stats_item space-y-4">
+            <span
+              :class="
+                getProfile.year4 != 0 ? 'text-secondary_b' : 'text-primary-300'
+              "
+              >{{
+                getProfile.year4 != 0 ? getProfile.year4 : "ยังไม่ได้ล่า"
+              }}</span
+            >
+            <p>ปีสี่</p>
+          </div>
         </div>
       </div>
     </div>
@@ -86,6 +183,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import store from "../store";
 import QRCode from "qrcode";
+import API from "../middleware/api/userApi";
 
 var vm = this;
 
@@ -94,53 +192,89 @@ export default {
     return {
       image: null,
       loading: false,
-      qr: new Array(1)
+      qr: new Array(1),
+      imgCoin:
+        '<img src="img/icons/coin.png" alt="coin" class="w-6 h-6 object-cover mx-2 block" />'
     };
   },
   beforeUpdate() {
-    if (this.getYear === "1") this.image = this.gatePic[0].smallImg;
+    //if (this.getYear === "1") this.image = this.gatePic[0].smallImg;
   },
   methods: {
     Bounty() {
       this.$router.push({ path: "/bounty" });
     },
+    copyTxt: function(e) {
+      if (e) {
+        e.target.select();
+        e.target.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        alertify.success("Copied!");
+      }
+    },
     genQr: function() {
+      this.loading = true;
       try {
         firebase
           .auth()
           .currentUser.getIdToken(/* forceRefresh */ true)
           .then(idToken => {
             axios
-              .get(
-                "https://us-central1-itfreshy2020.cloudfunctions.net/test/genqrcode/",
-                {
-                  withCredentials: true,
-                  headers: {
-                    FIREBASE_AUTH_TOKEN: idToken
-                  }
+              .get(API + "test/genqrcode/", {
+                withCredentials: true,
+                headers: {
+                  FIREBASE_AUTH_TOKEN: idToken
                 }
-              )
+              })
               .then(setQr => {
                 if (setQr.status === 200) {
                   let data = setQr.data;
+                  let url = new URL(data.qrcode);
+                  let newUrl = url.pathname
+                    .toString()
+                    .substring(url.pathname.lastIndexOf("qrcode"));
+                  newUrl = newUrl.replace("qrcode/", "scan/");
+                  newUrl = new URL("https://hunter.war.in.th/" + newUrl);
 
                   alertify
                     .alert(
-                      '<div id="qr-code" class="flex flex-col content-center items-center"></div>'
-                    ) 
-                    .setHeader("Your QR Code")
-                    .showModal('ajs-dialog-custom');
+                      '<div id="qr-code" class="flex flex-col space-y-6 justify-center content-center items-center py-6">\
+                      <div id="url" class=" break-all block user-select-all bg-gray-300 text-gray-700 p-4 text-xs rounded-lg cursor-pointer select-text border-2 font-medium border-gray-400">\
+                      ' +
+                        newUrl +
+                        "\
+                      </div> " +
+                        '<div class="text-red-600 font-semibold text-xs text-left">ทุกปีสามารถสแกนกันได้</div> </div>'
+                    )
+                    .setHeader("Your QR Code");
 
                   let qrEl = document.getElementById("qr-code");
+                  let qrUrl = document.getElementById("url");
 
                   if (this.qr.length < 2) {
-                    QRCode.toCanvas(data.qrcode.toString(), (err, canvas) => {
+                    QRCode.toCanvas(newUrl.href, (err, canvas) => {
                       if (err) throw err;
 
-                      qrEl.appendChild(canvas);
+                      qrEl.insertBefore(canvas, qrUrl);
                       this.qr.push(data.qrcode);
                     });
+
+                    qrUrl.addEventListener("click", () => {
+                      qrUrl.classList.add("bg-green-200");
+                      qrUrl.classList.add("border-green-300");
+                      qrUrl.classList.add("text-green-700");
+                      alertify.success("Copied!");
+
+                      var range = document.createRange();
+                      range.selectNode(qrUrl);
+                      window.getSelection().removeAllRanges(); // clear current selection
+                      window.getSelection().addRange(range); // to select text
+                      document.execCommand("copy");
+                      window.getSelection().removeAllRanges();
+                    });
                   }
+
+                  this.loading = false;
                   alertify.success("สร้าง Qr Code สำเร็จ!");
                   store.commit("user/setLink", data.qrcode);
                 } else {
@@ -158,6 +292,12 @@ export default {
     logout() {
       this.$store.dispatch("user/signOut");
     }
+  },
+  watch: {
+    gatePic(val, oldVal) {
+      if (this.getYear === "1") this.image = val[0].smallImg;
+    },
+    getProfile(val, oldVal) {}
   },
   computed: {
     ...mapGetters("user", {
@@ -181,8 +321,88 @@ export default {
 };
 </script>
 <style scoped>
+#qrscan {
+  position: relative;
+}
+
+#qrscan .notify {
+  position: absolute;
+  top: -1rem;
+  right: -1rem;
+  @apply bg-complementary-treda px-2 py-1 rounded-full text-xs;
+}
+
+.daily_stats {
+  @apply grid grid-cols-2 gap-8 max-w-xl w-full mx-auto text-purple-200 my-4;
+}
+
+.daily_stats .stats_item {
+  @apply flex flex-col justify-center items-stretch;
+}
+
+.daily_stats .stats_item span {
+  @apply text-2xl;
+}
+
+.daily_stats .stats_item p {
+  @apply text-sm font-thin;
+}
+
+@screen md {
+  .daily_stats {
+    @apply grid grid-cols-4;
+  }
+}
+
+.hero {
+  @apply max-w-2xl mx-auto text-3xl text-secondary_b text-center;
+}
+
 .profile {
   @apply grid;
+}
+
+.page-container {
+  @apply flex  flex-col content-center justify-center items-center h-full pb-12 relative;
+}
+
+.score-master {
+  top: -50px;
+  right: 4%;
+  transform: translateX(-4%);
+  text-shadow: 0 1px 0 rgb(0, 170, 100);
+  @apply absolute text-secondary_b flex flex-row justify-center items-center;
+}
+
+.tooltip {
+  font-family: "Prompt";
+}
+
+.profile-pic[lazy="loading"] {
+  position: relative;
+  background-color: #e2e2e2;
+}
+
+.profile-pic[lazy="loading"]::after {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: translateY(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: loading 1s infinite;
+}
+
+@keyframes loading {
+  100% {
+    transform: translateY(100%);
+  }
 }
 
 .profile-wrap {
@@ -191,6 +411,7 @@ export default {
     rgba(11, 9, 49, 0.9) 45%,
     transparent 70%
   );
+  @apply py-12;
 }
 
 .img-wrap {
@@ -208,7 +429,6 @@ export default {
 .stats {
   @apply flex flex-row justify-center content-center flex-wrap;
 }
-
 .stats .un-chased,
 .stats .chased {
   flex: 0 1 20%;
@@ -291,7 +511,7 @@ export default {
   }
 }
 
- .ajs-dialog-custom {
+.ajs-dialog-custom {
   @apply bg-primary-1100 bg-opacity-75;
 }
 </style>

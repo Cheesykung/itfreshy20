@@ -4,6 +4,7 @@ import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
 import firebase from "./middleware/services/AuthHeaders";
+import AOS from 'aos';
 
 import "@/assets/css/main.css";
 import "@fortawesome/fontawesome-free/css/all.css";
@@ -11,6 +12,9 @@ import "@fortawesome/fontawesome-free/js/all.js";
 import layzyLoad from "./directives/layzyLoad";
 import VueLazyLoad from "vue-lazyload";
 import VueAlertify from "vue-alertify";
+import VTooltip from 'v-tooltip'
+ 
+Vue.use(VTooltip)
 
 Vue.use(VueAlertify);
 
@@ -29,7 +33,7 @@ Vue.use(VueLazyLoad, {
 
 let app;
 
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged( (user) => {
   if (user) {
     store.dispatch("user/sendToken");
   }
@@ -40,6 +44,10 @@ firebase.auth().onAuthStateChanged(function(user) {
     app = new Vue({
       router,
       store,
+      created() {
+        AOS.init(),
+        store.dispatch("user/signProfile");
+      },
       render: (h) => h(App),
     }).$mount("#app");
   }
