@@ -103,7 +103,25 @@
           </div>
         </div>
         <!--- Profile button --->
-        <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8 py-6">
+        <div class="button-gp py-6">
+          <button
+            class="btn-random animate-pulse"
+            v-if="!isShow && getProfile.year === '1'"
+            disabled
+          >
+            WAIT FOR YOUR CAPTAIN!
+            <!-- <div class="bar top"></div>
+            <div class="bar right delay"></div>
+            <div class="bar bottom delay"></div>
+            <div class="bar left"></div> -->
+          </button>
+          <span class="text-3xl text-secondary_b font-normal" v-else>
+            <p>หมดเวลากิจกรรม</p>
+            <p class="text-lg text-green_blue-200 py-3">โปรดรอการประกาศอย่างเป็นทางการ</p>
+            </span>
+          <!-- <span class="loading" v-if="isShow"></span> -->
+        </div>
+        <!-- <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8 py-6" v-if="isVisible">
           <button
             class="px-2 py-3 bg-primary-600 text-primary-200 rounded text-sm w-full"
             id="qrscan"
@@ -120,10 +138,10 @@
             }}</span>
           </button>
         </div>
-        <span class="hero">
+        <span class="hero" v-if="isVisible">
           จำนวนที่ล่าได้ในวันนี้
         </span>
-        <div class="daily_stats">
+        <div class="daily_stats" v-if="isVisible">
           <div class="stats_item space-y-4">
             <span
               :class="
@@ -168,13 +186,19 @@
             >
             <p>ปีสี่</p>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
+    <!-- <div class="modal_wrap animate__animated animate__fadeIn" :class="isShow === true ? 'flex' : 'hidden'" id="modal_content">
+      <circle-loader v-if="modalLoading" />
+      <close-btn @click="closeModal()">Close</close-btn>
+      <Random />
+    </div> -->
   </section>
 </template>
 <script>
 /* eslint-disable */
+import "animate.css";
 import { mapGetters } from "vuex";
 import axios from "axios";
 import alertify from "alertifyjs";
@@ -190,17 +214,32 @@ var vm = this;
 export default {
   data() {
     return {
+      isVisible: false,
       image: null,
       loading: false,
+      isShow: false,
+      modalLoading: false,
       qr: new Array(1),
       imgCoin:
         '<img src="img/icons/coin.png" alt="coin" class="w-6 h-6 object-cover mx-2 block" />'
     };
   },
+  components: {
+    Random: () => import("../components/functional/Random"),
+    circleLoader: () => import("../components/util/circleLoader"),
+    CloseBtn: () => import("../components/util/CloseBtn")
+  },
   beforeUpdate() {
     //if (this.getYear === "1") this.image = this.gatePic[0].smallImg;
   },
   methods: {
+    openModal() {
+      this.modalLoading = true;
+      this.isShow = true;
+    },
+    closeModal() {
+      this.isShow = false;
+    },
     Bounty() {
       this.$router.push({ path: "/bounty" });
     },
@@ -332,6 +371,102 @@ export default {
   @apply bg-complementary-treda px-2 py-1 rounded-full text-xs;
 }
 
+.modal_wrap {
+  @apply fixed top-0 justify-center items-center max-w-full w-screen min-h-screen bg-opacity-75 bg-primary-1100 z-50 transition-all ease-linear duration-150;
+}
+
+.btn-random {
+  box-shadow: 2px 2px 16px #0a9e6a;
+  font-size: 1rem;
+  @apply max-w-sm bg-primary-1000 bg-opacity-75 rounded-full border-secondary_b border-2 py-4 px-6 text-primary-250 transition-all duration-150 ease-linear;
+}
+
+.btn-random:hover {
+  box-shadow: 2px 2px 16px 8px #0a9e6a;
+}
+
+.bar {
+  position: absolute;
+  width: 50px;
+  height: 5px;
+  background: #fff;
+  transition: all 1s linear;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+.bar.delay {
+  animation-delay: 0.5s;
+  -webkit-animation-delay: 0.5s;
+}
+.top {
+  top: -5px;
+  left: -5px;
+}
+.right {
+  top: 18px;
+  right: -28px;
+  transform: rotate(90deg);
+}
+.bottom {
+  bottom: -5px;
+  left: -5px;
+}
+.left {
+  top: 18px;
+  left: -28px;
+  transform: rotate(90deg);
+}
+@-webkit-keyframes h-move {
+  0% {
+    left: -5px;
+  }
+  100% {
+    left: 200px;
+  }
+}
+@keyframes h-move {
+  0% {
+    left: -5px;
+  }
+  100% {
+    left: 200px;
+  }
+}
+.top,
+.bottom {
+  -webkit-animation-name: h-move;
+  animation-name: h-move;
+}
+@-webkit-keyframes v-move {
+  0% {
+    top: -5px;
+  }
+  100% {
+    top: 228px;
+  }
+}
+@keyframes v-move {
+  0% {
+    top: -5px;
+  }
+  100% {
+    top: 228px;
+  }
+}
+.right,
+.left {
+  -webkit-animation-name: v-move;
+  animation-name: v-move;
+}
+
+.btn-random {
+  flex: 1 1 50% !important;
+}
+
 .daily_stats {
   @apply grid grid-cols-2 gap-8 max-w-xl w-full mx-auto text-purple-200 my-4;
 }
@@ -411,7 +546,7 @@ export default {
     rgba(11, 9, 49, 0.9) 45%,
     transparent 70%
   );
-  @apply py-12;
+  @apply py-12 relative;
 }
 
 .img-wrap {

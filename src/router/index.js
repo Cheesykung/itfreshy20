@@ -35,15 +35,15 @@ const routes = [
       requiresAuth: true,
     },
   },
-  {
-    path: "/qrscan",
-    name: "QR Scanner",
-    component: QrDecode,
-    meta: {
-      title: "IT@KMITL FRESHY 2020",
-      requiresAuth: true,
-    },
-  },
+  // {
+  //   path: "/qrscan",
+  //   name: "QR Scanner",
+  //   component: QrDecode,
+  //   meta: {
+  //     title: "IT@KMITL FRESHY 2020",
+  //     requiresAuth: true,
+  //   },
+  // },
   {
     path: "/continue",
     name: "Start",
@@ -156,23 +156,16 @@ const routes = [
       title: "Hunted | IT@KMITL FRESHY 2020",
       requiresAuth: true,
     },
-  },{
-    path: "/scan/:id",
-    name: "Scan",
-    component: Scan,
-    meta: {
-      title: "QR Scan | IT@KMITL FRESHY 2020",
-      requiresAuth: true,
-    }
-  },{
-    path: "/edit",
-    name: "Edit",
-    component: Edit,
-    meta: {
-      title: "Edit | IT@KMITL FRESHY 2020",
-      requiresAuth: true,
-    },
   },
+  // {
+  //   path: "/scan/:id",
+  //   name: "Scan",
+  //   component: Scan,
+  //   meta: {
+  //     title: "QR Scan | IT@KMITL FRESHY 2020",
+  //     requiresAuth: true,
+  //   }
+  // },
   {
     path: "/signin",
     name: "Signin",
