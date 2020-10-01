@@ -187,10 +187,10 @@
       </div>
       <circle-loader v-else />
     </div>
-    <div class="modal_wrap animate__animated animate__fadeIn" v-if="isShow">
+    <div class="modal_wrap animate__animated animate__fadeIn" id="modal" v-if="isShow">
       <circle-loader v-if="modalLoading" />
-      <div @click="closeModal()"><close-btn>Close</close-btn></div>
-      <Random :data='dataArr' v-if="!modalLoading" />
+      <div @click="closeModal()" class="z-70"><close-btn>Close</close-btn></div>
+      <Random v-if="!modalLoading" />
     </div>
   </section>
 </template>
@@ -217,7 +217,6 @@ export default {
       loading: false,
       isShow: false,
       modalLoading: false,
-      dataArr: { img: 'CloseTres.svg', hint: 'Your Captain Doesn\'t Provide Any Hint!' },
       qr: new Array(1),
       imgCoin:
         '<img src="img/icons/coin.png" alt="coin" class="w-6 h-6 object-cover mx-2 block" />'
@@ -232,35 +231,21 @@ export default {
     openModal() {
       this.modalLoading = true;
       this.isShow = true;
+      document.querySelector("body").style.overflow = 'hidden';
 
       setTimeout(() => {
         this.modalLoading = false;
-      }, 2000)
-
-      // try {
-      //   store.dispatch("user/getToken").then(async (res) => {
-      //     //Get Data
-      //     const { data, status } = await axios.get(API + "test/getsecert", {
-      //       headers: {
-      //         FIREBASE_AUTH_TOKEN: res
-      //       }
-      //     });
-
-      //     if (status === 200 && data) {
-      //       this.dataArr = data;
-      //       this.modalLoading = false;
-      //     } else {
-      //       this.modalLoading = false;
-      //     }
-      //   }).catch((e) => { throw e; this.modalLoading = false; })
-
-      // } catch (e) {
-      //   throw e;
-      //   this.modalLoading = false;
-      // }
+      }, 3000)
     },
     closeModal() {
-      this.isShow = false;
+      let modal = document.querySelector("#modal");
+      modal.classList.replace("animate__fadeIn", "animate__fadeOut");
+
+      setTimeout(() => {
+        this.isShow = false;
+        document.querySelector("body").style.overflow = 'visible';
+      }, 1600)
+      
     },
     Bounty() {
       this.$router.push({ path: "/bounty" });
@@ -394,7 +379,11 @@ export default {
 }
 
 .modal_wrap {
-  @apply fixed top-0 flex justify-center items-center max-w-full w-screen min-h-screen bg-opacity-75 bg-primary-1100 z-50 transition-all ease-linear duration-150;
+  @apply fixed top-0 flex flex-row flex-wrap justify-center items-center overflow-y-auto overflow-x-hidden max-w-full w-screen max-h-screen min-h-screen bg-opacity-75 py-24 bg-primary-1100 z-70 transition-all ease-linear duration-150;
+}
+
+.z-70 {
+  z-index: 70;
 }
 
 .btn-random {

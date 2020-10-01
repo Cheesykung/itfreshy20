@@ -17,6 +17,11 @@ module.exports = {
         secure: false,
         ws: false,
       },
+      "/secert": {
+        target: "http://localhost:5001/itfreshy2020/us-central1/test",
+        secure: false,
+        ws: false,
+      },
       "/fire/*": {
         target: "http://localhost:5001/itfreshy2020/us-central1/test",
         secure: false,
@@ -36,11 +41,13 @@ module.exports = {
         target: "https://us-central1-itfreshy2020.cloudfunctions.net/test",
         secure: false,
         ws: false,
-      },"/checka": {
+      },
+      "/checka": {
         target: "https://us-central1-itfreshy2020.cloudfunctions.net/test",
         secure: false,
         ws: false,
-      },"/genqrcode": {
+      },
+      "/genqrcode": {
         target: "https://us-central1-itfreshy2020.cloudfunctions.net/test",
         secure: false,
         ws: false,

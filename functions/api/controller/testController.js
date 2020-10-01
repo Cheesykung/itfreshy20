@@ -55,27 +55,25 @@ log.info("Server start");
 
 testController.get('/getsecert', isLoggedIn, async (req, res) => {
   const uid = req.user.uid;
-  let userFamily;
-  console.log(uid)
-  const secretRef = await db.collection('backupSFUser');
-  let userData = await secretRef.where("uid", "==", uid).get();
-  await userData.forEach(doc => {
-    userFamily = doc.data().family;
-  })
-  const getsec = await db.collection("form17").doc(userFamily)
+  const findsec = db.collection('secretfromuser').where("uid", "==", uid).get().then((findsec) => {
+    findsec.forEach(doc => {
+      const getsec = db.collection("form17").doc(doc.data().familyId)
       .get()
       .then((getsec) => {
         if (getsec.exists) {
           res.status(200).json({
-            hinttext: getsec.data().hintText? getsec.data().hintText: null,
-            hunterid: getsec.data().hunterID? getsec.data().hunterID: null,
-            socialfake: getsec.data().socialFake? getsec.data().socialFake: null,
+            hinttext: getsec.data().hintText,
+            socialfake: getsec.data().socialFake,
           });
         }
         else {
           res.status(500).json({ data: "notfound" })
         }
       })
+    })
+  }) 
+
+
 });
 
 testController.get("/older", async (req, res) => {
@@ -563,6 +561,43 @@ testController.get("/", (req, res) => {
   }
 });
 //admin query tools
+testController.get("/querysecret", async (req, res) => {
+  let save = []
+  const plai = db.collection("backupSFUserFinal").get()
+      .then((plai) => {
+        plai.forEach(function (doc) {
+          // doc.data() is never undefined for query doc snapshots
+          save.push({
+            docid: doc.id,
+            data: doc.data(),
+          })
+          console.log("run")
+          return save
+        })
+      })
+      .then(() => {
+        console.log(save)
+        res.send(save) })
+      });
+      testController.get("/queryuser", async (req, res) => {
+        let save = []
+        const plai = db.collection("users").get()
+            .then((plai) => {
+              plai.forEach(function (doc) {
+                // doc.data() is never undefined for query doc snapshots
+                save.push({
+                  docid: doc.id,
+                  data: doc.data(),
+                })
+                console.log("run")
+                return save
+              })
+            })
+            .then(() => {
+              console.log(save)
+              res.send(save) })
+            });
+
 testController.get("/ryutools/finddoc/:collection/:docname", (req, res) => {
   try {
     log.info(
@@ -603,14 +638,14 @@ testController.get("/help", async (req, res) => {
   res.render("help");
 });
 
-testController.get("/query", async (req, res) => {
-  const que = db.collection("users").where('year', '==', '1').where('newuser', '==', 0)
-  .get()
-  .then((que) => {
-    res.json(que.size)
-  })
+// testController.get("/query", async (req, res) => {
+//   const que = db.collection("users").where('year', '==', '1').where('newuser', '==', 0)
+//   .get()
+//   .then((que) => {
+//     res.json(que.size)
+//   })
   
-});
+// });
 
 testController.get("/help", async (req, res) => {
   res.render("help");
@@ -683,38 +718,7 @@ function isAdmin(req, res, next) {
   }
 }
 
-// testController.get("/query", async (req, res) => {
-//   let save = []
-//   const plai = USERSRef.where('year', '==', '2').where('newuser', '==', 0).get()
-//       .then((plai) => {
-//         plai.forEach(function (doc) {
-//           // doc.data() is never undefined for query doc snapshots
-//           save.push({
-//             stdid: doc.data().id,
-//             fname: doc.data().fname,
-//             surname: doc.data().surname,
-//             nickname: doc.data().nickname,
-//             branch: doc.data().branch,
-//             name: doc.data().name,
-//             pic: doc.data().pic + "?type=large",
-//             year1: doc.data().year1,
-//             year2: doc.data().year2,
-//             year3: doc.data().year3,
-//             year4: doc.data().year4,
-//             dayscan: doc.data().year1+doc.data().year2+doc.data().year3+doc.data().year4,
-//             all_year1: doc.data().all_year1,
-//             all_year2: doc.data().all_year2,
-//             all_year3: doc.data().all_year3,
-//             all_year4: doc.data().all_year4,
-//             allscan: doc.data().all_year1+doc.data().all_year2+doc.data().all_year3+doc.data().all_year4,
-//           })
-//           console.log("run")
-//           return save
-//         })
-//       })
-//       .then(() => {
-//         console.log(save)
-//         res.send(save) })
+
   // // const que = db.collection("users").where('year', '==', '1').where('newuser', '==', 0)
   // // .get()
   // // .then((que) => {
@@ -748,6 +752,39 @@ function isAdmin(req, res, next) {
   //   })
 // });
 
+// testController.get("/query", async (req, res) => {
+//   let save = []
+//   const plai = USERSRef.where('year', '==', '2').where('newuser', '==', 0).get()
+//       .then((plai) => {
+//         plai.forEach(function (doc) {
+//           // doc.data() is never undefined for query doc snapshots
+//           save.push({
+//             stdid: doc.data().id,
+//             fname: doc.data().fname,
+//             surname: doc.data().surname,
+//             nickname: doc.data().nickname,
+//             branch: doc.data().branch,
+//             name: doc.data().name,
+//             pic: doc.data().pic + "?type=large",
+//             year1: doc.data().year1,
+//             year2: doc.data().year2,
+//             year3: doc.data().year3,
+//             year4: doc.data().year4,
+//             dayscan: doc.data().year1+doc.data().year2+doc.data().year3+doc.data().year4,
+//             all_year1: doc.data().all_year1,
+//             all_year2: doc.data().all_year2,
+//             all_year3: doc.data().all_year3,
+//             all_year4: doc.data().all_year4,
+//             allscan: doc.data().all_year1+doc.data().all_year2+doc.data().all_year3+doc.data().all_year4,
+//           })
+//           console.log("run")
+//           return save
+//         })
+//       })
+//       .then(() => {
+//         console.log(save)
+//         res.send(save) })
+//       });
 
 
 

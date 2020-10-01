@@ -879,6 +879,11 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@bijection/smoke@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@bijection/smoke/-/smoke-1.0.2.tgz#558b39c603ae1ee89d95838442983782d4fd7bc0"
+  integrity sha512-K4L+2hqsKsLRabu7J2pD9mlIUopb+W07r0e6gohKdDfsc7immhhhYRGaX1+hF19W2eXnFmdUROqXLvsZBysyfw==
+
 "@cypress/listr-verbose-renderer@0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@cypress/listr-verbose-renderer/-/listr-verbose-renderer-0.4.1.tgz#a77492f4b11dcc7c446a34b3e28721afd33c642a"
