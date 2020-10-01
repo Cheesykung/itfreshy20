@@ -1,6 +1,6 @@
 <template>
   <section class="w-screen min-h-screen main-wrap">
-    <div class="filter space-x-4">
+    <div class="filter space-x-4"  v-if="leaderList">
       <div class="filter-item bg-primary-1100 bg-opacity-75 w-10 h-10"
            :class="active === i ? 'bg-secondary_b bg-opacity-100' : ''" v-for="i in 4" :key="i" @click="active = i;">
         {{ i }}

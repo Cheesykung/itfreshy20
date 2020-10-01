@@ -4,7 +4,7 @@
       <v-popover offset="16" class="score-master space-x-2 cursor-pointer">
         <span class="flex flex-row">
           <div v-html="imgCoin"></div>
-          {{ getProfile.point }}
+          {{ getProfile.point ? getProfile.point : 0 }}
         </span>
         <span slot="popover"
           >เหรียญ
@@ -14,7 +14,7 @@
           ></span
         >
       </v-popover>
-      <div class="profile container grid-cols-1 gap-10 self-center">
+      <div class="profile container grid-cols-1 gap-10 self-center" v-if="getProfile.uid">
         <div class="img-wrap space-y-4" v-lazy-container="{ selector: 'img' }">
           <img
             :data-src="
@@ -22,7 +22,7 @@
                 ? getProfile.photoURL + '?width=226'
                 : getProfile.pic + '?width=226'
             "
-            class="profile-pic object-cover h-32 w-32 md:h-40 md:w-40 rounded-full self-center"
+            class="profile-pic object-cover h-32 w-32 md:h-40 md:w-40 bg-primary-1100 rounded-full self-center"
           />
           <div class="details space-y-2 items-center">
             <h1 class="text-3xl text-primary-100 font-thin">
@@ -107,19 +107,16 @@
           <button
             class="btn-random animate-pulse"
             v-if="!isShow && getProfile.year === '1'"
-            disabled
+            @click="openModal()"
           >
-            WAIT FOR YOUR CAPTAIN!
-            <!-- <div class="bar top"></div>
-            <div class="bar right delay"></div>
-            <div class="bar bottom delay"></div>
-            <div class="bar left"></div> -->
+            FIND OUT YOUR CAPTAIN!
           </button>
           <span class="text-3xl text-secondary_b font-normal" v-else>
             <p>หมดเวลากิจกรรม</p>
-            <p class="text-lg text-green_blue-200 py-3">โปรดรอการประกาศอย่างเป็นทางการ</p>
-            </span>
-          <!-- <span class="loading" v-if="isShow"></span> -->
+            <p class="text-lg text-green_blue-200 py-3">
+              โปรดรอการประกาศอย่างเป็นทางการ
+            </p>
+          </span>
         </div>
         <!-- <div class="button-gp space-x-4 md:space-x-6 lg:space-x-8 py-6" v-if="isVisible">
           <button
@@ -188,12 +185,13 @@
           </div>
         </div> -->
       </div>
+      <circle-loader v-else />
     </div>
-    <!-- <div class="modal_wrap animate__animated animate__fadeIn" :class="isShow === true ? 'flex' : 'hidden'" id="modal_content">
+    <div class="modal_wrap animate__animated animate__fadeIn" v-if="isShow">
       <circle-loader v-if="modalLoading" />
-      <close-btn @click="closeModal()">Close</close-btn>
-      <Random />
-    </div> -->
+      <div @click="closeModal()"><close-btn>Close</close-btn></div>
+      <Random :data='dataArr' v-if="!modalLoading" />
+    </div>
   </section>
 </template>
 <script>
@@ -219,6 +217,7 @@ export default {
       loading: false,
       isShow: false,
       modalLoading: false,
+      dataArr: { img: 'CloseTres.svg', hint: 'Your Captain Doesn\'t Provide Any Hint!' },
       qr: new Array(1),
       imgCoin:
         '<img src="img/icons/coin.png" alt="coin" class="w-6 h-6 object-cover mx-2 block" />'
@@ -229,13 +228,36 @@ export default {
     circleLoader: () => import("../components/util/circleLoader"),
     CloseBtn: () => import("../components/util/CloseBtn")
   },
-  beforeUpdate() {
-    //if (this.getYear === "1") this.image = this.gatePic[0].smallImg;
-  },
   methods: {
     openModal() {
       this.modalLoading = true;
       this.isShow = true;
+
+      setTimeout(() => {
+        this.modalLoading = false;
+      }, 2000)
+
+      // try {
+      //   store.dispatch("user/getToken").then(async (res) => {
+      //     //Get Data
+      //     const { data, status } = await axios.get(API + "test/getsecert", {
+      //       headers: {
+      //         FIREBASE_AUTH_TOKEN: res
+      //       }
+      //     });
+
+      //     if (status === 200 && data) {
+      //       this.dataArr = data;
+      //       this.modalLoading = false;
+      //     } else {
+      //       this.modalLoading = false;
+      //     }
+      //   }).catch((e) => { throw e; this.modalLoading = false; })
+
+      // } catch (e) {
+      //   throw e;
+      //   this.modalLoading = false;
+      // }
     },
     closeModal() {
       this.isShow = false;
@@ -372,95 +394,17 @@ export default {
 }
 
 .modal_wrap {
-  @apply fixed top-0 justify-center items-center max-w-full w-screen min-h-screen bg-opacity-75 bg-primary-1100 z-50 transition-all ease-linear duration-150;
+  @apply fixed top-0 flex justify-center items-center max-w-full w-screen min-h-screen bg-opacity-75 bg-primary-1100 z-50 transition-all ease-linear duration-150;
 }
 
 .btn-random {
   box-shadow: 2px 2px 16px #0a9e6a;
   font-size: 1rem;
-  @apply max-w-sm bg-primary-1000 bg-opacity-75 rounded-full border-secondary_b border-2 py-4 px-6 text-primary-250 transition-all duration-150 ease-linear;
+  @apply max-w-sm bg-primary-1000 mx-6 bg-opacity-75 rounded-full border-secondary_b border-2 py-4 px-6 text-primary-250 transition-all duration-150 ease-linear;
 }
 
 .btn-random:hover {
   box-shadow: 2px 2px 16px 8px #0a9e6a;
-}
-
-.bar {
-  position: absolute;
-  width: 50px;
-  height: 5px;
-  background: #fff;
-  transition: all 1s linear;
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-  -webkit-animation-iteration-count: infinite;
-  animation-iteration-count: infinite;
-}
-.bar.delay {
-  animation-delay: 0.5s;
-  -webkit-animation-delay: 0.5s;
-}
-.top {
-  top: -5px;
-  left: -5px;
-}
-.right {
-  top: 18px;
-  right: -28px;
-  transform: rotate(90deg);
-}
-.bottom {
-  bottom: -5px;
-  left: -5px;
-}
-.left {
-  top: 18px;
-  left: -28px;
-  transform: rotate(90deg);
-}
-@-webkit-keyframes h-move {
-  0% {
-    left: -5px;
-  }
-  100% {
-    left: 200px;
-  }
-}
-@keyframes h-move {
-  0% {
-    left: -5px;
-  }
-  100% {
-    left: 200px;
-  }
-}
-.top,
-.bottom {
-  -webkit-animation-name: h-move;
-  animation-name: h-move;
-}
-@-webkit-keyframes v-move {
-  0% {
-    top: -5px;
-  }
-  100% {
-    top: 228px;
-  }
-}
-@keyframes v-move {
-  0% {
-    top: -5px;
-  }
-  100% {
-    top: 228px;
-  }
-}
-.right,
-.left {
-  -webkit-animation-name: v-move;
-  animation-name: v-move;
 }
 
 .btn-random {

@@ -1,27 +1,34 @@
 <template>
-  <section></section>
+  <section>
+    <picture class="rand-container space-y-12 px-4">
+      <img src="@/assets/svg/CloseTres.svg" :alt="data.hint" class="animate-bounce" />
+      <figure>
+        <p class="uppercase text-xl custom-txt">
+          {{ data.hint }}
+        </p>
+      </figure>
+    </picture>
+  </section>
 </template>
 <script>
-import Axios from "axios";
-import API from "../../middleware/api/userApi";
-
 export default {
-  mounted() {
-      this.getCaptain();
-  },
-  methods: {
-     getCaptain() {
-      this.$store.dispatch("user/getToken").then(async res => {
-        await Axios.get(API + "test/getsecert", {
-          headers: {
-            FIREBASE_AUTH_TOKEN: res
-          }
-        });
-      }).catch(e => {
-          throw e;
-      })
-    }
-  },
-
+  props: ['data']
 };
 </script>
+<style scoped>
+.rand-container {
+  @apply flex flex-col justify-center items-center max-w-xl text-complementary;
+}
+
+p.custom-txt {
+  /* text-shadow: 3px 3px 20px #EC920F; */
+}
+
+.rand-container img {
+  user-select: none;
+  pointer-events: none;
+  -webkit-filter: drop-shadow( 3px 3px 20px #EC920F);
+  filter: drop-shadow( 3px 3px 20px #EC920F);
+  @apply object-cover max-w-xs;
+}
+</style>

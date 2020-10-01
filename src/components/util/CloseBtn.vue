@@ -12,17 +12,17 @@ $tomatored: #0a9e6a;
 
 .close-container {
   position: absolute;
-  top: 5%;
-  right: 2.5%;
+  top: 2.5%;
+  right: 5%;
   transform: translate(-5%, -2.5%);
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   cursor: pointer;
 }
 
 .leftright {
   height: 4px;
-  width: 50px;
+  width: 35px;
   position: absolute;
   margin-top: 24px;
   background-color: $softorange;
@@ -33,7 +33,7 @@ $tomatored: #0a9e6a;
 
 .rightleft {
   height: 4px;
-  width: 50px;
+  width: 35px;
   position: absolute;
   margin-top: 24px;
   background-color: $softorange;
@@ -53,8 +53,9 @@ label {
 }
 .close {
   position: absolute;
-  right: 2.5%;
-  bottom: -50%;
+  right: -5%;
+  bottom: -75%;
+  transform: translate(5%, 75%);
 }
 
 .close-container:hover .leftright {

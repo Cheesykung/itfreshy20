@@ -16,24 +16,13 @@ const actions = {
     firebase
       .auth()
       .getRedirectResult()
-      .then(function(result) {
-        if (result.credential || firebase.auth().currentUser) {
-          let token = result.credential.accessToken;
-          Cookies.set("user", token, {
-            sameSite: "none",
-            secure: true,
-          });
-
-          //dispatch("setAuth", result.user.providerData[0]);
-          // dispatch("sendToken").then((res) => {
-          //   if (res.data.data === "newuser") {
-          //     router.go({ path: "/continue", params: { next: true } });
-          //   } else {
-          //     router.go({ path: "/profile", params: { next: "_self" } });
-          //   }
-          // });
-        } else {
-          console.log("false")
+      .then(async (result) => {
+        if (result.credential && firebase.auth().currentUser) {
+            let token = await result.credential.accessToken;
+            Cookies.set("user", token, {
+              sameSite: "none",
+              secure: true,
+            });
         }
       })
       .catch((e) => {
@@ -49,7 +38,7 @@ const actions = {
 
       firebase.auth().signInWithRedirect(provider);
     } else {
-      dispatch("signOut")
+      dispatch("signOut");
     }
 
     // return new Promise((resolve, reject) => {
