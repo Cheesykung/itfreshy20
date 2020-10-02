@@ -54,13 +54,12 @@ testController.set("view engine", "ejs");
 log.info("Server start");
 
 testController.get('/getsecert', isLoggedIn, async (req, res) => {
-  const uid = req.user.uid;
-  const findsec = db.collection('secretfromuser').where("uid", "==", uid).get().then((findsec) => {
+  const findsec = db.collection('secretfromuser').where("uid", "==", req.user.uid).get().then((findsec) => {
     findsec.forEach(doc => {
       const getsec = db.collection("form17").doc(doc.data().familyId)
       .get()
       .then((getsec) => {
-        if (getsec.exists) {
+        if (getsec.exists) { 
           res.status(200).json({
             hinttext: getsec.data().hintText,
             socialfake: getsec.data().socialFake,

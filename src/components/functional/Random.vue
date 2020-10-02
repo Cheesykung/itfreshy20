@@ -1,22 +1,40 @@
 <template>
   <section class="w-full">
-    <picture class="rand-container space-y-16 px-4 animate__animated animate__fadeIn" v-if="!dataSecret">
+    <picture
+      class="rand-container space-y-16 px-4 animate__animated animate__fadeIn"
+      v-if="!dataSecret"
+    >
       <img
         src="@/assets/svg/CloseTres.svg"
         :class="loading ? 'animate-loading' : 'animate-bounce'"
+        id="img"
         @click="getSmoke()"
       />
       <figure>
         <p
-          class="uppercase text-2xl custom-txt"
-          :class="loading ? 'animate-pulse' : ''"
+          class="uppercase text-2xl"
+          :class="
+            loading
+              ? 'animate-pulse custom-txt'
+              : isErr
+              ? 'text-complementary-treda'
+              : 'custom-txt'
+          "
         >
-          <!-- {{ data.hint }} -->
-          YOUR CAPTAIN IS READY!
+          {{
+            isErr
+              ? error
+              : loading
+              ? "YOUR CAPTAIN IS ON THE WAY.."
+              : "YOUR CAPTAIN IS READY!"
+          }}
         </p>
       </figure>
     </picture>
-    <picture class="rand-container space-y-16 px-4 animate__animated animate__fadeIn" v-else>
+    <picture
+      class="rand-container space-y-16 px-4 animate__animated animate__fadeIn"
+      v-else
+    >
       <img
         src="@/assets/svg/OpenTres.svg"
         class="animate-success animate__animated animate__fadeIn"
@@ -30,7 +48,11 @@
         <h1 class="text-5xl text-complementary">HINT</h1>
         <figure class="maps-area">
           <p class="txt--col space-y-6">
-            <span>{{ dataSecret.hinttext ? dataSecret.hinttext : 'Your Captain Doesn\'t Have Any Hint.' }}</span>
+            <span>{{
+              dataSecret.hinttext
+                ? dataSecret.hinttext
+                : "Your Captain Doesn't Have Any Hint."
+            }}</span>
           </p>
         </figure>
       </div>
@@ -42,18 +64,11 @@
         <h1 class="text-5xl text-complementary">CONTACT</h1>
         <figure class="maps-area">
           <p class="txt--col space-y-6">
-            <span>{{ dataSecret.socialfake ? dataSecret.socialfake : 'Your Captain Dosn\'t Have Any Social.' }}</span>
-          </p>
-        </figure>
-      </div>
-      <div
-        class="flex flex-col space-y-6 animate__animated animate__fadeIn"
-        v-if="error"
-      >
-        <h1 class="text-5xl text-complementary-treda">FAILED :(</h1>
-        <figure class="maps-area maps--red">
-          <p class="txt--col space-y-6 capitalize">
-            <span>{{ error }}</span>
+            <span>{{
+              dataSecret.socialfake
+                ? dataSecret.socialfake
+                : "Your Captain Dosn't Have Any Social."
+            }}</span>
           </p>
         </figure>
       </div>
@@ -74,7 +89,8 @@ export default {
       dataSecret: null,
       loading: false,
       showHint: false,
-      error: null
+      error: null,
+      isErr: false
     };
   },
   methods: {
@@ -129,26 +145,49 @@ export default {
 
             setTimeout(() => {
               this.show();
-            }, 4000)
-            
+            }, 4000);
           } else {
-            this.error = "your captain has never been here."
+            this.error = "your captain has never been here.";
+            this.loading = false;
+
+            setTimeout(() => {
+              this.show();
+            }, 4000);
           }
         })
         .catch(e => {
+          this.error = "Lost Connection With Your Captain, Please Try Again.";
+          this.loading = false;
+
+          setTimeout(() => {
+            this.show();
+          }, 4000);
           throw e;
         });
     },
     show() {
-      let closeToHint = document.getElementById("success");
-      let smoke = document.getElementById("blank_smoke");
+      var closeToHint = document.getElementById("success");
+      var smoke = document.getElementById("blank_smoke");
       let hint = document.getElementById("hint");
       let contact = document.getElementById("contact");
+      var error = document.getElementById("error");
+      let img = document.getElementById("img");
 
-      if (!this.loading) {
+      if (!this.loading && this.error) {
+        img.classList = "animate__animated animate__fadeOut";
+        setTimeout(() => {
+          img.remove();
+          smoke.classList = "animate__animated animate__fadeOut";
+          setTimeout(() => {
+            smoke.remove();
+
+            this.isErr = true;
+          }, 1200);
+        }, 1800);
+      } else if (!this.loading && !this.isErr) {
         closeToHint.classList.remove("animate-success");
         closeToHint.classList.replace("animate__fadeIn", "animate__fadeOut");
-        
+
         setTimeout(() => {
           smoke.classList = "animate__animated animate__fadeOut";
 
@@ -161,8 +200,7 @@ export default {
       }
     }
   },
-  mounted() {
-  }
+  mounted() {}
 };
 </script>
 <style scoped>
@@ -209,6 +247,7 @@ p.custom-txt {
 }
 
 .maps--red {
+  border-color: rgb(236, 15, 105) !important;
   color: #ec0f69 !important;
   box-shadow: 1.5px 1px 10px #ec0f69 !important;
 }
