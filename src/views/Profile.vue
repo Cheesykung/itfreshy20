@@ -106,7 +106,7 @@
         <div class="button-gp py-6">
           <button
             class="btn-random animate-pulse"
-            v-if="!isShow && getProfile.year === '1'"
+            v-if="getProfile.year === '1'"
             @click="openModal()"
           >
             FIND OUT YOUR CAPTAIN!

@@ -1,5 +1,5 @@
 //require zone // sailor
-
+/* eslint-disable */
 
 const compression = require("compression");
 const path = require("path");
@@ -54,25 +54,38 @@ testController.set("view engine", "ejs");
 log.info("Server start");
 
 testController.get('/getsecert', isLoggedIn, async (req, res) => {
-  const findsec = db.collection('secretfromuser').where("uid", "==", req.user.uid).get().then((findsec) => {
+  const findsec = db.collection('users').where("uid", "==", req.user.uid).get().then((findsec) => {
     findsec.forEach(doc => {
-      const getsec = db.collection("form17").doc(doc.data().familyId)
-      .get()
-      .then((getsec) => {
-        if (getsec.exists) { 
-          res.status(200).json({
-            hinttext: getsec.data().hintText,
-            socialfake: getsec.data().socialFake,
-          });
-        }
-        else {
-          res.status(500).json({ data: "notfound" })
-        }
-      })
+      if (doc.data().year == 2){
+        const getsec = db.collection("secretfromuser").where("familyId", "==", doc.data().id).get().then((getsec) => {
+          getsec.forEach(doc => {
+          res.send(doc.data())
+          })
+        })
+      }
+      else if(doc.data().year == 1){
+        const getsec = db.collection("secretfromuser").doc(doc.data().id).get().then((getsec) => {
+          res.send(getsec.data())
+        })
+      } 
+      else{
+        res.send("error")
+      }
+      // const getsec = db.collection("form17").doc(doc.data().familyId)
+      // .get()
+      // .then((getsec) => {
+      //   if (getsec.exists) {
+      //     res.status(200).json({
+      //       hinttext: getsec.data().hintText,
+      //       socialfake: getsec.data().socialFake,
+      //     });
+      //   }
+      //   else {
+      //     res.status(500).json({ data: "notfound" })
+      //   }
+      // })
     })
   }) 
-
-
 });
 
 testController.get("/older", async (req, res) => {

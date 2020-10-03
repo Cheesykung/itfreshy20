@@ -40,36 +40,29 @@
         class="animate-success animate__animated animate__fadeIn"
         id="success"
       />
+      <h1
+        :class="caption ? 'animate__fadeIn' : 'animate__fadeOut'"
+        class="text-complementary my-2 text-5xl animate__animated"
+        v-if="caption && showHint"
+        id="caption"
+      >
+        <span class="text-lg block">YOUR</span>
+        CAPTAIN
+        <span class="text-lg block">IS..</span>
+      </h1>
       <div
         class="flex flex-col space-y-6 animate__animated animate__fadeIn"
-        v-if="showHint"
+        v-if="showHint && !caption"
         id="hint"
       >
-        <h1 class="text-5xl text-complementary">HINT</h1>
-        <figure class="maps-area">
-          <p class="txt--col space-y-6">
-            <span>{{
-              dataSecret.hinttext
-                ? dataSecret.hinttext
-                : "Your Captain Doesn't Have Any Hint."
-            }}</span>
-          </p>
-        </figure>
-      </div>
-      <div
-        class="flex flex-col space-y-6 animate__animated animate__fadeIn"
-        v-if="showHint"
-        id="contact"
-      >
-        <h1 class="text-5xl text-complementary">CONTACT</h1>
-        <figure class="maps-area">
-          <p class="txt--col space-y-6">
-            <span>{{
-              dataSecret.socialfake
-                ? dataSecret.socialfake
-                : "Your Captain Dosn't Have Any Social."
-            }}</span>
-          </p>
+        <figure class="maps-area space-y-6">
+          <div class="txt--col space-y-6">
+            <h1 class="font-thin">{{ showFamilyName }}</h1>
+            <div class="fb space-x-3">
+              <i class="fab fa-facebook text-3xl custom-txt" />
+              <span class="text-lg text-primary-100">{{ familySocial }}</span>
+            </div>
+          </div>
         </figure>
       </div>
     </picture>
@@ -90,7 +83,8 @@ export default {
       loading: false,
       showHint: false,
       error: null,
-      isErr: false
+      isErr: false,
+      caption: false
     };
   },
   methods: {
@@ -101,7 +95,8 @@ export default {
       const canEl = document.getElementById("blank_smoke");
       var canvas = document.createElement("canvas");
       canvas.setAttribute("id", "canvas");
-      canEl.appendChild(canvas);
+
+      canEl.insertBefore(canvas, canEl.lastElementChild);
 
       let afterCanvas = document.getElementById("canvas");
       var ctx = afterCanvas.getContext("2d");
@@ -172,6 +167,7 @@ export default {
       let contact = document.getElementById("contact");
       var error = document.getElementById("error");
       let img = document.getElementById("img");
+      let caption = document.getElementById("caption");
 
       if (!this.loading && this.error) {
         img.classList = "animate__animated animate__fadeOut";
@@ -190,14 +186,35 @@ export default {
 
         setTimeout(() => {
           smoke.classList = "animate__animated animate__fadeOut";
-
+          this.caption = true;
           setTimeout(() => {
             closeToHint.remove();
             smoke.remove();
             this.showHint = true;
-          }, 1200);
-        }, 1800);
+
+            setTimeout(() => {
+              this.caption = false;
+            }, 1500);
+          }, 900);
+        }, 1500);
       }
+    }
+  },
+  computed: {
+    showFamilyName() {
+      let familyName = "No Captain's Name.";
+
+      if (this.dataSecret.familyFname && this.dataSecret.familySurname) {
+        familyName =
+          this.dataSecret.familyFname + " " + this.dataSecret.familySurname;
+      }
+
+      return familyName;
+    },
+    familySocial() {
+      return this.dataSecret.familyFB
+        ? this.dataSecret.familyFB
+        : "Your Catain is not Have a Facebook.";
     }
   },
   mounted() {}
@@ -209,12 +226,15 @@ export default {
   @apply relative flex flex-col justify-center items-center max-w-2xl mx-auto text-complementary;
 }
 
-p.custom-txt {
+.custom-txt {
   text-shadow: 1.5px 1px 10px #ec920f;
 }
 
 .txt--col {
-  @apply flex flex-col flex-wrap break-all justify-center items-center text-left uppercase text-lg px-4;
+  overflow-wrap: normal;
+  word-break: break-word;
+  @apply flex flex-col flex-wrap justify-center items-start text-left uppercase px-4;
+  font-size: 2.5em;
 }
 
 .rand-container img {
@@ -240,10 +260,19 @@ p.custom-txt {
   animation: loading 0.075s infinite 50ms linear alternate;
 }
 
+.question-mark {
+  @apply text-4xl text-complementary flex justify-center self-center items-center w-32 h-32 rounded-full bg-primary-1000 bg-opacity-75;
+}
+
+.fb {
+  @apply flex flex-row flex-no-wrap justify-start items-center break-all font-normal;
+}
+
 .maps-area {
-  box-shadow: 1.5px 1px 10px #ec920f;
+  /* box-shadow: 1.5px 1px 10px #ec920f; border-complementary border-4 border-solid*/
   flex: 1 1;
-  @apply border-complementary border-4 border-solid py-6 px-3 max-w-full rounded-lg;
+  font-family: "Prompt", "Righteous";
+  @apply py-6 px-3 max-w-full rounded-lg;
 }
 
 .maps--red {
